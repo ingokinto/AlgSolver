@@ -1,0 +1,427 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.RBNode;
+import de.htwk_leipzig.imn.visualg.model.structure.RBTreeNodeColor;
+import de.htwk_leipzig.imn.visualg.model.structure.RBTreeStructure;
+
+public class RBTreeRemoveFixup<T extends Comparable<T>> extends Algorithm<RBTreeStructure<T>> {
+    private RBNode<T> node;
+    private RBNode<T> nodeParent;
+    private boolean nodeIsLeft;
+
+    public RBTreeRemoveFixup(RBTreeStructure<T> structure, RBNode<T> node, RBNode<T> nodeParent, boolean nodeIsLeft) {
+        super(structure);
+        this.nodeParent = nodeParent;
+        this.nodeIsLeft = nodeIsLeft;
+        this.node = node;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        this.fixup();
+        ((RBTreeStructure)this.mStructure).reDraw();
+        ActiveAlgorithm.stop();
+    }
+
+    private void fixup() {
+        while(this.node != ((RBTreeStructure)this.mStructure).getRBRootNode() && this.isBlack(this.node)) {
+            if (this.checkBreakpoint(0)) {
+                this.waitAtBreakpoint(0);
+            }
+
+            if (this.checkBreakpoint(1)) {
+                this.waitAtBreakpoint(1);
+            }
+
+            RBNode w;
+            if (this.nodeIsLeft) {
+                if (this.checkBreakpoint(2)) {
+                    this.waitAtBreakpoint(2);
+                }
+
+                w = this.nodeParent.getRBRightChild();
+                if (this.checkBreakpoint(3)) {
+                    this.waitAtBreakpoint(3);
+                }
+
+                if (this.isRed(w)) {
+                    if (this.checkBreakpoint(4)) {
+                        this.waitAtBreakpoint(4);
+                    }
+
+                    w.setColor(RBTreeNodeColor.BLACK);
+                    this.nodeParent.setColor(RBTreeNodeColor.RED);
+                    this.rotateLeft(this.nodeParent);
+                    w = this.nodeParent.getRBRightChild();
+                }
+
+                if (this.checkBreakpoint(5)) {
+                    this.waitAtBreakpoint(5);
+                }
+
+                if (this.isBlack(w.getRBLeftChild()) && this.isBlack(w.getRBRightChild())) {
+                    if (this.checkBreakpoint(6)) {
+                        this.waitAtBreakpoint(6);
+                    }
+
+                    w.setColor(RBTreeNodeColor.RED);
+                    ((RBTreeStructure)this.mStructure).reDraw();
+                    this.node = this.nodeParent;
+                    this.nodeParent = this.node.getRBParent();
+                    this.nodeIsLeft = this.nodeParent != null && this.node == this.nodeParent.getRBLeftChild();
+                } else {
+                    if (this.checkBreakpoint(7)) {
+                        this.waitAtBreakpoint(7);
+                    }
+
+                    if (this.checkBreakpoint(8)) {
+                        this.waitAtBreakpoint(8);
+                    }
+
+                    if (this.isBlack(w.getRBRightChild())) {
+                        if (this.checkBreakpoint(9)) {
+                            this.waitAtBreakpoint(9);
+                        }
+
+                        w.getRBLeftChild().setColor(RBTreeNodeColor.BLACK);
+                        w.setColor(RBTreeNodeColor.RED);
+                        this.rotateRight(w);
+                        w = this.nodeParent.getRBRightChild();
+                    }
+
+                    w.setColor(this.nodeParent.getColor());
+                    this.nodeParent.setColor(RBTreeNodeColor.BLACK);
+                    ((RBTreeStructure)this.mStructure).reDraw();
+                    if (this.checkBreakpoint(10)) {
+                        this.waitAtBreakpoint(10);
+                    }
+
+                    if (w.getRBRightChild() != null) {
+                        if (this.checkBreakpoint(11)) {
+                            this.waitAtBreakpoint(11);
+                        }
+
+                        w.getRBRightChild().setColor(RBTreeNodeColor.BLACK);
+                    }
+
+                    this.rotateLeft(this.nodeParent);
+                    this.node = ((RBTreeStructure)this.mStructure).getRBRootNode();
+                    this.nodeParent = null;
+                }
+            } else {
+                if (this.checkBreakpoint(12)) {
+                    this.waitAtBreakpoint(12);
+                }
+
+                w = this.nodeParent.getRBLeftChild();
+                if (this.checkBreakpoint(13)) {
+                    this.waitAtBreakpoint(13);
+                }
+
+                if (this.isRed(w)) {
+                    if (this.checkBreakpoint(14)) {
+                        this.waitAtBreakpoint(14);
+                    }
+
+                    w.setColor(RBTreeNodeColor.BLACK);
+                    this.nodeParent.setColor(RBTreeNodeColor.RED);
+                    this.rotateRight(this.nodeParent);
+                    w = this.nodeParent.getRBLeftChild();
+                }
+
+                if (this.checkBreakpoint(15)) {
+                    this.waitAtBreakpoint(15);
+                }
+
+                if (this.isBlack(w.getRBRightChild()) && this.isBlack(w.getRBLeftChild())) {
+                    if (this.checkBreakpoint(16)) {
+                        this.waitAtBreakpoint(16);
+                    }
+
+                    w.setColor(RBTreeNodeColor.RED);
+                    ((RBTreeStructure)this.mStructure).reDraw();
+                    this.node = this.nodeParent;
+                    this.nodeParent = this.node.getRBParent();
+                    this.nodeIsLeft = this.nodeParent != null && this.node == this.nodeParent.getRBLeftChild();
+                } else {
+                    if (this.checkBreakpoint(17)) {
+                        this.waitAtBreakpoint(17);
+                    }
+
+                    if (this.checkBreakpoint(18)) {
+                        this.waitAtBreakpoint(18);
+                    }
+
+                    if (this.isBlack(w.getRBLeftChild())) {
+                        if (this.checkBreakpoint(19)) {
+                            this.waitAtBreakpoint(19);
+                        }
+
+                        w.getRBRightChild().setColor(RBTreeNodeColor.BLACK);
+                        w.setColor(RBTreeNodeColor.RED);
+                        this.rotateLeft(w);
+                        w = this.nodeParent.getRBLeftChild();
+                    }
+
+                    w.setColor(this.nodeParent.getColor());
+                    this.nodeParent.setColor(RBTreeNodeColor.BLACK);
+                    ((RBTreeStructure)this.mStructure).reDraw();
+                    if (this.checkBreakpoint(20)) {
+                        this.waitAtBreakpoint(20);
+                    }
+
+                    if (w.getRBLeftChild() != null) {
+                        if (this.checkBreakpoint(21)) {
+                            this.waitAtBreakpoint(21);
+                        }
+
+                        w.getRBLeftChild().setColor(RBTreeNodeColor.BLACK);
+                    }
+
+                    this.rotateRight(this.nodeParent);
+                    this.node = ((RBTreeStructure)this.mStructure).getRBRootNode();
+                    this.nodeParent = null;
+                }
+            }
+        }
+
+        if (this.checkBreakpoint(22)) {
+            this.waitAtBreakpoint(22);
+        }
+
+        this.node.setColor(RBTreeNodeColor.BLACK);
+        ((RBTreeStructure)this.mStructure).reDraw();
+    }
+
+    private boolean isBlack(RBNode<T> node) {
+        return node == null || node.getColor() == RBTreeNodeColor.BLACK;
+    }
+
+    private boolean isRed(RBNode<T> node) {
+        return node != null && node.getColor() == RBTreeNodeColor.RED;
+    }
+
+    void rotateLeft(RBNode<T> node) {
+        if (this.checkBreakpoint(23)) {
+            this.waitAtBreakpoint(23);
+        }
+
+        RBNode<T> temp = node.getRBRightChild();
+        RBNode<T> parent = node.getRBParent();
+
+        assert temp != null;
+
+        ((RBTreeStructure)this.mStructure).compare(node.getRightChild(), node.getRightChild(), "Hoch");
+        ((RBTreeStructure)this.mStructure).highlightNode(node.getRightChild(), AlgorithmOperationType.READ);
+        if (this.checkBreakpoint(24)) {
+            this.waitAtBreakpoint(24);
+        }
+
+        ((RBTreeStructure)this.mStructure).highlightNode(node, AlgorithmOperationType.READ);
+        ((RBTreeStructure)this.mStructure).removeConnection();
+        ((RBTreeStructure)this.mStructure).compare(node, node, "Runter");
+        node.setRightChild(temp.getRBLeftChild());
+        if (this.checkBreakpoint(25)) {
+            this.waitAtBreakpoint(25);
+        }
+
+        ((RBTreeStructure)this.mStructure).removeConnection();
+        if (node.getParent() == null) {
+            if (node.getRightChild().getLeftChild() != null) {
+                ((RBTreeStructure)this.mStructure).compare(node, node.getRightChild().getLeftChild());
+            }
+        } else {
+            ((RBTreeStructure)this.mStructure).compare(node.getParent(), node.getRightChild());
+            ((RBTreeStructure)this.mStructure).compare(node.getRightChild(), node);
+        }
+
+        temp.setLeftChild(node);
+        if (this.checkBreakpoint(26)) {
+            this.waitAtBreakpoint(26);
+        }
+
+        ((RBTreeStructure)this.mStructure).removeConnection();
+        node.setParent(temp);
+        if (node.getRBRightChild() != null) {
+            node.getRBRightChild().setParent(node);
+        }
+
+        if (parent != null) {
+            if (this.checkBreakpoint(26)) {
+                this.waitAtBreakpoint(26);
+            }
+
+            if (node == parent.getRBLeftChild()) {
+                parent.setLeftChild(temp);
+            } else if (node == parent.getRBRightChild()) {
+                parent.setRightChild(temp);
+            }
+        }
+
+        temp.setParent(parent);
+        if (parent == null) {
+            ((RBTreeStructure)this.mStructure).setRootNode(temp);
+        }
+
+        ((RBTreeStructure)this.mStructure).reDraw();
+    }
+
+    void rotateRight(RBNode<T> node) {
+        if (this.checkBreakpoint(27)) {
+            this.waitAtBreakpoint(27);
+        }
+
+        RBNode<T> temp = node.getRBLeftChild();
+        RBNode<T> parent = node.getRBParent();
+
+        assert temp != null;
+
+        ((RBTreeStructure)this.mStructure).highlightNode(node.getLeftChild(), AlgorithmOperationType.READ);
+        ((RBTreeStructure)this.mStructure).compare(node.getLeftChild(), node.getLeftChild(), "Hoch");
+        if (this.checkBreakpoint(28)) {
+            this.waitAtBreakpoint(28);
+        }
+
+        node.setLeftChild(temp.getRBRightChild());
+        ((RBTreeStructure)this.mStructure).removeConnection();
+        ((RBTreeStructure)this.mStructure).highlightNode(node, AlgorithmOperationType.READ);
+        ((RBTreeStructure)this.mStructure).compare(node, node, "Runter");
+        if (this.checkBreakpoint(29)) {
+            this.waitAtBreakpoint(29);
+        }
+
+        temp.setRightChild(node);
+        ((RBTreeStructure)this.mStructure).removeConnection();
+        if (node.getParent() == null) {
+            if (node.getLeftChild().getRightChild() != null) {
+                ((RBTreeStructure)this.mStructure).compare(node, node.getLeftChild().getRightChild());
+            }
+        } else {
+            ((RBTreeStructure)this.mStructure).compare(node.getParent(), node.getLeftChild());
+            ((RBTreeStructure)this.mStructure).compare(node.getLeftChild(), node);
+        }
+
+        if (this.checkBreakpoint(30)) {
+            this.waitAtBreakpoint(30);
+        }
+
+        ((RBTreeStructure)this.mStructure).removeConnection();
+        node.setParent(temp);
+        if (node.getRBLeftChild() != null) {
+            node.getRBLeftChild().setParent(node);
+        }
+
+        if (parent != null) {
+            if (node == parent.getRBLeftChild()) {
+                parent.setLeftChild(temp);
+            } else if (node == parent.getRBRightChild()) {
+                parent.setRightChild(temp);
+            }
+        }
+
+        temp.setParent(parent);
+        if (parent == null) {
+            ((RBTreeStructure)this.mStructure).setRootNode(temp);
+        }
+
+        ((RBTreeStructure)this.mStructure).reDraw();
+    }
+
+    private void addPseudoCode() {
+        this.mName = "RB-BAUM-LÖSCHEN-FIXUP";
+        this.mParameters = this.mParameters + "tree, node, yIsLeft";
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.addLine("Nebenwirkung: Balanciert den RB Baum");
+        this.mPseudocode.addLine("parent ← node.parent");
+        this.mPseudocode.addLine("while node ≠ tree.root ∧ node.color = Black", 0);
+        this.mPseudocode.addLine("    if yIsLeft", 1);
+        this.mPseudocode.addLine("        w ← parent.rightChild", 2);
+        this.mPseudocode.addLine("        if w.color = Red", 3);
+        this.mPseudocode.addLine("            w.color ← Black", 4);
+        this.mPseudocode.addLine("            parent.color ← Red");
+        this.mPseudocode.addLine("            ROTATE-LEFT(parent)");
+        this.mPseudocode.addLine("            w ← parent.rightChild");
+        this.mPseudocode.addLine("        if w.leftChild.color = Black ∧ w.rightChild.color = Black", 5);
+        this.mPseudocode.addLine("            w.color ← Red", 6);
+        this.mPseudocode.addLine("            node ← parent");
+        this.mPseudocode.addLine("            parent ← node.parent");
+        this.mPseudocode.addLine("            yIsLeft ← (node = parent.leftChild)");
+        this.mPseudocode.addLine("        else", 7);
+        this.mPseudocode.addLine("            if w.rightChild.color = Black", 8);
+        this.mPseudocode.addLine("                w.leftChild.color ← Black", 9);
+        this.mPseudocode.addLine("                w.color ← Red");
+        this.mPseudocode.addLine("                ROTATE-RIGHT(w)");
+        this.mPseudocode.addLine("                w ← parent.rightChild");
+        this.mPseudocode.addLine("            w.color ← parent.color");
+        this.mPseudocode.addLine("            parent.color ← Black");
+        this.mPseudocode.addLine("            if w.rightChild ≠ NULL", 10);
+        this.mPseudocode.addLine("                w.rightChild.color ← Black", 11);
+        this.mPseudocode.addLine("            ROTATE-LEFT(parent)");
+        this.mPseudocode.addLine("            node ← tree.root");
+        this.mPseudocode.addLine("            parent ← NULL");
+        this.mPseudocode.addLine("    else", 12);
+        this.mPseudocode.addLine("        w ← parent.leftChild");
+        this.mPseudocode.addLine("        if w.color = Red", 13);
+        this.mPseudocode.addLine("            w.color ← Black", 14);
+        this.mPseudocode.addLine("            parent.color ← Red");
+        this.mPseudocode.addLine("            ROTATE-RIGHT(parent)");
+        this.mPseudocode.addLine("            w ← parent.leftChild");
+        this.mPseudocode.addLine("        if w.rightChild.color = Black ∧ w.leftChild.color = Black", 15);
+        this.mPseudocode.addLine("            w.color ← Red", 16);
+        this.mPseudocode.addLine("            node ← parent");
+        this.mPseudocode.addLine("            parent ← node.parent");
+        this.mPseudocode.addLine("            yIsLeft ← (node = parent.leftChild)");
+        this.mPseudocode.addLine("        else", 17);
+        this.mPseudocode.addLine("            if w.rightChild.color = Black", 18);
+        this.mPseudocode.addLine("                w.rightChild.color ← Black", 19);
+        this.mPseudocode.addLine("                w.color ← Red");
+        this.mPseudocode.addLine("                ROTATE-LEFT(w)");
+        this.mPseudocode.addLine("                w ← parent.leftChild");
+        this.mPseudocode.addLine("            w.color ← parent.color");
+        this.mPseudocode.addLine("            parent.color ← Black");
+        this.mPseudocode.addLine("            if w.rightChild ≠ NULL", 20);
+        this.mPseudocode.addLine("                w.rightChild.color ← Black", 21);
+        this.mPseudocode.addLine("            ROTATE-RIGHT(parent)");
+        this.mPseudocode.addLine("            node ← tree.root");
+        this.mPseudocode.addLine("            parent ← NULL");
+        this.mPseudocode.addLine("node.color ← Black", 22);
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("ROTATE-LEFT(RBNode N)", 23);
+        this.mPseudocode.addLine("temp ←N.rightChild");
+        this.mPseudocode.addLine("Parent ←N.parent");
+        this.mPseudocode.addLine("N.rightChild ←temp.leftChild", 14);
+        this.mPseudocode.addLine("temp.leftChild ← N", 25);
+        this.mPseudocode.addLine("N.parent ← temp", 26);
+        this.mPseudocode.addLine("if N.rightChild ≠ NULL");
+        this.mPseudocode.addLine("    N.rightChild.parent ← N");
+        this.mPseudocode.addLine("if Parent ≠ NULL");
+        this.mPseudocode.addLine("    if N = Parent.leftChild");
+        this.mPseudocode.addLine("        Parent.leftChild ← temp");
+        this.mPseudocode.addLine("    else if N = Parent.rightChild");
+        this.mPseudocode.addLine("        Parent.rightChild ← temp");
+        this.mPseudocode.addLine("temp.parent ← Parent");
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("ROTATE-RIGHT(RBNode N)");
+        this.mPseudocode.addLine("temp ←N.leftChild");
+        this.mPseudocode.addLine("Parent ←N.parent");
+        this.mPseudocode.addLine("N.LeftChild ←temp.RightChild", 28);
+        this.mPseudocode.addLine("temp.rightChild ← N", 29);
+        this.mPseudocode.addLine("N.parent ← temp", 30);
+        this.mPseudocode.addLine("if N.leftChild ≠ NULL");
+        this.mPseudocode.addLine("    N.leftChild.parent ← N");
+        this.mPseudocode.addLine("if Parent ≠ NULL");
+        this.mPseudocode.addLine("    if N = Parent.leftChild");
+        this.mPseudocode.addLine("        Parent.leftChild ← temp");
+        this.mPseudocode.addLine("    else if N = Parent.rightChild");
+        this.mPseudocode.addLine("        Parent.rightChild ← temp");
+        this.mPseudocode.addLine("temp.parent ← Parent");
+    }
+}
