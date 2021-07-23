@@ -1,0 +1,143 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+
+public class DynArrayRemove extends Algorithm<ArrayStructure<Integer>> {
+    private int mSchluessel;
+    private final ArrayStructure<Integer> SUPPORT_ARRAY;
+
+    public DynArrayRemove(ArrayStructure<Integer> structure, int schluessel) {
+        super(structure);
+        this.mSchluessel = schluessel;
+        this.init();
+        this.addPseudoCode();
+        this.SUPPORT_ARRAY = new ArrayStructure();
+        if ((double)(structure.getBelegteFelder() - 1) < 0.5D * (double)structure.size() && structure.size() > 5) {
+            this.mSupportStructures.add(this.SUPPORT_ARRAY);
+        }
+
+    }
+
+    private void init() {
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.updatePseudocode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.RemoveElementFromDynArray((ArrayStructure)this.mStructure, this.mSchluessel);
+        }
+    }
+
+    public void RemoveElementFromDynArray(ArrayStructure<Integer> structure, int schluessel) {
+        int index = 0;
+
+        int belegteFelder;
+        for(belegteFelder = structure.getBelegteFelder(); index < belegteFelder && schluessel != (Integer)structure.get(index); ++index) {
+            if (this.checkBreakpoint(0)) {
+                structure.highlightElement(index, AlgorithmOperationType.READ);
+                if (!this.waitAtBreakpoint(0)) {
+                    return;
+                }
+            }
+
+            structure.highlightElement(index, AlgorithmOperationType.INACTIVE);
+        }
+
+        if (index < belegteFelder) {
+            if (this.checkBreakpoint(0)) {
+                structure.highlightElement(index, AlgorithmOperationType.READ);
+                if (!this.waitAtBreakpoint(0)) {
+                    return;
+                }
+            }
+        } else {
+            structure.reDraw();
+        }
+
+        if (index >= belegteFelder) {
+            this.resultDialog("Element nicht gefunden", "ERROR: Das eingegebene Element konnte nicht gefunden werden.", "#FFA5A5");
+        } else {
+            if (this.checkBreakpoint(1)) {
+                structure.highlightElement(belegteFelder - 1, AlgorithmOperationType.READ);
+                structure.highlightElement(index, AlgorithmOperationType.WRITE);
+                if (!this.waitAtBreakpoint(1)) {
+                    return;
+                }
+            }
+
+            structure.set(index, (Integer)structure.get(belegteFelder - 1));
+            structure.set(belegteFelder - 1, (Object)null);
+            --belegteFelder;
+            int fieldSize = structure.size();
+            structure.reDraw();
+            if ((double)belegteFelder < 0.5D * (double)fieldSize && fieldSize > 5) {
+                if (this.checkBreakpoint(2) && !this.waitAtBreakpoint(2)) {
+                    return;
+                }
+
+                int supportArraySize;
+                for(supportArraySize = 0; supportArraySize < 2 * structure.size() / 3; ++supportArraySize) {
+                    this.SUPPORT_ARRAY.add((Object)null);
+                }
+
+                this.SUPPORT_ARRAY.reDraw();
+
+                for(supportArraySize = 0; supportArraySize < belegteFelder; ++supportArraySize) {
+                    if (this.checkBreakpoint(3)) {
+                        structure.highlightElement(supportArraySize, AlgorithmOperationType.INACTIVE);
+                        this.SUPPORT_ARRAY.highlightElement(supportArraySize, AlgorithmOperationType.WRITE);
+                        if (!this.waitAtBreakpoint(3)) {
+                            return;
+                        }
+
+                        structure.highlightElement(supportArraySize, AlgorithmOperationType.DEFAULT);
+                    }
+
+                    this.SUPPORT_ARRAY.set(supportArraySize, (Integer)structure.get(supportArraySize));
+                    this.SUPPORT_ARRAY.reDraw();
+                }
+
+                if (this.checkBreakpoint(4) && !this.waitAtBreakpoint(4)) {
+                    return;
+                }
+
+                supportArraySize = this.SUPPORT_ARRAY.size();
+
+                for(int j = 0; j < supportArraySize; ++j) {
+                    this.SUPPORT_ARRAY.remove(0);
+                }
+
+                this.SUPPORT_ARRAY.reDraw();
+                fieldSize = 2 * fieldSize / 3;
+
+                while(structure.size() > fieldSize) {
+                    structure.remove(structure.size() - 1);
+                }
+            }
+
+            structure.reDraw();
+        }
+
+    }
+
+    private void addPseudoCode() {
+        this.mName = "Löschen-DynFeld";
+        this.mParameters = this.mParameters + "Index löschIndex";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("LÖSCHEN-FELD(löschWert)", 0);
+        this.mPseudocode.addLine("if belegteFelder < 1/2 A.länge ∧ A.länge > 5", 1);
+        this.mPseudocode.addLine("    B → allokiere Feld der Länge ⌊2/3 * A.länge⌋", 2);
+        this.mPseudocode.addLine("    for index ← 1,...,belegteFelder", 3);
+        this.mPseudocode.addLine("        B[index].wert ←A[index].wert");
+        this.mPseudocode.addLine("        B[index].daten ←A[index].daten");
+        this.mPseudocode.addLine("    A → B", 4);
+    }
+}
