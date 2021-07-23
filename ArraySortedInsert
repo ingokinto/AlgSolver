@@ -1,0 +1,159 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class ArraySortedInsert extends Algorithm<ArrayStructure<Integer>> {
+    private final int mAddValue;
+
+    public ArraySortedInsert(ArrayStructure<Integer> structure, int addValue) {
+        super(structure);
+        this.mAddValue = addValue;
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.addPseudoCodeNoIndex();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.sortedInsert();
+        }
+    }
+
+    private void sortedInsert() {
+        int left = 0;
+        ((ArrayStructure)this.mStructure).highlightElement(left, AlgorithmOperationType.PARTITION);
+        ((ArrayStructure)this.mStructure).compare(left, left, "links");
+        this.checkReturnBreakpoint(0);
+        ((ArrayStructure)this.mStructure).removeConnection();
+        ((ArrayStructure)this.mStructure).reDraw();
+        int right = ((ArrayStructure)this.mStructure).getBelegteFelder() - 1;
+        ((ArrayStructure)this.mStructure).highlightElement(right, AlgorithmOperationType.PARTITION);
+        ((ArrayStructure)this.mStructure).compare(right, right, "rechts");
+        this.checkReturnBreakpoint(1);
+        ((ArrayStructure)this.mStructure).removeConnection();
+        ((ArrayStructure)this.mStructure).reDraw();
+
+        int index;
+        while(left <= right && right >= 0) {
+            Structure.incKeyComparison();
+            this.incrCounter(0);
+            ((ArrayStructure)this.mStructure).highlightElement(left, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).highlightElement(right, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).compare(left, right, "links ≤ rechts");
+            this.checkReturnBreakpoint(2);
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            index = (left + right) / 2;
+            ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.PARTITION);
+            ((ArrayStructure)this.mStructure).compare(index, index, "mitte");
+            this.checkReturnBreakpoint(3);
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            int currentValue = (Integer)((ArrayStructure)this.mStructure).getData().get(index);
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if (currentValue == this.mAddValue) {
+                this.checkReturnBreakpoint(4);
+                this.unsuccessfulMessage();
+                ActiveAlgorithm.stop();
+                return;
+            }
+
+            if (currentValue > this.mAddValue) {
+                this.incrCounter(1);
+                right = index - 1;
+                if (right >= 0) {
+                    ((ArrayStructure)this.mStructure).highlightElement(right, AlgorithmOperationType.PARTITION);
+                    ((ArrayStructure)this.mStructure).compare(right, right, "rechts");
+                }
+
+                this.checkReturnBreakpoint(5);
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+            } else {
+                this.incrCounter(2);
+                left = index + 1;
+                ((ArrayStructure)this.mStructure).highlightElement(left, AlgorithmOperationType.PARTITION);
+                ((ArrayStructure)this.mStructure).compare(left, left, "links");
+                this.checkReturnBreakpoint(6);
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+            }
+        }
+
+        this.incrCounter(0);
+        ((ArrayStructure)this.mStructure).highlightElement(left, AlgorithmOperationType.COMPARE);
+        if (right >= 0) {
+            ((ArrayStructure)this.mStructure).highlightElement(right, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).compare(left, right, "links > rechts!");
+        } else {
+            ((ArrayStructure)this.mStructure).compare(left, left, "links > rechts! && rechts < 0");
+        }
+
+        this.checkReturnBreakpoint(2);
+        ((ArrayStructure)this.mStructure).removeConnection();
+        ((ArrayStructure)this.mStructure).reDraw();
+
+        for(index = ((ArrayStructure)this.mStructure).getBelegteFelder() - 1; index >= left; --index) {
+            this.incrCounter(3);
+            ((ArrayStructure)this.mStructure).set(index + 1, (Integer)((ArrayStructure)this.mStructure).getData().get(index));
+            ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.READ);
+            ((ArrayStructure)this.mStructure).highlightElement(index + 1, AlgorithmOperationType.WRITE);
+            ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(index, index + 1, "A[index + 1]← A[index]");
+            this.checkReturnBreakpoint(7);
+            ((ArrayStructure)this.mStructure).removeConnection();
+            Structure.incWriteAccess();
+            ((ArrayStructure)this.mStructure).reDraw();
+        }
+
+        Structure.incKeyComparison();
+        this.incrCounter(3);
+        this.checkReturnBreakpoint(7);
+        ((ArrayStructure)this.mStructure).set(left, this.mAddValue);
+        ((ArrayStructure)this.mStructure).reDraw();
+        Structure.incWriteAccess();
+        ((ArrayStructure)this.mStructure).highlightElement(left, AlgorithmOperationType.WRITE);
+        this.checkReturnBreakpoint(8);
+        ((ArrayStructure)this.mStructure).removeConnection();
+        ((ArrayStructure)this.mStructure).reDraw();
+        ActiveAlgorithm.stop();
+    }
+
+    private void addPseudoCodeNoIndex() {
+        this.addCounters(4);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 5), new PseudoCodeCounter(1, 11), new PseudoCodeCounter(2, 13), new PseudoCodeCounter(3, 14)));
+        this.mName = "Einfügen-SortFeld";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert(" + this.mAddValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("links ← 1", 0);
+        this.mPseudocode.addLine("rechts ← belegteFelder", 1);
+        this.mPseudocode.addLine("while links ≤ rechts", 2);
+        this.mPseudocode.addLine("    mitte ← ⌊(links + rechts)/2⌋", 3);
+        this.mPseudocode.addLine("    switch");
+        this.mPseudocode.addLine("    case A[mitte].wert = neuerWert:");
+        this.mPseudocode.addLine("        error \"Element schon enthalten\"", 4);
+        this.mPseudocode.addLine("    case A[mitte].wert > neuerWert:");
+        this.mPseudocode.addLine("        rechts ← mitte - 1", 5);
+        this.mPseudocode.addLine("    case A[mitte].wert < neuerWert:");
+        this.mPseudocode.addLine("        links ← mitte + 1", 6);
+        this.mPseudocode.addLine("for index ← belegteFelder, ..., links", 7);
+        this.mPseudocode.addLine("    A[index + 1].wert ← A[index].wert");
+        this.mPseudocode.addLine("    A[index + 1].daten ← A[index].daten");
+        this.mPseudocode.addLine("A[links].wert ← neuerWert", 8);
+        this.mPseudocode.addLine("A[links].daten ← neueDaten");
+        this.mPseudocode.addLine("belegteFelder ← belegteFelder + 1");
+    }
+
+    private void unsuccessfulMessage() {
+        String errorMessage = "Das Element \"" + this.mAddValue + "\" ist bereits im Feld enthalten.";
+        this.resultDialog("Error", errorMessage, "#FFA5A5");
+    }
+}
