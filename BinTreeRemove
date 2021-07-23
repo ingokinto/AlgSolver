@@ -1,0 +1,260 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.BinTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import java.util.Arrays;
+
+public class BinTreeRemove<T extends Comparable<T>> extends RecursiveAlgorithm<BinTreeStructure<T>, Node<T>> {
+    private static boolean msJUnitTestCase;
+    private T msRemoveKeyValue;
+    private static boolean msKeyFound;
+    private Node<T> mSuccessor;
+
+    public static boolean isKeyFound() {
+        return msKeyFound;
+    }
+
+    public BinTreeRemove(BinTreeStructure<T> structure, T removedKey, boolean jUnitTestCase) {
+        super(structure);
+        this.msRemoveKeyValue = removedKey;
+        msJUnitTestCase = true;
+        this.addPseudoCode();
+    }
+
+    public BinTreeRemove(BinTreeStructure<T> structure, T removeValue) {
+        super(structure);
+        this.msRemoveKeyValue = removeValue;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.binTreeRemove((BinTreeStructure)this.mStructure);
+        }
+    }
+
+    public void binTreeRemove(BinTreeStructure<T> structure) {
+        Node<T> temp = structure.getRootNode();
+        ((BinTreeStructure)this.mStructure).highlightNode(((BinTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        if (this.checkBreakpoint(0)) {
+            structure.highlightNode(temp, AlgorithmOperationType.READ);
+            if (!this.waitAtBreakpoint(0)) {
+                return;
+            }
+        }
+
+        while(temp != null && !this.msRemoveKeyValue.equals(temp.getValue())) {
+            if (this.checkBreakpoint(1) && !this.waitAtBreakpoint(1)) {
+                return;
+            }
+
+            if (this.msRemoveKeyValue.compareTo(temp.getValue()) < 0) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                temp = this.searchLeft(temp);
+            } else {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                temp = this.searchRight(temp);
+            }
+        }
+
+        if (!this.checkBreakpoint(1) || this.waitAtBreakpoint(1)) {
+            if (temp == null) {
+                this.incrCounter(0);
+                if (this.checkBreakpoint(2) && !this.waitAtBreakpoint(2)) {
+                    return;
+                }
+
+                if (this.checkBreakpoint(3) && !this.waitAtBreakpoint(3)) {
+                    return;
+                }
+
+                if (!msJUnitTestCase) {
+                    this.emptyStack(3);
+                    this.removeUnsuccessfulMessage();
+                } else {
+                    msKeyFound = false;
+                }
+            } else {
+                this.incrCounter(3);
+                msKeyFound = true;
+                if (this.checkBreakpoint(10)) {
+                    structure.highlightNode(structure.getNode(this.msRemoveKeyValue), AlgorithmOperationType.WRITE);
+                    if (!this.waitAtBreakpoint(10)) {
+                        return;
+                    }
+                }
+
+                if (structure.getNode(this.msRemoveKeyValue).getRightChild() == null && structure.getNode(this.msRemoveKeyValue).getLeftChild() == null) {
+                    if (this.checkBreakpoint(11) && !this.waitAtBreakpoint(11)) {
+                        return;
+                    }
+
+                    this.emptyStack(13);
+                    structure.remove(this.msRemoveKeyValue);
+                    if (this.checkBreakpoint(12)) {
+                        structure.reDraw();
+                        if (!this.waitAtBreakpoint(12)) {
+                            return;
+                        }
+                    }
+
+                    return;
+                }
+
+                if (this.checkBreakpoint(13) && !this.waitAtBreakpoint(13)) {
+                    return;
+                }
+
+                this.mSuccessor = this.searchSuccessor();
+                this.setSuccessor();
+                if (this.checkBreakpoint(16)) {
+                    structure.highlightNode(structure.getNode(this.mSuccessor.getValue()), AlgorithmOperationType.INACTIVE);
+                    if (!this.waitAtBreakpoint(16)) {
+                        return;
+                    }
+                }
+
+                structure.removeConnection();
+                this.emptyStack(16);
+                structure.remove(this.msRemoveKeyValue);
+                structure.reDraw();
+            }
+
+        }
+    }
+
+    private Node<T> searchLeft(Node<T> temp) {
+        this.push(temp, 4);
+        this.incrCounter(1);
+        if (this.checkBreakpoint(4) && !this.waitAtBreakpoint(4)) {
+            ActiveAlgorithm.stop();
+        }
+
+        if (this.checkBreakpoint(5)) {
+            if (temp.getLeftChild() != null) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp.getLeftChild(), AlgorithmOperationType.READ);
+            }
+
+            if (!this.waitAtBreakpoint(5)) {
+                ActiveAlgorithm.stop();
+            }
+        }
+
+        Node<T> mTemp = temp.getLeftChild();
+        if (this.checkBreakpoint(6) && !this.waitAtBreakpoint(6)) {
+            ActiveAlgorithm.stop();
+        }
+
+        return mTemp;
+    }
+
+    private Node<T> searchRight(Node<T> temp) {
+        this.push(temp, 7);
+        this.incrCounter(2);
+        if (this.checkBreakpoint(7) && !this.waitAtBreakpoint(7)) {
+            ActiveAlgorithm.stop();
+        }
+
+        if (this.checkBreakpoint(8)) {
+            if (temp.getRightChild() != null) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp.getRightChild(), AlgorithmOperationType.READ);
+            }
+
+            if (!this.waitAtBreakpoint(8)) {
+                ActiveAlgorithm.stop();
+            }
+        }
+
+        Node<T> mTemp = temp.getRightChild();
+        if (this.checkBreakpoint(9) && !this.waitAtBreakpoint(9)) {
+            ActiveAlgorithm.stop();
+        }
+
+        return mTemp;
+    }
+
+    private Node<T> searchSuccessor() {
+        Node<T> successor = null;
+        if (((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getRightChild() != null) {
+            successor = ((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getRightChild();
+            ((BinTreeStructure)this.mStructure).highlightNode(successor, AlgorithmOperationType.READ);
+            successor = this.minNode(successor);
+        } else if (((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getLeftChild() != null) {
+            successor = ((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getLeftChild();
+            ((BinTreeStructure)this.mStructure).highlightNode(successor, AlgorithmOperationType.READ);
+            successor = this.maxNode(successor);
+        }
+
+        return successor;
+    }
+
+    private void setSuccessor() {
+        ((BinTreeStructure)this.mStructure).compare(((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue), ((BinTreeStructure)this.mStructure).getNode(this.mSuccessor.getValue()), "");
+        if (this.mSuccessor.getRightChild() != null && this.mSuccessor.getParent() != ((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue)) {
+            ((BinTreeStructure)this.mStructure).compare(((BinTreeStructure)this.mStructure).getNode(this.mSuccessor.getParent().getValue()), ((BinTreeStructure)this.mStructure).getNode(this.mSuccessor.getRightChild().getValue()), "");
+        }
+
+        if (this.mSuccessor.getLeftChild() != null && this.mSuccessor.getParent() != ((BinTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue)) {
+            ((BinTreeStructure)this.mStructure).compare(((BinTreeStructure)this.mStructure).getNode(this.mSuccessor.getParent().getValue()), ((BinTreeStructure)this.mStructure).getNode(this.mSuccessor.getLeftChild().getValue()), "");
+        }
+
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowComparisons(false);
+        this.addCounters(4);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 5), new PseudoCodeCounter(1, 7), new PseudoCodeCounter(2, 10), new PseudoCodeCounter(3, 13)));
+        this.mName = "Löschen-Baum-R";
+        this.mParameters = this.mParameters + "Schlüssel löschWert(" + this.msRemoveKeyValue.toString() + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("el → anker", 0);
+        this.mPseudocode.addLine("switch", 1);
+        this.mPseudocode.addLine("case el = NULL:", 2);
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"", 3);
+        this.mPseudocode.addLine("case löschWert < el.wert:", 4);
+        this.mPseudocode.addLine("    el.links → Löschen-Baum-R(löschWert)", 5);
+        this.mPseudocode.addLine("    return el", 6);
+        this.mPseudocode.addLine("case löschWert > el.wert:", 7);
+        this.mPseudocode.addLine("    el.rechts → Löschen-Baum-R(löschWert)", 8);
+        this.mPseudocode.addLine("    return el", 9);
+        this.mPseudocode.addLine("case löschWert = el.wert:", 10);
+        this.mPseudocode.addLine("    if el.links = NULL", 11);
+        this.mPseudocode.addLine("        return el.rechts", 12);
+        this.mPseudocode.addLine("    else  ersatz → Suche-Nachfolger(el)", 13);
+        this.mPseudocode.addLine("        ersatz.links → el.links", 14);
+        this.mPseudocode.addLine("        ersatz.rechts → el.rechts", 15);
+        this.mPseudocode.addLine("        return ersatz", 16);
+    }
+
+    private Node<T> maxNode(Node<T> n) {
+        if (this.checkBreakpoint(13)) {
+            ((BinTreeStructure)this.mStructure).highlightNode(((BinTreeStructure)this.mStructure).getNode(n.getValue()), AlgorithmOperationType.READ);
+            this.waitAtBreakpoint(13);
+        }
+
+        return n.getRightChild() == null ? n : this.maxNode(n.getRightChild());
+    }
+
+    private Node<T> minNode(Node<T> n) {
+        if (this.checkBreakpoint(13)) {
+            ((BinTreeStructure)this.mStructure).highlightNode(((BinTreeStructure)this.mStructure).getNode(n.getValue()), AlgorithmOperationType.READ);
+            this.waitAtBreakpoint(13);
+        }
+
+        return n.getLeftChild() == null ? n : this.minNode(n.getLeftChild());
+    }
+
+    private void removeUnsuccessfulMessage() {
+        msKeyFound = false;
+        String title = "Löschergebnis:";
+        String errorMessage = "Der Knoten \"" + this.msRemoveKeyValue.toString() + "\" ist im Baum nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+        ((BinTreeStructure)this.mStructure).highlightNode(((BinTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+}
