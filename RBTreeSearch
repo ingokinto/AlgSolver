@@ -1,0 +1,18 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.BinTreeStructure;
+
+public class RBTreeSearch<T extends Comparable> extends BinTreeSearch<T> {
+    public RBTreeSearch(BinTreeStructure<T> structure, T searchValue, boolean jUnitTestCase) {
+        super(structure, searchValue, jUnitTestCase);
+    }
+
+    public RBTreeSearch(BinTreeStructure<T> structure, T searchValue) {
+        super(structure, searchValue);
+    }
+}
