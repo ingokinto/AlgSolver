@@ -1,0 +1,90 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.AVLTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+
+public class AVLTreeRotateRight<T extends Comparable> extends RecursiveAlgorithm<AVLTreeStructure<T>, Node<T>> {
+    private T msNodeValue;
+
+    public AVLTreeRotateRight(AVLTreeStructure<T> structure, T nodeValue) {
+        super(structure);
+        this.mPseudocode.setShowComparisons(false);
+        this.msNodeValue = nodeValue;
+        this.mName = "Rotiere-Rechts";
+        this.mParameters = this.mParameters + "Element el(" + this.msNodeValue + ")";
+        this.mPseudocode.addLine("hoch → el.links", 0);
+        this.mPseudocode.addLine("el.links → hoch.rechts", 1);
+        this.mPseudocode.addLine("hoch.rechts → el", 2);
+        this.mPseudocode.addLine("return hoch", 3);
+    }
+
+    protected void execute() {
+        ((AVLTreeStructure)this.mStructure).reDraw();
+        Node parent = ((AVLTreeStructure)this.mStructure).getNode(this.msNodeValue);
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(0)) {
+            this.saveRotateNode(parent);
+        }
+
+        if (this.checkBreakpoint(1)) {
+            this.rotateRightSite(parent);
+        }
+
+        if (this.checkBreakpoint(2)) {
+            this.rehangNode(parent);
+        }
+
+        if (this.checkBreakpoint(3)) {
+            this.ifAlgoRunReturn(3);
+        }
+
+        ((AVLTreeStructure)this.mStructure).rightRotation(parent);
+        ((AVLTreeStructure)this.mStructure).reDraw();
+        this.startRebalanceAlgo((AVLTreeStructure)this.mStructure, parent.getParent().getValue());
+    }
+
+    private void rehangNode(Node parent) {
+        ((AVLTreeStructure)this.mStructure).removeConnection();
+        if (parent.getParent() == null) {
+            if (parent.getLeftChild().getRightChild() != null) {
+                ((AVLTreeStructure)this.mStructure).compare(parent, parent.getLeftChild().getRightChild());
+            }
+        } else {
+            ((AVLTreeStructure)this.mStructure).compare(parent.getParent(), parent.getLeftChild());
+            ((AVLTreeStructure)this.mStructure).compare(parent.getLeftChild(), parent);
+        }
+
+        this.ifAlgoRunReturn(2);
+    }
+
+    private void rotateRightSite(Node parent) {
+        ((AVLTreeStructure)this.mStructure).removeConnection();
+        ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.READ);
+        ((AVLTreeStructure)this.mStructure).compare(parent, parent, "Runter");
+        this.ifAlgoRunReturn(1);
+    }
+
+    private void saveRotateNode(Node parent) {
+        ((AVLTreeStructure)this.mStructure).highlightNode(parent.getLeftChild(), AlgorithmOperationType.READ);
+        ((AVLTreeStructure)this.mStructure).compare(parent.getLeftChild(), parent.getLeftChild(), "Hoch");
+        this.ifAlgoRunReturn(0);
+    }
+
+    private void startRebalanceAlgo(AVLTreeStructure<T> mStructure, T rebalance) {
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new AVLTreeRebalance(mStructure, rebalance));
+        } catch (Exception var4) {
+            var4.printStackTrace();
+        }
+
+    }
+}
