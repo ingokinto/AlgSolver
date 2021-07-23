@@ -1,0 +1,81 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class Pseudocode {
+    private final List<PseudocodeLine> mCode = new ArrayList();
+    private final Map<Integer, Pseudocode.State> mStates = new TreeMap();
+    private final List<PseudoCodeCounter> counters = new ArrayList();
+    private boolean showComparisons = true;
+    private boolean showRepeatSymbol = true;
+
+    public Pseudocode() {
+    }
+
+    public void addLine(String line) {
+        this.mCode.add(new PseudocodeLine(-1, line));
+    }
+
+    public void addLine(String line, int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException();
+        } else {
+            this.mCode.add(new PseudocodeLine(id, line));
+            this.mStates.put(id, Pseudocode.State.STEP);
+        }
+    }
+
+    public List<PseudocodeLine> getLines() {
+        return this.mCode;
+    }
+
+    public Pseudocode.State getState(int breakId) {
+        Pseudocode.State ret = (Pseudocode.State)this.mStates.get(breakId);
+        return ret == null ? Pseudocode.State.IGNORE : ret;
+    }
+
+    public void setState(int breakId, Pseudocode.State state) {
+        this.mStates.put(breakId, state);
+    }
+
+    public List<PseudoCodeCounter> getCounters() {
+        return this.counters;
+    }
+
+    public void addCounters(List<PseudoCodeCounter> counters) {
+        this.counters.addAll(counters);
+    }
+
+    public boolean isShowComparisons() {
+        return this.showComparisons;
+    }
+
+    public void setShowComparisons(boolean showComparisons) {
+        this.showComparisons = showComparisons;
+    }
+
+    public boolean isShowRepeatSymbol() {
+        return this.showRepeatSymbol;
+    }
+
+    public void setShowRepeatSymbol(boolean showRepeatSymbol) {
+        this.showRepeatSymbol = showRepeatSymbol;
+    }
+
+    public static enum State {
+        IGNORE,
+        STEP,
+        BREAK;
+
+        private State() {
+        }
+    }
+}
