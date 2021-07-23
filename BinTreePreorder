@@ -1,0 +1,87 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.BinTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import de.htwk_leipzig.imn.visualg.model.structure.QueueStructure;
+
+public class BinTreePreorder<T extends Comparable<T>> extends RecursiveAlgorithm<BinTreeStructure<T>, Node<T>> {
+    private final QueueStructure<T> queue = new QueueStructure();
+
+    public BinTreePreorder(BinTreeStructure<T> structure) {
+        super(structure);
+        this.addPseudoCode();
+        this.mSupportStructures.add(this.queue);
+    }
+
+    protected QueueStructure<T> getQueue() {
+        return this.queue;
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        ((BinTreeStructure)this.mStructure).reDraw();
+        this.preorder(((BinTreeStructure)this.mStructure).getRootNode());
+        this.pop(-1);
+    }
+
+    private void preorder(Node<T> temp) {
+        this.push(temp, -1);
+        if (this.checkBreakpoint(1)) {
+            if (temp != null) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.READ);
+            }
+
+            if (!this.waitAtBreakpoint(1)) {
+                return;
+            }
+        }
+
+        if (temp != null) {
+            this.queue.enqueue(temp.getValue());
+            this.queue.reDraw();
+            if (this.checkBreakpoint(2)) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.FOUND);
+                if (!this.waitAtBreakpoint(2)) {
+                    return;
+                }
+            }
+
+            if (this.checkBreakpoint(3)) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.READ);
+                if (!this.waitAtBreakpoint(3)) {
+                    return;
+                }
+            }
+
+            ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.FOUND);
+            this.preorder(temp.getLeftChild());
+            this.pop(3);
+            if (this.checkBreakpoint(4)) {
+                ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.READ);
+                if (!this.waitAtBreakpoint(4)) {
+                    return;
+                }
+            }
+
+            ((BinTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.FOUND);
+            this.preorder(temp.getRightChild());
+            this.pop(4);
+        }
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Preorder";
+        this.mParameters = this.mParameters + "Element el";
+        this.mPseudocode.addLine("Rückgabewert: nichts, da direkte Ausgabe");
+        this.mPseudocode.addLine("if el ≠ NULL", 1);
+        this.mPseudocode.addLine("    print el.data", 2);
+        this.mPseudocode.addLine("    preorder(el.left)", 3);
+        this.mPseudocode.addLine("    preorder(el.right)", 4);
+    }
+}
