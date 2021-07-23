@@ -1,0 +1,111 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class Selectionsort extends Algorithm<ArrayStructure<Integer>> {
+    public Selectionsort(ArrayStructure<Integer> structure) {
+        super(structure);
+        this.addPseudoCode();
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+    }
+
+    protected void execute() {
+        int arraySize = ((ArrayStructure)this.mStructure).getBelegteFelder();
+        if (this.waitAtBreakpoint(-1)) {
+            for(int i = arraySize - 1; i >= 1; --i) {
+                int pos = i;
+                this.incrCounter(0);
+                if (this.checkBreakpoint(0) && !this.waitAtBreakpoint(0)) {
+                    return;
+                }
+
+                int j;
+                boolean ret;
+                for(j = 0; j <= i - 1; ++j) {
+                    this.incrCounter(1);
+                    if (this.checkBreakpoint(1)) {
+                        ((ArrayStructure)this.mStructure).reDraw();
+                        if (!this.waitAtBreakpoint(1)) {
+                            return;
+                        }
+                    }
+
+                    if (this.checkBreakpoint(2)) {
+                        ((ArrayStructure)this.mStructure).compare(j, pos, "Größer?");
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(j, pos), AlgorithmOperationType.COMPARE);
+                        Structure.incKeyComparison();
+                        this.updatePseudocode();
+                        ret = this.waitAtBreakpoint(2);
+                        ((ArrayStructure)this.mStructure).removeConnection();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(pos, j), AlgorithmOperationType.DEFAULT);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    if ((Integer)((ArrayStructure)this.mStructure).get(j) > (Integer)((ArrayStructure)this.mStructure).get(pos)) {
+                        pos = j;
+                        this.incrCounter(2);
+                    }
+                }
+
+                if (this.checkBreakpoint(3)) {
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    ((ArrayStructure)this.mStructure).compare(pos, i, "Ungleich?");
+                    ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(j, pos), AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(3);
+                    ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(pos, i), AlgorithmOperationType.DEFAULT);
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                if (pos != i) {
+                    this.incrCounter(3);
+                    if (this.checkBreakpoint(4)) {
+                        ((ArrayStructure)this.mStructure).compare(pos, i, "Tausch");
+                        Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+                        this.updatePseudocode();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(pos, i), AlgorithmOperationType.WRITE);
+                        ret = this.waitAtBreakpoint(4);
+                        ((ArrayStructure)this.mStructure).removeConnection();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(pos, i), AlgorithmOperationType.DEFAULT);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    Integer temp = (Integer)((ArrayStructure)this.mStructure).get(pos);
+                    ((ArrayStructure)this.mStructure).set(pos, (Integer)((ArrayStructure)this.mStructure).get(i));
+                    ((ArrayStructure)this.mStructure).set(i, temp);
+                    ((ArrayStructure)this.mStructure).reDraw();
+                }
+            }
+
+        }
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(4);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 2), new PseudoCodeCounter(1, 4), new PseudoCodeCounter(2, 5), new PseudoCodeCounter(3, 7)));
+        this.mName = "Selectionsort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A ist sortiert");
+        this.mPseudocode.addLine("for i ← A.länge, ..., 2", 0);
+        this.mPseudocode.addLine("    pos ← i");
+        this.mPseudocode.addLine("    for (j ← 1, ..., i - 1)", 1);
+        this.mPseudocode.addLine("        if A[j] > A[pos]", 2);
+        this.mPseudocode.addLine("            pos ← j");
+        this.mPseudocode.addLine("    if pos ≠ i", 3);
+        this.mPseudocode.addLine("        VERTAUSCHE(A, pos, i)", 4);
+    }
+}
