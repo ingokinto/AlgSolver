@@ -1,0 +1,59 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.Stack;
+
+public class StackPop<T> extends Algorithm<Stack<T>> {
+    private T mRemoveValue;
+
+    public StackPop(Stack<T> structure, T removeValue) {
+        super(structure);
+        this.mRemoveValue = removeValue;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(1)) {
+            this.ifAlgoRunReturn(1);
+        }
+
+        if (((Stack)this.mStructure).getData().get(0) == this.mRemoveValue) {
+            if (this.checkBreakpoint(2)) {
+                ((Stack)this.mStructure).highlightElement(((Stack)this.mStructure).getData().indexOf(this.mRemoveValue), AlgorithmOperationType.WRITE);
+                this.ifAlgoRunReturn(2);
+            }
+
+            ((Stack)this.mStructure).removeConnection();
+            ((Stack)this.mStructure).remove(((Stack)this.mStructure).getData().indexOf(this.mRemoveValue));
+            ((Stack)this.mStructure).reDraw();
+            if (this.checkBreakpoint(3)) {
+                ActiveAlgorithm.stop();
+                this.removeSuccessfulMessage();
+            }
+        }
+
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Pop-Stack";
+        this.mParameters = this.mParameters + "Schlüssel pop(" + this.mRemoveValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich sonst Fehler");
+        this.mPseudocode.addLine("if (Stack.size > 0)", 1);
+        this.mPseudocode.addLine("    STACK.POP()", 2);
+        this.mPseudocode.addLine("else Error", 3);
+    }
+
+    private void removeSuccessfulMessage() {
+        String title = "Pop-Ergebnis:";
+        String delMessage = "Das Element \"" + this.mRemoveValue + "\" wurde erfolgreich vom Stack entfernt.";
+        this.resultDialog(title, delMessage, "#dcffb8");
+    }
+}
