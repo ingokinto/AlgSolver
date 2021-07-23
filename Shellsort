@@ -1,0 +1,150 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class Shellsort extends Algorithm<ArrayStructure<Integer>> {
+    public Shellsort(ArrayStructure<Integer> structure) {
+        super(structure);
+        this.addPseudoCode();
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+    }
+
+    protected void execute() {
+        int interval = 1;
+        if (this.waitAtBreakpoint(-1)) {
+            while(3 * interval + 1 < ((ArrayStructure)this.mStructure).getBelegteFelder()) {
+                interval = 3 * interval + 1;
+                this.incrCounter(0);
+            }
+
+            this.startShellsort(interval);
+        }
+    }
+
+    private void startShellsort(int interval) {
+        int arraySize = ((ArrayStructure)this.mStructure).getBelegteFelder();
+
+        do {
+            if (interval <= 0) {
+                return;
+            }
+
+            this.incrCounter(1);
+            if (this.checkBreakpoint(0) && !this.waitAtBreakpoint(0)) {
+                return;
+            }
+
+            for(int outer = interval; outer < arraySize; ++outer) {
+                this.incrCounter(2);
+                Integer temp = (Integer)((ArrayStructure)this.mStructure).get(outer);
+                int inner = outer;
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+                boolean counterHelpher;
+                if (this.checkBreakpoint(1)) {
+                    counterHelpher = this.isCompareRun(interval, outer);
+                    if (!counterHelpher) {
+                        return;
+                    }
+                }
+
+                counterHelpher = false;
+                boolean multiCompare = false;
+
+                boolean ret;
+                while(inner > interval - 1 && (Integer)((ArrayStructure)this.mStructure).get(inner - interval) > temp) {
+                    this.incrCounter(3);
+                    counterHelpher = true;
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    if (multiCompare) {
+                        Structure.incKeyComparison();
+                        this.updatePseudocode();
+                        if (this.checkBreakpoint(1)) {
+                            ret = this.isCompareRun(interval, inner);
+                            if (!ret) {
+                                return;
+                            }
+                        }
+                    }
+
+                    Structure.incWriteAccess();
+                    if (this.checkBreakpoint(2)) {
+                        multiCompare = true;
+                        ((ArrayStructure)this.mStructure).compare(inner - interval, inner, "Tausch");
+                        this.updatePseudocode();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(inner - interval, inner), AlgorithmOperationType.WRITE);
+                        ret = this.waitAtBreakpoint(2);
+                        ((ArrayStructure)this.mStructure).removeConnection();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(inner - interval, inner), AlgorithmOperationType.DEFAULT);
+                        ((ArrayStructure)this.mStructure).reDraw();
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    ((ArrayStructure)this.mStructure).set(inner, (Integer)((ArrayStructure)this.mStructure).get(inner - interval));
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    inner -= interval;
+                    ((ArrayStructure)this.mStructure).set(inner, temp);
+                    ((ArrayStructure)this.mStructure).reDraw();
+                }
+
+                if (inner > interval - 1 && (Integer)((ArrayStructure)this.mStructure).get(inner - interval) < temp && counterHelpher) {
+                    Structure.incKeyComparison();
+                    if (this.checkBreakpoint(2)) {
+                        ret = this.isCompareRun(interval, inner);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+                }
+
+                Structure.incWriteAccess();
+                this.updatePseudocode();
+            }
+
+            interval = (interval - 1) / 3;
+        } while(!this.checkBreakpoint(3) || this.waitAtBreakpoint(3));
+
+    }
+
+    private boolean isCompareRun(int interval, int inner) {
+        ((ArrayStructure)this.mStructure).compare(inner - interval, inner, "Größer?");
+        ((ArrayStructure)this.mStructure).highlightElement(inner - interval, AlgorithmOperationType.COMPARE);
+        ((ArrayStructure)this.mStructure).highlightElement(inner, AlgorithmOperationType.COMPARE);
+        this.updatePseudocode();
+        boolean ret = this.waitAtBreakpoint(1);
+        ((ArrayStructure)this.mStructure).removeConnection();
+        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(inner - interval, inner), AlgorithmOperationType.DEFAULT);
+        ((ArrayStructure)this.mStructure).reDraw();
+        return ret;
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(4);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3), new PseudoCodeCounter(1, 5), new PseudoCodeCounter(2, 6), new PseudoCodeCounter(3, 9)));
+        this.mName = "Shellsort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A ist sortiert");
+        this.mPseudocode.addLine("schrittweite ← 1");
+        this.mPseudocode.addLine("while 3 · schrittweite + 1 < A.länge");
+        this.mPseudocode.addLine("    schrittweite ← 3 · schrittweite + 1");
+        this.mPseudocode.addLine("while schrittweite > 0", 0);
+        this.mPseudocode.addLine("    for (i ← schrittweite + 1, ..., A.länge)");
+        this.mPseudocode.addLine("        neu ← A[i]");
+        this.mPseudocode.addLine("        k ← i");
+        this.mPseudocode.addLine("        while k > schrittweite ∧ A[k - schrittweite].wert > neu.wert", 1);
+        this.mPseudocode.addLine("            A[k] ← A[k - schrittweite]", 2);
+        this.mPseudocode.addLine("            k ← k - schrittweite");
+        this.mPseudocode.addLine("        A[k] ← neu");
+        this.mPseudocode.addLine("    schrittweite ← ⌊schrittweite / 3⌋", 3);
+    }
+}
