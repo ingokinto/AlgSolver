@@ -1,0 +1,229 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.SkipListNode;
+import de.htwk_leipzig.imn.visualg.model.structure.SkipListStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+import java.util.List;
+
+public class SkiplistDelete extends Algorithm<SkipListStructure<Integer>> {
+    private final int deleteValue;
+    private boolean deleteValueInList;
+    private List<SkipListNode> elementList;
+
+    public SkiplistDelete(SkipListStructure<Integer> skipList, int deleteValue) {
+        super(skipList);
+        this.elementList = ((SkipListStructure)this.mStructure).getElementList();
+        this.deleteValue = deleteValue;
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        this.skiplistDelete();
+    }
+
+    private void skiplistDelete() {
+        SkipListNode[] predecessor = this.getPredecessor(this.deleteValue);
+        SkipListNode el = predecessor[0];
+        int maxHeight = ((SkipListStructure)this.mStructure).maxHeight;
+        SkipListNode head = ((SkipListStructure)this.mStructure).getHead();
+        SkipListNode tail = ((SkipListStructure)this.mStructure).getTail();
+        if (el.getNext()[0] != null && el.getNext()[0].getKey() == this.deleteValue) {
+            Structure.incKeyComparison();
+            this.deleteValueInList = true;
+            int x = el.getNext()[0].getHeight();
+
+            int layer;
+            for(layer = 0; layer < x; ++layer) {
+                if (this.checkBreakpoint(5)) {
+                    int a = this.elementList.indexOf(predecessor[layer]);
+                    int b = this.elementList.indexOf(predecessor[layer].getNext()[layer].getNext()[layer]);
+                    if (a >= 0) {
+                        ++a;
+                    } else {
+                        a = 0;
+                    }
+
+                    if (b >= 0) {
+                        ++b;
+                    } else {
+                        b = 0;
+                    }
+
+                    ((SkipListStructure)this.mStructure).highlightNode(a, layer, AlgorithmOperationType.FOUND);
+                    if (b != 0) {
+                        ((SkipListStructure)this.mStructure).highlightNode(b, layer, AlgorithmOperationType.FOUND);
+                        ((SkipListStructure)this.mStructure).compare(a, b, "neuer Zeiger");
+                        this.waitAtBreakpoint(5);
+                        ((SkipListStructure)this.mStructure).highlightNode(b, layer, AlgorithmOperationType.DEFAULT);
+                        ((SkipListStructure)this.mStructure).removeConnection();
+                    }
+
+                    ((SkipListStructure)this.mStructure).highlightNode(a, layer, AlgorithmOperationType.DEFAULT);
+                }
+            }
+
+            for(layer = 0; layer < x; ++layer) {
+                Structure.incKeyComparison();
+                this.incrCounter(1);
+                if (predecessor[layer].getNext()[layer].getNext()[0] == null) {
+                    break;
+                }
+
+                predecessor[layer].getNext()[layer] = predecessor[layer].getNext()[layer].getNext()[layer];
+                Structure.incWriteAccess();
+            }
+
+            Structure.incKeyComparison();
+
+            while(maxHeight > 1 && head.getNext()[maxHeight] == tail) {
+                Structure.incKeyComparison();
+                this.incrCounter(2);
+                --maxHeight;
+            }
+
+            Structure.incKeyComparison();
+            ((SkipListStructure)this.mStructure).setmNumSkipList(((SkipListStructure)this.mStructure).getmNumSkipList() - 1);
+            ((SkipListStructure)this.mStructure).setMaxHeight(maxHeight);
+            ((SkipListStructure)this.mStructure).createSkipListArray();
+            ((SkipListStructure)this.mStructure).reDraw();
+        } else {
+            Structure.incKeyComparison();
+            this.incrCounter(0);
+            this.deleteValueInList = false;
+            this.elementNotFound();
+        }
+
+    }
+
+    public SkipListNode[] getPredecessor(int key) {
+        int maxHeight = ((SkipListStructure)this.mStructure).getMaxHeight() + 1;
+        SkipListNode el = ((SkipListStructure)this.mStructure).getHead();
+        SkipListNode[] predecessor = new SkipListNode[maxHeight];
+
+        int layer;
+        for(layer = ((SkipListStructure)this.mStructure).getMaxHeight(); layer >= 0; --layer) {
+            Structure.incKeyComparison();
+            this.incrCounter(3);
+
+            while(true) {
+                Structure.incKeyComparison();
+                this.incrCounter(4);
+                if (this.checkBreakpoint(3)) {
+                    int a = this.elementList.indexOf(el);
+                    if (a == -1) {
+                        ++a;
+                        ((SkipListStructure)this.mStructure).highlightNode(a, layer, AlgorithmOperationType.READ);
+                    } else if (a >= 0) {
+                        ++a;
+                        ((SkipListStructure)this.mStructure).highlightNode(a, layer, AlgorithmOperationType.READ);
+                    }
+
+                    this.waitAtBreakpoint(3);
+                }
+
+                this.performHighlighting(el, layer, key);
+                if (el.getNext()[layer] == null || el.getNext()[layer].getKey() >= key) {
+                    Structure.incKeyComparison();
+                    predecessor[layer] = el;
+                    break;
+                }
+
+                el = el.getNext()[layer];
+            }
+        }
+
+        if (this.checkBreakpoint(7)) {
+            layer = this.elementList.indexOf(el.getNext()[0]) + 1;
+            ((SkipListStructure)this.mStructure).highlightNode(layer, 0, AlgorithmOperationType.WRITE);
+            ((SkipListStructure)this.mStructure).compare(layer, layer, "löschWert");
+            this.waitAtBreakpoint(7);
+            ((SkipListStructure)this.mStructure).highlightNode(layer, 0, AlgorithmOperationType.DEFAULT);
+            ((SkipListStructure)this.mStructure).removeConnection();
+        }
+
+        Structure.incKeyComparison();
+        return predecessor;
+    }
+
+    private void performHighlighting(SkipListNode el, int layer, int key) {
+        if (this.checkBreakpoint(6)) {
+            int a = this.elementList.indexOf(el);
+            int aNext = this.elementList.indexOf(el.getNext()[layer]) + 1;
+            if (a == -1) {
+                ((SkipListStructure)this.mStructure).highlightNode(0, layer, AlgorithmOperationType.COMPARE);
+                ((SkipListStructure)this.mStructure).highlightNode(aNext, layer, AlgorithmOperationType.COMPARE);
+                ((SkipListStructure)this.mStructure).compare(0, aNext, "el.nächstes[ebene].wert < " + key + "?");
+                this.waitAtBreakpoint(6);
+            } else if (a >= 0) {
+                ++a;
+                if (aNext != 0) {
+                    ((SkipListStructure)this.mStructure).highlightNode(a, layer, AlgorithmOperationType.COMPARE);
+                    ((SkipListStructure)this.mStructure).highlightNode(aNext, layer, AlgorithmOperationType.COMPARE);
+                    ((SkipListStructure)this.mStructure).compare(a, aNext, "el.nächstes[ebene].wert < " + key + "?");
+                    this.waitAtBreakpoint(6);
+                }
+            }
+
+            ((SkipListStructure)this.mStructure).removeConnection();
+            if (a == -1) {
+                ((SkipListStructure)this.mStructure).highlightNode(0, layer, AlgorithmOperationType.DEFAULT);
+                ((SkipListStructure)this.mStructure).highlightNode(aNext, layer, AlgorithmOperationType.DEFAULT);
+                ((SkipListStructure)this.mStructure).highlightNode(0, 0, AlgorithmOperationType.INACTIVE);
+            } else if (a >= 0) {
+                ((SkipListStructure)this.mStructure).highlightNode(a, layer, AlgorithmOperationType.DEFAULT);
+                ((SkipListStructure)this.mStructure).highlightNode(aNext, layer, AlgorithmOperationType.DEFAULT);
+                ((SkipListStructure)this.mStructure).highlightNode(a, 0, AlgorithmOperationType.INACTIVE);
+            }
+
+            if (el.getNext()[layer].getKey() > key) {
+                ((SkipListStructure)this.mStructure).highlightNode(aNext, 0, AlgorithmOperationType.INACTIVE);
+            }
+        }
+
+    }
+
+    private void elementNotFound() {
+        String title = "Löschergebnis:";
+        String errorMessage = "Das Element \"" + this.deleteValue + "\" ist nicht in der Skipliste enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+    }
+
+    public boolean getDeleteValueInList() {
+        return this.deleteValueInList;
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(5);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3), new PseudoCodeCounter(1, 6), new PseudoCodeCounter(2, 9), new PseudoCodeCounter(3, 15), new PseudoCodeCounter(4, 16)));
+        this.mName = "Löschen-Skipliste";
+        this.mParameters = this.mParameters + "Schlüssel löschWert(" + this.deleteValue + ")";
+        this.mPseudocode.addLine("vorgänger → Vorgänger-In-Skipliste(löschWert)");
+        this.mPseudocode.addLine("el → vorgänger[1]");
+        this.mPseudocode.addLine("if (el.nächstes[1] = NULL ∨ el.nächstes[1].wert ≠ löschWert)", 0);
+        this.mPseudocode.addLine("    error  \"Element nicht gefunden\"");
+        this.mPseudocode.addLine("else");
+        this.mPseudocode.addLine("    for (ebene ← 1, ..., el.nächstes[1].länge)", 1);
+        this.mPseudocode.addLine("        vorgänger[ebene].nächstes[ebene] →", 5);
+        this.mPseudocode.addLine("             vorgänger[ebene].nächstes[ebene].nächstes[ebene]");
+        this.mPseudocode.addLine("    while (anzEbenen > 1  ∧ anker.nächstes[anzEbenen] = NULL)", 2);
+        this.mPseudocode.addLine("        anzEbenen ← anzEbenen - 1");
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("Vörgänger-In-Skipliste(Schlüssel gesucht)");
+        this.mPseudocode.addLine("el → anker");
+        this.mPseudocode.addLine("vorgänger → allokiere Feld vom Typ Knoten der Länge maxEbenen");
+        this.mPseudocode.addLine("for (ebene ← anzEbenen, ..., 1)", 3);
+        this.mPseudocode.addLine("    while (el.nächstes[ebene] ≠ NULL und el.nächstes[ebene].wert < gesucht)", 4);
+        this.mPseudocode.addLine("        el → el.nächstes[ebene]", 6);
+        this.mPseudocode.addLine("    vorgänger[ebene] → el");
+        this.mPseudocode.addLine("return vorgänger", 7);
+    }
+}
