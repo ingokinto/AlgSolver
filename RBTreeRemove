@@ -1,0 +1,323 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.RBNode;
+import de.htwk_leipzig.imn.visualg.model.structure.RBTreeNodeColor;
+import de.htwk_leipzig.imn.visualg.model.structure.RBTreeStructure;
+
+public class RBTreeRemove<T extends Comparable<T>> extends Algorithm<RBTreeStructure<T>> {
+    private final T removeValue;
+    private boolean junitTestCase;
+    private boolean nodeInTree;
+
+    public RBTreeRemove(RBTreeStructure<T> structure, T removeValue) {
+        super(structure);
+        this.junitTestCase = false;
+        this.nodeInTree = true;
+        this.removeValue = removeValue;
+        this.shouldStop = false;
+        this.addPseudoCode();
+    }
+
+    public RBTreeRemove(RBTreeStructure<T> structure, T removeValue, boolean junitTestCase) {
+        this(structure, removeValue);
+        this.junitTestCase = junitTestCase;
+    }
+
+    public boolean getNodeInTree() {
+        return this.nodeInTree;
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(27)) {
+            this.waitAtBreakpoint(27);
+        }
+
+        RBNode<T> removeNode = this.search(((RBTreeStructure)this.mStructure).getRBRootNode(), this.removeValue);
+        if (removeNode == null) {
+            this.insertFailureMessage();
+            this.nodeInTree = false;
+        } else {
+            if (this.checkBreakpoint(0)) {
+                this.waitAtBreakpoint(0);
+            }
+
+            RBNode y;
+            if (removeNode.getRBLeftChild() != null && removeNode.getRBRightChild() != null) {
+                if (this.checkBreakpoint(2)) {
+                    this.waitAtBreakpoint(2);
+                }
+
+                y = this.successor(removeNode);
+            } else {
+                if (this.checkBreakpoint(1)) {
+                    this.waitAtBreakpoint(1);
+                }
+
+                y = removeNode;
+                this.highlightNode(removeNode, AlgorithmOperationType.READ);
+            }
+
+            if (this.checkBreakpoint(3)) {
+                this.waitAtBreakpoint(3);
+            }
+
+            ((RBTreeStructure)this.mStructure).reDraw();
+            RBNode x;
+            if (y.getRBLeftChild() != null) {
+                if (this.checkBreakpoint(4)) {
+                    this.waitAtBreakpoint(4);
+                }
+
+                x = y.getRBLeftChild();
+                this.highlightNode(x, AlgorithmOperationType.READ);
+            } else {
+                if (this.checkBreakpoint(5)) {
+                    this.waitAtBreakpoint(5);
+                }
+
+                x = y.getRBRightChild();
+                this.highlightNode(x, AlgorithmOperationType.READ);
+            }
+
+            if (this.checkBreakpoint(6)) {
+                this.waitAtBreakpoint(6);
+            }
+
+            ((RBTreeStructure)this.mStructure).reDraw();
+            if (x != null) {
+                if (this.checkBreakpoint(7)) {
+                    this.waitAtBreakpoint(7);
+                }
+
+                x.setParent(y.getRBParent());
+                this.highlightNode(x, AlgorithmOperationType.READ);
+            }
+
+            RBNode<T> xParent = y.getRBParent();
+            this.highlightNode(xParent, AlgorithmOperationType.READ);
+            boolean yIsLeft = false;
+            if (this.checkBreakpoint(8)) {
+                this.waitAtBreakpoint(8);
+            }
+
+            ((RBTreeStructure)this.mStructure).reDraw();
+            if (y.getRBParent() == null) {
+                ((RBTreeStructure)this.mStructure).setRootNode(x);
+            } else {
+                this.highlightNode(y, AlgorithmOperationType.WRITE);
+                this.highlightNode(x, AlgorithmOperationType.READ);
+                if (y == y.getRBParent().getRBLeftChild()) {
+                    if (this.checkBreakpoint(9)) {
+                        this.waitAtBreakpoint(9);
+                    }
+
+                    y.getRBParent().setLeftChild(x);
+                    yIsLeft = true;
+                } else {
+                    if (this.checkBreakpoint(10)) {
+                        this.waitAtBreakpoint(10);
+                    }
+
+                    y.getRBParent().setRightChild(x);
+                    yIsLeft = false;
+                }
+            }
+
+            ((RBTreeStructure)this.mStructure).reDraw();
+            if (this.checkBreakpoint(11)) {
+                this.waitAtBreakpoint(11);
+            }
+
+            if (y != removeNode) {
+                if (this.checkBreakpoint(12)) {
+                    this.waitAtBreakpoint(12);
+                }
+
+                removeNode.setValue(y.getValue());
+            }
+
+            ((RBTreeStructure)this.mStructure).reDraw();
+            if (this.checkBreakpoint(13)) {
+                this.waitAtBreakpoint(13);
+            }
+
+            if (y.getColor() == RBTreeNodeColor.BLACK) {
+                this.highlightNode(y, AlgorithmOperationType.READ);
+                this.highlightNode(xParent, AlgorithmOperationType.READ);
+                if (this.checkBreakpoint(14)) {
+                    this.waitAtBreakpoint(14);
+                }
+
+                ((RBTreeStructure)this.mStructure).reDraw();
+                this.fixup(x, xParent, yIsLeft);
+            } else {
+                ActiveAlgorithm.stop();
+            }
+
+        }
+    }
+
+    private RBNode<T> successor(RBNode<T> node) {
+        if (this.checkBreakpoint(15)) {
+            this.waitAtBreakpoint(15);
+        }
+
+        if (node.getRBLeftChild() != null) {
+            if (this.checkBreakpoint(16)) {
+                this.waitAtBreakpoint(16);
+            }
+
+            node = node.getRBLeftChild();
+            this.highlightNode(node, AlgorithmOperationType.READ);
+            boolean didWhile = false;
+            if (this.checkBreakpoint(17)) {
+                this.waitAtBreakpoint(17);
+            }
+
+            while(node.getRBRightChild() != null) {
+                didWhile = true;
+                if (this.checkBreakpoint(18)) {
+                    this.waitAtBreakpoint(18);
+                }
+
+                this.highlightNode(node, AlgorithmOperationType.READ);
+                node = node.getRBRightChild();
+            }
+
+            if (!didWhile && this.checkBreakpoint(17)) {
+                this.waitAtBreakpoint(17);
+            }
+
+            if (this.checkBreakpoint(19)) {
+                this.waitAtBreakpoint(19);
+            }
+
+            return node;
+        } else {
+            return null;
+        }
+    }
+
+    private RBNode<T> search(RBNode<T> node, T value) {
+        if (this.checkBreakpoint(23)) {
+            this.waitAtBreakpoint(23);
+        }
+
+        while(node != null) {
+            ((RBTreeStructure)this.mStructure).highlightNode(node, AlgorithmOperationType.READ);
+            if (this.checkBreakpoint(23)) {
+                this.waitAtBreakpoint(23);
+            }
+
+            if (value.compareTo(node.getValue()) == 0) {
+                if (this.checkBreakpoint(24)) {
+                    this.waitAtBreakpoint(24);
+                }
+
+                ((RBTreeStructure)this.mStructure).reDraw();
+                return node;
+            }
+
+            if (value.compareTo(node.getValue()) < 0) {
+                if (this.checkBreakpoint(25)) {
+                    this.waitAtBreakpoint(25);
+                }
+
+                node = node.getRBLeftChild();
+            } else {
+                if (this.checkBreakpoint(26)) {
+                    this.waitAtBreakpoint(26);
+                }
+
+                node = node.getRBRightChild();
+            }
+        }
+
+        ((RBTreeStructure)this.mStructure).reDraw();
+        return node;
+    }
+
+    private void highlightNode(RBNode<T> node, AlgorithmOperationType type) {
+        if (node != null) {
+            ((RBTreeStructure)this.mStructure).highlightNode(node, type);
+        }
+
+    }
+
+    private void fixup(RBNode<T> x, RBNode<T> xParent, boolean yIsLeft) {
+        ActiveAlgorithm.pause();
+        RBTreeRemoveFixup<T> algo = new RBTreeRemoveFixup((RBTreeStructure)this.mStructure, x, xParent, yIsLeft);
+        if (this.junitTestCase) {
+            algo.resume();
+        }
+
+        ActiveAlgorithm.multiRun(algo);
+    }
+
+    private void addPseudoCode() {
+        this.mName = "RB-Baum-Löschen";
+        this.mParameters = this.mParameters + "removeValue(" + this.removeValue + ")";
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.addLine("Nebenwirkung: Löscht removeValue");
+        this.mPseudocode.addLine("removeNode ← SUCHE-BIN-BAUM(tree.root, removeValue)", 27);
+        this.mPseudocode.addLine("if removeNode = NULL");
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"");
+        this.mPseudocode.addLine("if removeNode.leftChild = NULL ∨ removeNode.rightChild = NULL", 0);
+        this.mPseudocode.addLine("    y ← removeNode", 1);
+        this.mPseudocode.addLine("else", 2);
+        this.mPseudocode.addLine("    y ← NACHFOLGER(removeNode)");
+        this.mPseudocode.addLine("if y.leftChild ≠ NULL", 3);
+        this.mPseudocode.addLine("    x ← y.leftChild", 4);
+        this.mPseudocode.addLine("else", 5);
+        this.mPseudocode.addLine("    x ← y.rightChild");
+        this.mPseudocode.addLine("if x ≠ NULL", 6);
+        this.mPseudocode.addLine("    x.parent ← y.parent", 7);
+        this.mPseudocode.addLine("yIsLeft ← false");
+        this.mPseudocode.addLine("if y = y.parent.leftChild", 8);
+        this.mPseudocode.addLine("    y.parent.leftChild ← x", 9);
+        this.mPseudocode.addLine("    yIsLeft ← true");
+        this.mPseudocode.addLine("else", 10);
+        this.mPseudocode.addLine("    y.parent.rightChild ← x");
+        this.mPseudocode.addLine("    yIsLeft ← false");
+        this.mPseudocode.addLine("if y ≠ removeNode", 11);
+        this.mPseudocode.addLine("    removeNode.value ← y.value", 12);
+        this.mPseudocode.addLine("if y ≠ NULL ∧ y.color = Black", 13);
+        this.mPseudocode.addLine("    RB-BAUM-LÖSCHEN-FIXUP(tree, x, yIsLeft)", 14);
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("SUCHE-BIN-BAUM(node, value)");
+        this.mPseudocode.addLine("while node ≠ NULL", 23);
+        this.mPseudocode.addLine("    if node.value = value");
+        this.mPseudocode.addLine("        return node", 24);
+        this.mPseudocode.addLine("    else if node.value < value");
+        this.mPseudocode.addLine("        node ← node.leftChild", 25);
+        this.mPseudocode.addLine("    else");
+        this.mPseudocode.addLine("        node ← node.rightChild", 26);
+        this.mPseudocode.addLine("return node");
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("NACHFOLGER(node)");
+        this.mPseudocode.addLine("if node.rightChild ≠ NULL", 15);
+        this.mPseudocode.addLine("    x ← node.rightChild", 16);
+        this.mPseudocode.addLine("    while x.leftChild ≠ NULL", 17);
+        this.mPseudocode.addLine("        x ← x.leftChild", 18);
+        this.mPseudocode.addLine("    return x", 19);
+        this.mPseudocode.addLine("y ← x.parent");
+        this.mPseudocode.addLine("while y ≠ NULL ∧ node = y.rightChild", 20);
+        this.mPseudocode.addLine("    node ← y", 21);
+        this.mPseudocode.addLine("    y ← y.parent");
+        this.mPseudocode.addLine("return y", 22);
+    }
+
+    private void insertFailureMessage() {
+        String title = "Ergebnis:";
+        String insertMessage = "Der Wert '" + this.removeValue + "' ist nicht im Baum enthalten.";
+        this.resultDialog(title, insertMessage, "#FFA5A5");
+    }
+}
