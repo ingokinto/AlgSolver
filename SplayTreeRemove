@@ -1,0 +1,154 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import de.htwk_leipzig.imn.visualg.model.structure.SplayTreeStructure;
+
+public class SplayTreeRemove<T extends Comparable> extends RecursiveAlgorithm<SplayTreeStructure<?>, Node<T>> {
+    private T mRemoveValue;
+    private boolean mRotateRun;
+
+    public SplayTreeRemove(SplayTreeStructure<Integer> structure, T removeValue, boolean rotateRun) {
+        super(structure);
+        this.mRemoveValue = removeValue;
+        this.mRotateRun = rotateRun;
+        this.addPseudoCode(this.mRemoveValue);
+    }
+
+    protected void execute() {
+        Node root = ((SplayTreeStructure)this.mStructure).getRootNode();
+        this.ifAlgoRunReturn(-1);
+        if (!this.mRotateRun && this.checkBreakpoint(0)) {
+            this.ifAlgoRunReturn(0);
+            this.startRotationMessage();
+            this.startSplayTreeRotate(this.mRemoveValue, (Comparable)null);
+        } else {
+            root = ((SplayTreeStructure)this.mStructure).getRootNode();
+            ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.READ);
+            if (root != null && this.mRemoveValue.equals(root.getValue())) {
+                root = ((SplayTreeStructure)this.mStructure).getRootNode();
+                if (this.checkBreakpoint(3)) {
+                    this.ifAlgoRunReturn(3);
+                }
+
+                if (root.getLeftChild() == null) {
+                    this.replaceRootWithRightChild();
+                } else {
+                    Node temp = root.getRightChild();
+                    if ((temp == null || this.mRemoveValue.compareTo(temp.getValue()) != 0) && this.checkBreakpoint(6)) {
+                        Node biggestChild = ((SplayTreeStructure)this.mStructure).getBiggestLeftChild(root);
+                        this.ifAlgoRunReturn(6);
+                        this.startRotationMessage();
+                        this.startSplayTreeRotate(biggestChild.getValue(), this.mRemoveValue);
+                        return;
+                    }
+                }
+
+                if (this.mRemoveValue.compareTo(root.getRightChild().getValue()) == 0) {
+                    this.removeRightChild();
+                }
+            } else {
+                if (!this.mRemoveValue.equals(root.getRightChild().getValue())) {
+                    if (this.checkBreakpoint(1)) {
+                        this.ifAlgoRunReturn(1);
+                    }
+
+                    if (this.checkBreakpoint(2)) {
+                        this.removeUnsuccessfulMessage();
+                        this.ifAlgoRunReturn(2);
+                    }
+                }
+
+                if (this.mRemoveValue.equals(root.getRightChild().getValue())) {
+                    this.removeRightChild();
+                }
+            }
+
+        }
+    }
+
+    private void removeRightChild() {
+        Node root = ((SplayTreeStructure)this.mStructure).getRootNode();
+        if (this.checkBreakpoint(7)) {
+            if (root.getLeftChild() != null) {
+                ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.WRITE);
+                if (root.getRightChild().getRightChild() != null) {
+                    ((SplayTreeStructure)this.mStructure).highlightNode(root.getRightChild().getRightChild(), AlgorithmOperationType.WRITE);
+                    ((SplayTreeStructure)this.mStructure).compare(root, root.getRightChild().getRightChild());
+                }
+            }
+
+            this.ifAlgoRunReturn(7);
+        }
+
+        if (this.checkBreakpoint(8)) {
+            this.ifAlgoRunReturn(8);
+        }
+
+        ((SplayTreeStructure)this.mStructure).removeNodeWithoutSplay(this.mRemoveValue);
+        ((SplayTreeStructure)this.mStructure).reDraw();
+    }
+
+    private void replaceRootWithRightChild() {
+        Node root = ((SplayTreeStructure)this.mStructure).getRootNode();
+        if (this.checkBreakpoint(4)) {
+            this.ifAlgoRunReturn(4);
+        }
+
+        ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.WRITE);
+        ((SplayTreeStructure)this.mStructure).highlightNode(root.getRightChild(), AlgorithmOperationType.WRITE);
+        ((SplayTreeStructure)this.mStructure).compare(root, root.getRightChild());
+        if (this.checkBreakpoint(5)) {
+            this.ifAlgoRunReturn(5);
+            ((SplayTreeStructure)this.mStructure).removeNodeWithoutSplay(this.mRemoveValue);
+            ((SplayTreeStructure)this.mStructure).reDraw();
+        }
+    }
+
+    private void addPseudoCode(T removeValue) {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Löschen-Splay-Baum";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert(" + removeValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("anker → SPLAY(anker, löschWert)", 0);
+        this.mPseudocode.addLine("if anker = NULL ∨ löschWert ≠ anker.wert", 1);
+        this.mPseudocode.addLine("    error \"Element nicht enthalten\"", 2);
+        this.mPseudocode.addLine("else", 3);
+        this.mPseudocode.addLine("    if anker.links = NULL", 4);
+        this.mPseudocode.addLine("        anker → anker.rechts", 5);
+        this.mPseudocode.addLine("    else neuerAnker → SPLAY(anker.links,  größtes Kind)", 6);
+        this.mPseudocode.addLine("        neuerAnker.rechts → anker.rechts", 7);
+        this.mPseudocode.addLine("        anker → neuerAnker", 8);
+    }
+
+    private void removeUnsuccessfulMessage() {
+        String title = "Löschergebnis:";
+        String errorMessage = "Der Knoten \"" + this.mRemoveValue + "\" ist im Baum nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    private void startSplayTreeRotate(T rotateValue, T removeValue) {
+        String startAlgo = "SplayTreeRemove";
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new SplayTreeRotate((SplayTreeStructure)this.mStructure, rotateValue, removeValue, startAlgo));
+        } catch (Exception var5) {
+            var5.printStackTrace();
+        }
+
+    }
+
+    private void startRotationMessage() {
+        String title = "Starte Rotation:";
+        String insertMessage = "Drücken Sie nun auf Play um die Splay-Rotation zu starten.";
+        this.resultDialog(title, insertMessage, "#dcffb8");
+    }
+}
