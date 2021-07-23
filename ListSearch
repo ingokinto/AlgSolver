@@ -1,0 +1,129 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+
+public class ListSearch extends Algorithm<ArrayStructure<Integer>> {
+    public static boolean msKeyFound;
+    private static boolean msJUnitTestCase;
+    private int mSearchValue;
+
+    public static boolean isKeyFound() {
+        return msKeyFound;
+    }
+
+    public ListSearch(ArrayStructure<Integer> structure, int searchValue, Boolean JunitTestCase) {
+        super(structure);
+        this.mSearchValue = searchValue;
+        msJUnitTestCase = true;
+        this.addPseudoCode();
+    }
+
+    public ListSearch(ArrayStructure<Integer> structure, int searchValue) {
+        super(structure);
+        this.mSearchValue = searchValue;
+        this.addPseudoCode();
+        Structure.setKeyComparison(0);
+    }
+
+    protected void execute() {
+        int index = 0;
+        msKeyFound = false;
+        this.ifAlgoRunReturn(-1);
+
+        while(!msKeyFound && index < ((ArrayStructure)this.mStructure).size()) {
+            int temp = (Integer)((ArrayStructure)this.mStructure).getData().get(index);
+            if (this.checkBreakpoint(1)) {
+                ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.READ);
+                this.ifAlgoRunReturn(1);
+            }
+
+            Structure.incKeyComparison();
+            if (this.checkBreakpoint(2)) {
+                ((ArrayStructure)this.mStructure).compare(index, index, "= " + this.mSearchValue + " ?");
+                this.ifAlgoRunReturn(2);
+            }
+
+            ((ArrayStructure)this.mStructure).removeConnection();
+            if (temp == this.mSearchValue) {
+                if (!msJUnitTestCase) {
+                    this.searchSuccessfulMessage(index);
+                }
+
+                if (this.checkBreakpoint(3)) {
+                    ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.COMPARE);
+                    this.ifAlgoRunReturn(3);
+                }
+
+                msKeyFound = true;
+                break;
+            }
+
+            if (this.checkBreakpoint(4)) {
+                int connectTo = index + 1;
+                ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.INACTIVE);
+                if (((ArrayStructure)this.mStructure).getData().size() > connectTo) {
+                    ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(index, connectTo, "Nachfolger prüfen");
+                    ((ArrayStructure)this.mStructure).highlightElement(connectTo, AlgorithmOperationType.READ);
+                }
+
+                this.ifAlgoRunReturn(4);
+            }
+
+            ++index;
+            ((ArrayStructure)this.mStructure).removeConnection();
+        }
+
+        if (!msKeyFound) {
+            if (!msJUnitTestCase) {
+                this.removeUnsuccessfulMessage();
+            }
+
+            if (this.checkBreakpoint(5)) {
+                this.ifAlgoRunReturn(5);
+            }
+        }
+
+        this.timerForUnhighlightAll();
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mName = "Suchen-Liste";
+        this.mParameters = this.mParameters + "Schlüssel suchWert(" + this.mSearchValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: gesuchte Daten bzw. Fehler falls nicht enthalten");
+        this.mPseudocode.addLine("el → anker", 0);
+        this.mPseudocode.addLine("while el ≠ NULL", 1);
+        this.mPseudocode.addLine("    if el.wert = gesucht", 2);
+        this.mPseudocode.addLine("        return el.daten", 3);
+        this.mPseudocode.addLine("    else el → el.nächstes", 4);
+        this.mPseudocode.addLine("error \"Element nicht gefunden\"", 5);
+    }
+
+    private void searchSuccessfulMessage(int index) {
+        msKeyFound = true;
+        String title = "Suchergebnis:";
+        String searchMessage = "Das Element \"" + this.mSearchValue + "\" ist in der Liste an der Position " + index + " enthalten.";
+        this.resultDialog(title, searchMessage, "#dcffb8");
+    }
+
+    private void removeUnsuccessfulMessage() {
+        String title = "Suchergebnis:";
+        String errorMessage = "Das Element \"" + this.mSearchValue + "\" ist in der Liste nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+    }
+
+    private void timerForUnhighlightAll() {
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException var2) {
+        }
+
+        ((ArrayStructure)this.mStructure).reDraw();
+    }
+}
