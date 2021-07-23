@@ -1,0 +1,171 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import java.util.Arrays;
+
+public class ListSortedInsert extends Algorithm<ArrayStructure<Integer>> {
+    private final int mAddValue;
+    private boolean didInsert = true;
+
+    public ListSortedInsert(ArrayStructure<Integer> structure, int AddValue) {
+        super(structure);
+        this.mAddValue = AddValue;
+        this.addPseudoCode(this.mAddValue);
+    }
+
+    protected boolean getDidInsert() {
+        return this.didInsert;
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        int i = 0;
+        ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.COMPARE);
+        ((ArrayStructure)this.mStructure).compare(i, i, "el → anker");
+        boolean breakpoint;
+        if (this.checkBreakpoint(1)) {
+            breakpoint = this.waitAtBreakpoint(1);
+            if (!breakpoint) {
+                return;
+            }
+        }
+
+        ((ArrayStructure)this.mStructure).removeConnection();
+        ((ArrayStructure)this.mStructure).reDraw();
+        if ((Integer)((ArrayStructure)this.mStructure).getData().get(i) > this.mAddValue) {
+            ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).compare(i, i, ((ArrayStructure)this.mStructure).getData().get(i) + " < " + this.mAddValue + " !");
+            if (this.checkBreakpoint(2)) {
+                breakpoint = this.waitAtBreakpoint(2);
+                if (!breakpoint) {
+                    return;
+                }
+            }
+
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            ((ArrayStructure)this.mStructure).add(i, this.mAddValue);
+            ((ArrayStructure)this.mStructure).reDraw();
+            this.successfulMessage();
+            ActiveAlgorithm.stop();
+        } else {
+            while(i < ((ArrayStructure)this.mStructure).getBelegteFelder() && (Integer)((ArrayStructure)this.mStructure).getData().get(i) < this.mAddValue) {
+                this.incrCounter(0);
+                ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(i, i, ((ArrayStructure)this.mStructure).getData().get(i) + " < " + this.mAddValue + " ?");
+                if (this.checkBreakpoint(2)) {
+                    breakpoint = this.waitAtBreakpoint(2);
+                    if (!breakpoint) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                ++i;
+                if (i < ((ArrayStructure)this.mStructure).getBelegteFelder()) {
+                    ((ArrayStructure)this.mStructure).highlightElement(i - 1, AlgorithmOperationType.INACTIVE);
+                    ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.READ);
+                    ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(i - 1, i, "el→el.nächstes");
+                    if (this.checkBreakpoint(3)) {
+                        breakpoint = this.waitAtBreakpoint(3);
+                        if (!breakpoint) {
+                            return;
+                        }
+                    }
+
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).reDraw();
+                }
+            }
+
+            if (i < ((ArrayStructure)this.mStructure).getBelegteFelder() && (Integer)((ArrayStructure)this.mStructure).getData().get(i) > this.mAddValue) {
+                ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(i, i, ((ArrayStructure)this.mStructure).getData().get(i) + " > " + this.mAddValue + " !");
+                if (this.checkBreakpoint(4)) {
+                    breakpoint = this.waitAtBreakpoint(4);
+                    if (!breakpoint) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                ((ArrayStructure)this.mStructure).highlightElement(i - 1, AlgorithmOperationType.WRITE);
+                ((ArrayStructure)this.mStructure).compare(i - 1, i, "Element wird zw. " + ((ArrayStructure)this.mStructure).getData().get(i - 1) + " und " + ((ArrayStructure)this.mStructure).getData().get(i) + " eingefügt!");
+                if (this.checkBreakpoint(5)) {
+                    breakpoint = this.waitAtBreakpoint(5);
+                    if (!breakpoint) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                ((ArrayStructure)this.mStructure).add(i, this.mAddValue);
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.successfulMessage();
+            } else if (i >= ((ArrayStructure)this.mStructure).getBelegteFelder()) {
+                ((ArrayStructure)this.mStructure).add(this.mAddValue);
+                ((ArrayStructure)this.mStructure).reDraw();
+                ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.WRITE);
+                ((ArrayStructure)this.mStructure).compare(i, i, this.mAddValue + " ist das größte Element und wird am Ende dran gehangen");
+                if (this.checkBreakpoint(5)) {
+                    breakpoint = this.waitAtBreakpoint(5);
+                    if (!breakpoint) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                this.successfulMessage();
+            } else {
+                this.didInsert = false;
+                ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(i, i, ((ArrayStructure)this.mStructure).getData().get(i) + " = " + this.mAddValue);
+                if (this.checkBreakpoint(6)) {
+                    breakpoint = this.waitAtBreakpoint(6);
+                    if (!breakpoint) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.unsuccessfulMessage();
+            }
+
+        }
+    }
+
+    private void addPseudoCode(int AddValue) {
+        this.addCounters(1);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3)));
+        this.mName = "Einfügen-Liste";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert (" + AddValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("el ← anker", 1);
+        this.mPseudocode.addLine("while el.nächstes != NULL und el.nächstes.wert < neuerWert", 2);
+        this.mPseudocode.addLine("    do el → el.nächstes", 3);
+        this.mPseudocode.addLine("if el.nächstes = NULL oder el.nächstes.wert > neuerWert", 4);
+        this.mPseudocode.addLine("    then el.nächstes → allokiere Element(neuerWert, el.nächstes)", 5);
+        this.mPseudocode.addLine("else error \"schon enthalten\" ", 6);
+    }
+
+    private void successfulMessage() {
+        String title = "Ergebnis:";
+        String addMessage = "Das Element '" + this.mAddValue + "' wurde erfolgreich eingefügt.";
+        this.resultDialog(title, addMessage, "#dcffb8");
+    }
+
+    private void unsuccessfulMessage() {
+        String errorMessage = "Das Element '" + this.mAddValue + "' ist in der Liste schon enthalten.";
+        this.resultDialog("Ergebnis", errorMessage, "#FFA5A5");
+    }
+}
