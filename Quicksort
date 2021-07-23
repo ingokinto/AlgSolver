@@ -1,0 +1,371 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.dialog.DialogFactory;
+import de.htwk_leipzig.imn.visualg.model.dialog.exception.DialogCancelException;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import de.htwk_leipzig.imn.visualg.model.structure.Tuple;
+import java.util.Arrays;
+import java.util.Random;
+
+public class Quicksort extends RecursiveAlgorithm<ArrayStructure<Integer>, Tuple> {
+    private final Quicksort.PivotChoice mPivotChoice;
+    private static final Random RANDOM = new Random();
+
+    public Quicksort(ArrayStructure<Integer> structure, Quicksort.PivotChoice pivotChoice) {
+        super(structure);
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.mPivotChoice = pivotChoice;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.quicksort((ArrayStructure)this.mStructure, 0, ((ArrayStructure)this.mStructure).getBelegteFelder() - 1);
+        }
+    }
+
+    public void quicksort(ArrayStructure<Integer> mStructure, int left, int right) {
+        this.push(new Tuple(new Object[]{left + 1, right + 1}), 3);
+        if (left < right) {
+            this.incrCounter(0);
+            int i = left;
+            int j = right;
+            int pivotPointer;
+            int pivot;
+            switch($SWITCH_TABLE$de$htwk_leipzig$imn$visualg$model$algorithm$Quicksort$PivotChoice()[this.mPivotChoice.ordinal()]) {
+            case 1:
+                pivotPointer = right;
+                break;
+            case 2:
+                pivotPointer = left;
+                break;
+            case 3:
+                pivotPointer = left + RANDOM.nextInt(1 + right - left);
+                break;
+            case 4:
+                pivotPointer = left + Math.floorDiv(right - left, 2);
+                break;
+            case 5:
+                pivot = left + Math.floorDiv(right - left, 2);
+                pivotPointer = this.median(left, pivot, right);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + this.mPivotChoice);
+            }
+
+            boolean ret;
+            if (this.checkBreakpoint(3)) {
+                for(pivot = left; pivot <= right; ++pivot) {
+                    mStructure.highlightElement(pivot, AlgorithmOperationType.PARTITION);
+                }
+
+                ret = this.waitAtBreakpoint(3);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            if (this.checkBreakpoint(4)) {
+                mStructure.highlightElement(pivotPointer, AlgorithmOperationType.PIVOT);
+                mStructure.compare(pivotPointer, pivotPointer, "Pivot-Element (p)");
+                ret = this.waitAtBreakpoint(4);
+                mStructure.removeConnection();
+                if (!ret) {
+                    return;
+                }
+            }
+
+            pivot = (Integer)mStructure.get(pivotPointer);
+
+            while(i <= j) {
+                this.incrCounter(1);
+                Structure.incKeyComparison();
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+
+                boolean ret;
+                while((Integer)mStructure.get(i) < pivot) {
+                    this.incrCounter(2);
+                    if (this.checkBreakpoint(0)) {
+                        mStructure.compare(i, i, "i");
+                        mStructure.compare(j, j, "j");
+                        mStructure.compare(pivotPointer, pivotPointer, "p");
+                        mStructure.highlightElement(Arrays.asList(i, pivotPointer), AlgorithmOperationType.COMPARE);
+                        ret = this.waitAtBreakpoint(0);
+                        mStructure.removeConnection();
+                        mStructure.reDraw();
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    ++i;
+                    Structure.incKeyComparison();
+                    this.updatePseudocode();
+                }
+
+                if (this.checkBreakpoint(0)) {
+                    mStructure.compare(i, i, "i");
+                    mStructure.compare(j, j, "j");
+                    mStructure.compare(pivotPointer, pivotPointer, "p");
+                    mStructure.highlightElement(Arrays.asList(i, pivotPointer), AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(0);
+                    mStructure.removeConnection();
+                    mStructure.reDraw();
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                boolean ret;
+                if (this.checkBreakpoint(0)) {
+                    mStructure.compare(i, i, "Tauschkandidat von Links");
+                    mStructure.compare(j, j, "j");
+                    mStructure.compare(pivotPointer, pivotPointer, "p");
+                    mStructure.highlightElement(i, AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(0);
+                    mStructure.removeConnection();
+                    mStructure.reDraw();
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+
+                for(; (Integer)mStructure.get(j) > pivot; --j) {
+                    this.incrCounter(3);
+                    Structure.incKeyComparison();
+                    this.updatePseudocode();
+                    if (this.checkBreakpoint(1)) {
+                        mStructure.compare(j, j, "j");
+                        mStructure.compare(i, i, "i");
+                        mStructure.compare(pivotPointer, pivotPointer, "p");
+                        mStructure.highlightElement(Arrays.asList(j, pivotPointer), AlgorithmOperationType.COMPARE);
+                        ret = this.waitAtBreakpoint(1);
+                        mStructure.removeConnection();
+                        mStructure.reDraw();
+                        if (!ret) {
+                            return;
+                        }
+                    }
+                }
+
+                if (this.checkBreakpoint(1)) {
+                    mStructure.compare(j, j, "j");
+                    mStructure.compare(i, i, "i");
+                    mStructure.compare(pivotPointer, pivotPointer, "p");
+                    mStructure.highlightElement(Arrays.asList(j, pivotPointer), AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(1);
+                    mStructure.removeConnection();
+                    mStructure.reDraw();
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                if (i <= j) {
+                    boolean ret;
+                    if (this.checkBreakpoint(1)) {
+                        mStructure.compare(j, j, "Tauschkandidat von Rechts");
+                        mStructure.compare(pivotPointer, pivotPointer, "p");
+                        mStructure.compare(i, i, "i");
+                        mStructure.highlightElement(j, AlgorithmOperationType.COMPARE);
+                        ret = this.waitAtBreakpoint(1);
+                        mStructure.removeConnection();
+                        mStructure.reDraw();
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    this.incrCounter(4);
+                    Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+                    this.updatePseudocode();
+                    if (this.checkBreakpoint(2)) {
+                        mStructure.compare(i, j, "Vertausche");
+                        mStructure.compare(pivotPointer, pivotPointer, "p");
+                        mStructure.compare(i, i, "i");
+                        mStructure.compare(j, j, "j");
+                        mStructure.highlightElement(i, AlgorithmOperationType.WRITE);
+                        mStructure.highlightElement(j, AlgorithmOperationType.WRITE);
+                        ret = this.waitAtBreakpoint(2);
+                        mStructure.removeConnection();
+                        mStructure.reDraw();
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    if (j == pivotPointer) {
+                        pivotPointer = i;
+                    } else if (i == pivotPointer) {
+                        pivotPointer = j;
+                    }
+
+                    int temp = (Integer)mStructure.get(i);
+                    mStructure.set(i, (Integer)mStructure.get(j));
+                    mStructure.set(j, temp);
+                    mStructure.reDraw();
+                    if (this.checkBreakpoint(2)) {
+                        mStructure.compare(i, j, "Vertausche");
+                        mStructure.compare(pivotPointer, pivotPointer, "p");
+                        mStructure.compare(i, i, "i");
+                        mStructure.compare(j, j, "j");
+                        mStructure.highlightElement(i, AlgorithmOperationType.WRITE);
+                        mStructure.highlightElement(j, AlgorithmOperationType.WRITE);
+                        boolean ret = this.waitAtBreakpoint(2);
+                        mStructure.removeConnection();
+                        mStructure.reDraw();
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    ++i;
+                    --j;
+                }
+            }
+
+            for(int z = left; z <= right; ++z) {
+                mStructure.highlightElement(z, AlgorithmOperationType.DEFAULT);
+                mStructure.reDraw();
+            }
+
+            mStructure.highlightElement(pivotPointer, AlgorithmOperationType.DEFAULT);
+            mStructure.reDraw();
+            this.quicksort(mStructure, left, j);
+            this.quicksort(mStructure, i, right);
+        }
+
+        this.pop(2);
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(5);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 2), new PseudoCodeCounter(1, 13), new PseudoCodeCounter(2, 14), new PseudoCodeCounter(3, 16), new PseudoCodeCounter(4, 18)));
+        this.mName = "Quicksort";
+        this.mParameters = this.mParameters + "Feld A, Bereichsgrenzen links, rechts";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A ist sortiert");
+        this.mPseudocode.addLine("if (links < rechts)");
+        this.mPseudocode.addLine("    PARTITIONIERE(A, links, rechts)");
+        this.mPseudocode.addLine("    p ← j");
+        this.mPseudocode.addLine("    q ← i");
+        this.mPseudocode.addLine("    QUICKSORT(A, links, p)");
+        this.mPseudocode.addLine("    QUICKSORT(A, q, rechts)");
+        this.mPseudocode.addLine(" ");
+        this.mPseudocode.addLine("PARTITIONIERE(A, links, rechts):", 3);
+        this.mPseudocode.addLine("i ← links");
+        this.mPseudocode.addLine("j ← rechts");
+        switch($SWITCH_TABLE$de$htwk_leipzig$imn$visualg$model$algorithm$Quicksort$PivotChoice()[this.mPivotChoice.ordinal()]) {
+        case 1:
+            this.mPseudocode.addLine("p ← A[rechts]", 4);
+            break;
+        case 2:
+            this.mPseudocode.addLine("p ← A[links]", 4);
+            break;
+        case 3:
+            this.mPseudocode.addLine("p ← A[random(links, rechts)]", 4);
+            break;
+        case 4:
+            this.mPseudocode.addLine("mitte ← links + ⌊(rechts-links)/2⌋");
+            this.mPseudocode.addLine("p ← A[mitte]", 4);
+            break;
+        case 5:
+            this.mPseudocode.addLine("mitte ← links + ⌊(rechts-links)/2⌋");
+            this.mPseudocode.addLine("p ← A[median(A[links], A[rechts], A[mitte])]", 4);
+            break;
+        default:
+            throw new IllegalStateException("Unexpected value: " + this.mPivotChoice);
+        }
+
+        this.mPseudocode.addLine("    while (i ≤ j)");
+        this.mPseudocode.addLine("        while (A[i] < p)", 0);
+        this.mPseudocode.addLine("            i ← i + 1");
+        this.mPseudocode.addLine("        while (A[j] > p)", 1);
+        this.mPseudocode.addLine("            j ← j - 1");
+        this.mPseudocode.addLine("        if i ≤ j", 2);
+        this.mPseudocode.addLine("            VERTAUSCHE(A, i, j)");
+        this.mPseudocode.addLine("            i ← i + 1");
+        this.mPseudocode.addLine("            j ← j - 1");
+        this.mPseudocode.addLine("return j, i");
+    }
+
+    public static Quicksort.PivotChoice chooseVariation() {
+        String right = "rechtes Element";
+        String left = "linkes Element";
+        String random = "zufälliges Element";
+        String middle = "mittleres Element";
+        String median = "median aus rechtem, linken und mitlerem Element";
+        String dialogResult = null;
+        String[] choices = new String[]{"zufälliges Element", "linkes Element", "rechtes Element", "mittleres Element", "median aus rechtem, linken und mitlerem Element"};
+
+        try {
+            dialogResult = DialogFactory.generateChoiceDialog("Pivot wählen", "Welches Element soll als Pivot-Element gewählt werden?", choices);
+        } catch (DialogCancelException var8) {
+            return null;
+        }
+
+        switch(dialogResult.hashCode()) {
+        case -1624026908:
+            if (dialogResult.equals("linkes Element")) {
+                return Quicksort.PivotChoice.LEFT;
+            }
+            break;
+        case -616533849:
+            if (dialogResult.equals("mittleres Element")) {
+                return Quicksort.PivotChoice.MIDDLE;
+            }
+            break;
+        case -324640762:
+            if (dialogResult.equals("rechtes Element")) {
+                return Quicksort.PivotChoice.RIGHT;
+            }
+            break;
+        case 1245731766:
+            if (dialogResult.equals("median aus rechtem, linken und mitlerem Element")) {
+                return Quicksort.PivotChoice.MEDIAN_LMR;
+            }
+            break;
+        case 1667408001:
+            if (dialogResult.equals("zufälliges Element")) {
+                return Quicksort.PivotChoice.RANDOM;
+            }
+        }
+
+        throw new IllegalStateException("Unexpected value: " + dialogResult);
+    }
+
+    private int median(int a, int b, int c) {
+        if ((Integer)((ArrayStructure)this.mStructure).get(a) < (Integer)((ArrayStructure)this.mStructure).get(b)) {
+            if ((Integer)((ArrayStructure)this.mStructure).get(b) < (Integer)((ArrayStructure)this.mStructure).get(c)) {
+                return b;
+            } else {
+                return (Integer)((ArrayStructure)this.mStructure).get(c) < (Integer)((ArrayStructure)this.mStructure).get(a) ? a : c;
+            }
+        } else if ((Integer)((ArrayStructure)this.mStructure).get(b) < (Integer)((ArrayStructure)this.mStructure).get(c)) {
+            return (Integer)((ArrayStructure)this.mStructure).get(c) < (Integer)((ArrayStructure)this.mStructure).get(a) ? c : a;
+        } else {
+            return b;
+        }
+    }
+
+    public static enum PivotChoice {
+        RIGHT,
+        LEFT,
+        RANDOM,
+        MIDDLE,
+        MEDIAN_LMR;
+
+        private PivotChoice() {
+        }
+    }
+}
