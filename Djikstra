@@ -1,0 +1,259 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.DijkstraTableStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.GraphStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.PriorityQueue;
+import de.htwk_leipzig.imn.visualg.model.structure.PriorityQueueFieldbased;
+import de.htwk_leipzig.imn.visualg.model.structure.PriorityQueueInterface;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import de.htwk_leipzig.imn.visualg.model.structure.Vertex;
+import de.htwk_leipzig.imn.visualg.model.structure.VertexWeightPair;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.TreeSet;
+
+public class Dijkstra extends Algorithm<GraphStructure<?>> {
+    private final PriorityQueueInterface<Vertex, Double> mQueue;
+    private final DijkstraTableStructure mTableStruct = new DijkstraTableStructure();
+    private Vertex mSource;
+
+    public DijkstraTableStructure getTableStruct() {
+        return this.mTableStruct;
+    }
+
+    public Vertex getSource() {
+        return this.mSource;
+    }
+
+    public Dijkstra(GraphStructure<String> structure, Vertex source, boolean isHeap) {
+        super(structure);
+        if (isHeap) {
+            this.mQueue = new PriorityQueue();
+            this.mName = "Dijkstra mit Heap";
+        } else {
+            this.mQueue = new PriorityQueueFieldbased();
+            this.mName = "Dijkstra mit statischem Feld";
+        }
+
+        this.mSource = source;
+        if (this.mSource != null) {
+            this.mParameters = this.mParameters + "Startknoten " + this.mSource.toString();
+            this.init();
+        }
+
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        this.ifAlgoRunReturn(0);
+        if (this.checkBreakpoint(1)) {
+            ((Structure)this.mQueue).reDraw();
+            this.mTableStruct.reDraw();
+            this.ifAlgoRunReturn(1);
+        }
+
+        Vertex vStar;
+        for(Iterator var2 = ((GraphStructure)this.mStructure).getmVertices().values().iterator(); var2.hasNext(); this.mQueue.insert(vStar, this.mTableStruct.getDist(vStar.toString()))) {
+            vStar = (Vertex)var2.next();
+            if (vStar == this.mSource) {
+                this.mTableStruct.addNode(vStar.toString(), 0.0D, "-");
+            } else {
+                this.mTableStruct.addNode(vStar.toString(), 1.0D / 0.0, "-");
+            }
+        }
+
+        if (this.checkBreakpoint(2)) {
+            ((Structure)this.mQueue).reDraw();
+            this.mTableStruct.reDraw();
+            this.ifAlgoRunReturn(2);
+        }
+
+        while(this.mQueue.getCount() > 0) {
+            this.incrCounter(0);
+            Boolean ret;
+            if (this.checkBreakpoint(3)) {
+                vStar = (Vertex)this.mQueue.getMinimum();
+                this.mTableStruct.reDraw();
+                ((Structure)this.mQueue).reDraw();
+                ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.READ);
+                this.mQueue.highlight(((Double)this.mQueue.getPrioMap().get(vStar)).intValue(), AlgorithmOperationType.READ);
+                this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3, AlgorithmOperationType.READ);
+                ret = this.waitAtBreakpoint(3);
+                ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.DEFAULT);
+                this.mQueue.highlight(((Double)this.mQueue.getPrioMap().get(vStar)).intValue(), AlgorithmOperationType.DEFAULT);
+                this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3, AlgorithmOperationType.DEFAULT);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            vStar = (Vertex)this.mQueue.extractMinimum();
+            if (this.checkBreakpoint(4)) {
+                this.mTableStruct.reDraw();
+                ((Structure)this.mQueue).reDraw();
+                ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.READ);
+                this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3, AlgorithmOperationType.READ);
+                ret = this.waitAtBreakpoint(4);
+                this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3, AlgorithmOperationType.DEFAULT);
+                ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.DEFAULT);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            Iterator var3 = ((TreeSet)((GraphStructure)this.mStructure).getAdjList().get(vStar)).iterator();
+
+            while(var3.hasNext()) {
+                VertexWeightPair vwP = (VertexWeightPair)var3.next();
+                this.incrCounter(1);
+                Double newDist = this.saveAdd(this.mTableStruct.getDist(vStar.toString()), vwP.getWeight());
+                Boolean ret;
+                if (this.checkBreakpoint(5)) {
+                    this.mTableStruct.reDraw();
+                    ((Structure)this.mQueue).reDraw();
+                    ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.READ);
+                    ((GraphStructure)this.mStructure).highlightEdge(vStar, vwP.getVertex(), AlgorithmOperationType.READ);
+                    ((GraphStructure)this.mStructure).highlightVertex(vwP.getVertex(), AlgorithmOperationType.READ);
+                    this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3 + 1, AlgorithmOperationType.READ);
+                    this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 1, AlgorithmOperationType.READ);
+                    ret = this.waitAtBreakpoint(5);
+                    this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3 + 1, AlgorithmOperationType.DEFAULT);
+                    this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 1, AlgorithmOperationType.DEFAULT);
+                    ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.DEFAULT);
+                    ((GraphStructure)this.mStructure).highlightEdge(vStar, vwP.getVertex(), AlgorithmOperationType.DEFAULT);
+                    ((GraphStructure)this.mStructure).highlightVertex(vwP.getVertex(), AlgorithmOperationType.DEFAULT);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                if (this.mTableStruct.getDist(vwP.getVertex().toString()) > newDist) {
+                    this.incrCounter(2);
+                    if (this.checkBreakpoint(6)) {
+                        ((Structure)this.mQueue).reDraw();
+                        this.mTableStruct.reDraw();
+                        ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.READ);
+                        ((GraphStructure)this.mStructure).highlightEdge(vStar, vwP.getVertex(), AlgorithmOperationType.READ);
+                        ((GraphStructure)this.mStructure).highlightVertex(vwP.getVertex(), AlgorithmOperationType.READ);
+                        this.mQueue.highlight(((Double)this.mQueue.getPrioMap().get(vwP.getVertex())).intValue(), AlgorithmOperationType.READ);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3, AlgorithmOperationType.READ);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 1, AlgorithmOperationType.READ);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 2, AlgorithmOperationType.READ);
+                        ret = this.waitAtBreakpoint(6);
+                        this.mQueue.highlight(((Double)this.mQueue.getPrioMap().get(vwP.getVertex())).intValue(), AlgorithmOperationType.DEFAULT);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3, AlgorithmOperationType.DEFAULT);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 1, AlgorithmOperationType.DEFAULT);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 2, AlgorithmOperationType.DEFAULT);
+                        ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.DEFAULT);
+                        ((GraphStructure)this.mStructure).highlightEdge(vStar, vwP.getVertex(), AlgorithmOperationType.DEFAULT);
+                        ((GraphStructure)this.mStructure).highlightVertex(vwP.getVertex(), AlgorithmOperationType.DEFAULT);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    if (!this.mQueue.getPrioMap().containsKey(vwP.getVertex())) {
+                        throw new UnsupportedOperationException("Das Element, welches geändert werden soll ist nicht mehr in der Prioritätswarteschlange vorhanden.");
+                    }
+
+                    this.mTableStruct.setDist(vwP.getVertex().toString(), newDist);
+                    this.mTableStruct.setPrev(vwP.getVertex().toString(), vStar.toString());
+                    if (this.checkBreakpoint(7)) {
+                        ((GraphStructure)this.mStructure).highlightVertex(vwP.getVertex(), AlgorithmOperationType.READ);
+                        ((Structure)this.mQueue).reDraw();
+                        this.mTableStruct.reDraw();
+                        this.mQueue.highlight(((Double)this.mQueue.getPrioMap().get(vwP.getVertex())).intValue(), AlgorithmOperationType.READ);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3, AlgorithmOperationType.READ);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 1, AlgorithmOperationType.READ);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 2, AlgorithmOperationType.READ);
+                        ret = this.waitAtBreakpoint(7);
+                        this.mQueue.highlight(((Double)this.mQueue.getPrioMap().get(vwP.getVertex())).intValue(), AlgorithmOperationType.DEFAULT);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3, AlgorithmOperationType.DEFAULT);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 1, AlgorithmOperationType.DEFAULT);
+                        this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vwP.getVertex().toString()) * 3 + 2, AlgorithmOperationType.DEFAULT);
+                        ((GraphStructure)this.mStructure).highlightVertex(vwP.getVertex(), AlgorithmOperationType.DEFAULT);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    if (!this.mQueue.getPrioMap().containsKey(vwP.getVertex())) {
+                        throw new UnsupportedOperationException("Das Element, welches geändert werden soll ist nicht mehr in der Prioritätswarteschlange vorhanden.");
+                    }
+
+                    this.mQueue.decreaseElement(vwP.getVertex(), newDist);
+                }
+
+                if (this.checkBreakpoint(4)) {
+                    ((Structure)this.mQueue).reDraw();
+                    this.mTableStruct.reDraw();
+                    ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.READ);
+                    this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3, AlgorithmOperationType.READ);
+                    boolean ret = this.waitAtBreakpoint(4);
+                    this.mTableStruct.highlight(this.mTableStruct.getNodeIndex(vStar.toString()) * 3, AlgorithmOperationType.DEFAULT);
+                    ((GraphStructure)this.mStructure).highlightVertex(vStar, AlgorithmOperationType.DEFAULT);
+                    if (!ret) {
+                        return;
+                    }
+                }
+            }
+
+            if (this.checkBreakpoint(2)) {
+                ((Structure)this.mQueue).reDraw();
+                this.mTableStruct.reDraw();
+                this.ifAlgoRunReturn(2);
+            }
+        }
+
+    }
+
+    private void init() {
+        this.addPseudoCode();
+        this.mSupportStructures.add((Structure)this.mQueue);
+        this.initTableDistance();
+        this.mSupportStructures.add(this.mTableStruct);
+    }
+
+    private void initTableDistance() {
+        ArrayList<Object> row = new ArrayList();
+        row.add("Node");
+        row.add("Dist");
+        row.add("Prev");
+        this.mTableStruct.addRow(row);
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(3);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 5), new PseudoCodeCounter(1, 7), new PseudoCodeCounter(2, 8)));
+        this.mName = "Dijkstra";
+        this.mParameters = this.mParameters + " Knoten V, Kanten E ⊂ V, Kosten γ : E → ℝ, Startknoten s ∈ V";
+        this.mPseudocode.addLine("Rückgabewert: Distanzen abstand, Wege vorgänger");
+        this.mPseudocode.addLine("Initialisiere Pfadlänge der Knoten", 0);
+        this.mPseudocode.addLine("Erzeuge Prioritäts-Warteschlange Q");
+        this.mPseudocode.addLine("Füge alle Knoten mit Pfadlänge als Priorität in Q ein", 1);
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("Solange Q nicht leer ist", 2);
+        this.mPseudocode.addLine("    Entnimm Minimum V* aus Q", 3);
+        this.mPseudocode.addLine("    Für alle Knoten V mit Kante V* → V", 4);
+        this.mPseudocode.addLine("        Wenn Pfadlänge zu V größer ist als Weg über V*", 5);
+        this.mPseudocode.addLine("            Nutze neuen Weg und aktualisiere Pfadlänge", 6);
+        this.mPseudocode.addLine("            Aktualisiere Priorität von V in Q", 7);
+    }
+
+    private Double saveAdd(Double a, Double b) {
+        Double r = a + b;
+        if (a > 0.0D && b > 0.0D && r <= 0.0D) {
+            return 1.7976931348623157E308D;
+        } else {
+            return a < 0.0D && b < 0.0D && r >= 0.0D ? 4.9E-324D : r;
+        }
+    }
+}
