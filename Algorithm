@@ -1,0 +1,239 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.algorithm.Pseudocode.State;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import de.htwk_leipzig.imn.visualg.ui.time.TimeController;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public abstract class Algorithm<S extends Structure<?>> implements Runnable {
+    protected static final char LEFT_ARROW = '←';
+    protected static final char RIGHT_ARROW = '→';
+    protected static final char INFINITY = '∞';
+    protected static final char DELTA = 'Δ';
+    protected static final char UNEQUALS = '≠';
+    protected static final char LESSEQUAL = '≤';
+    protected static final char GREATEREQUAL = '≥';
+    protected static final char MULTIPLY = '·';
+    protected static final char ELEMENT_OF = '∈';
+    protected static final char SUBSET_OF = '⊂';
+    protected static final char TIMES = '×';
+    protected static final char R = 'ℝ';
+    protected static final char NOT = '¬';
+    protected static final char AND = '∧';
+    protected static final char OR = '∨';
+    protected static final String TAB = "    ";
+    protected static final char LEFTFLOOR = '⌊';
+    protected static final char RIGHTFLOOR = '⌋';
+    protected static final char LEFTCEILING = '⌈';
+    protected static final char RIGHTCEILING = '⌉';
+    private static final int DEFAULT_SLEEP_TIME = 1000;
+    protected final Pseudocode mPseudocode = new Pseudocode();
+    protected final List<Structure<?>> mSupportStructures = new ArrayList(0);
+    protected String mName;
+    protected String mParameters = "Parameter: ";
+    protected S mStructure;
+    protected Boolean mKill = false;
+    private Consumer<Boolean> mPauseUpdate = null;
+    private Boolean mPause;
+    private int mSleepTime = 1000;
+    private ArrayList<Integer> mCounters = new ArrayList();
+    protected boolean shouldStop = true;
+
+    public Algorithm(S structure) {
+        this.mStructure = structure;
+        this.mPause = true;
+        this.clearCounters();
+    }
+
+    public synchronized void pause() {
+        this.mPause = true;
+        if (this.mPauseUpdate != null) {
+            this.mPauseUpdate.accept(this.mPause);
+        }
+
+    }
+
+    public synchronized void resume() {
+        this.mPause = false;
+        this.notifyAll();
+    }
+
+    public synchronized void step() {
+        this.notifyAll();
+    }
+
+    protected void updatePseudocode() {
+        ActiveAlgorithm.increaseCompareAndAccessCounter();
+    }
+
+    private void updateCounter() {
+        ActiveAlgorithm.updateCounter(this);
+    }
+
+    protected void resultDialog(String title, String message, String color) {
+        ActiveAlgorithm.informationDialog(title, message, color);
+    }
+
+    protected Boolean checkBreakpoint(int id) {
+        if (this.mKill) {
+            throw new AlgorithmKilledException();
+        } else {
+            State state = this.mPseudocode.getState(id);
+            if (state == State.IGNORE) {
+                return false;
+            } else {
+                if (state == State.BREAK) {
+                    this.mPause = true;
+                    if (this.mPauseUpdate != null) {
+                        this.mPauseUpdate.accept(this.mPause);
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    protected boolean waitAtBreakpoint(int id) {
+        try {
+            if (!this.mKill && !Thread.currentThread().isInterrupted()) {
+                ActiveAlgorithm.highlight(id);
+                if (!this.mPause) {
+                    Thread.sleep((long)this.mSleepTime);
+                } else {
+                    TimeController.resetPlayButton();
+                }
+
+                synchronized(this) {
+                    if (this.mPause) {
+                        this.wait();
+                    }
+                }
+
+                ActiveAlgorithm.unhighlight(id);
+                return true;
+            } else {
+                throw new InterruptedException();
+            }
+        } catch (InterruptedException var4) {
+            ActiveAlgorithm.unhighlight(id);
+            return false;
+        }
+    }
+
+    public String getAlgorithmName() {
+        return this.mName;
+    }
+
+    public Pseudocode getPseudocode() {
+        return this.mPseudocode;
+    }
+
+    public String getParameters() {
+        return this.mParameters;
+    }
+
+    public void addPauseObserver(Consumer<Boolean> o) {
+        this.mPauseUpdate = o;
+    }
+
+    public List<Structure<?>> getSupportStructures() {
+        return this.mSupportStructures;
+    }
+
+    public Structure<?> getStructure() {
+        return this.mStructure;
+    }
+
+    public int getSleepTime() {
+        return this.mSleepTime;
+    }
+
+    public void setSleepTime(int sleepTime) {
+        this.mSleepTime = sleepTime;
+    }
+
+    public void kill() {
+        this.mKill = true;
+    }
+
+    public void run() {
+        this.execute();
+        if (this.shouldStop) {
+            ActiveAlgorithm.stop();
+        }
+
+    }
+
+    protected abstract void execute();
+
+    protected void ifAlgoRunReturn(int breakpoint) {
+        if (this.waitAtBreakpoint(breakpoint)) {
+            ;
+        }
+    }
+
+    protected void checkReturnBreakpoint(int id) {
+        if (this.checkBreakpoint(id)) {
+            this.waitAtBreakpoint(id);
+            this.ifAlgoRunReturn(id);
+        }
+
+    }
+
+    public int getCounter(int index) {
+        return (Integer)this.mCounters.get(index);
+    }
+
+    public void incrCounter(int index) {
+        this.setCounter(index, this.getCounter(index) + 1);
+    }
+
+    public Integer addCounter(int defaultValue) {
+        this.mCounters.add(defaultValue);
+        return this.mCounters.size() - 1;
+    }
+
+    public Integer addCounter() {
+        return this.mCounters.size() + 1 > 12 ? 11 : this.addCounter(0);
+    }
+
+    public ArrayList<Integer> getAllCounters() {
+        return new ArrayList(this.mCounters);
+    }
+
+    public void addCounters(int amount, List<Integer> defaultValue) {
+        if (this.mCounters.size() + amount <= 12) {
+            for(int i = 0; i < amount; ++i) {
+                this.addCounter((Integer)defaultValue.get(i));
+            }
+
+        }
+    }
+
+    public void addCounters(int amount) {
+        if (this.mCounters.size() + amount <= 12) {
+            for(int i = 0; i < amount; ++i) {
+                this.addCounter();
+            }
+
+        }
+    }
+
+    public void setCounter(int index, int value) {
+        this.mCounters.set(index, value);
+        this.updateCounter();
+    }
+
+    public void clearCounters() {
+        this.mCounters.clear();
+    }
+}
