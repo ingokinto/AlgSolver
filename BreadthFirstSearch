@@ -1,0 +1,171 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.GraphStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.QueueStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.TableStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Vertex;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.Iterator;
+
+public class BreadthFirstSearch extends Algorithm<GraphStructure<?>> {
+    private static final int HEADERINDEX = 0;
+    private static final int DISTANCINDEX = 1;
+    private static final int PREVINDEX = 2;
+    private static final int KNOWNINDEX = 3;
+    private final QueueStructure<Integer> queue;
+    private Vertex mSource;
+    private TableStructure infoStructure;
+    private Hashtable<String, Integer> vertexToIndex;
+    private int lastAdd;
+
+    public BreadthFirstSearch(GraphStructure<?> structure, Vertex source) {
+        super(structure);
+        this.mSource = source;
+        this.addPseudoCode();
+        this.queue = new QueueStructure();
+        this.vertexToIndex = new Hashtable();
+        this.lastAdd = 0;
+        this.infoStructure = new TableStructure();
+        ArrayList<Object> vertexHeader = new ArrayList();
+        ArrayList<Object> distanceHeader = new ArrayList();
+        ArrayList<Object> knownHeader = new ArrayList();
+        ArrayList<Object> prevHeader = new ArrayList();
+        vertexHeader.add("Knoten");
+        distanceHeader.add("Abstand");
+        knownHeader.add("Bekannt");
+        prevHeader.add("Vorgänger");
+        this.infoStructure.addRow(vertexHeader);
+        this.infoStructure.addRow(distanceHeader);
+        this.infoStructure.addRow(prevHeader);
+        this.infoStructure.addRow(knownHeader);
+        this.mSupportStructures.addAll(Arrays.asList(this.queue, this.infoStructure));
+    }
+
+    public Vertex getSource() {
+        return this.mSource;
+    }
+
+    public int getDistance(String vertex) {
+        Object dist = this.infoStructure.getRow(1).get((Integer)this.vertexToIndex.get(vertex));
+        return dist.equals('∞') ? 2147483647 : (Integer)dist;
+    }
+
+    public String getPrev(String vertex) {
+        return (String)this.infoStructure.getRow(2).get((Integer)this.vertexToIndex.get(vertex));
+    }
+
+    public boolean getKnown(String vertex) {
+        return (Boolean)this.infoStructure.getRow(3).get((Integer)this.vertexToIndex.get(vertex));
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        Iterator var2 = ((GraphStructure)this.mStructure).getmVertices().values().iterator();
+
+        Vertex u;
+        while(var2.hasNext()) {
+            u = (Vertex)var2.next();
+            if (!u.getmName().equals(this.mSource.getmName())) {
+                this.setCounter(0, Integer.parseInt(u.getmName()));
+                ++this.lastAdd;
+                this.vertexToIndex.put(u.getmName(), this.lastAdd);
+                this.infoStructure.getRow(0).add(u.getmName());
+                this.infoStructure.getRow(1).add('∞');
+                this.infoStructure.getRow(2).add((Object)null);
+                this.infoStructure.getRow(3).add(false);
+                this.infoStructure.reDraw();
+                if (this.checkBreakpoint(0)) {
+                    ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.COMPARE);
+                    this.waitAtBreakpoint(0);
+                    ((GraphStructure)this.mStructure).reDraw();
+                    this.ifAlgoRunReturn(0);
+                }
+            }
+        }
+
+        ++this.lastAdd;
+        this.vertexToIndex.put(this.mSource.getmName(), this.lastAdd);
+        this.infoStructure.getRow(0).add(this.mSource.getmName());
+        this.infoStructure.getRow(1).add(0);
+        this.infoStructure.getRow(2).add((Object)null);
+        this.infoStructure.getRow(3).add(true);
+        this.infoStructure.reDraw();
+        this.checkReturnBreakpoint(10);
+        this.queue.enqueue(Integer.parseInt(this.mSource.getmName()));
+        this.queue.reDraw();
+        this.checkReturnBreakpoint(12);
+
+        while(!this.queue.isEmpty()) {
+            this.checkReturnBreakpoint(20);
+            u = ((GraphStructure)this.mStructure).getVertex(((Integer)this.queue.dequeue()).toString());
+            this.queue.reDraw();
+            this.setCounter(1, Integer.parseInt(u.getmName()));
+            this.checkReturnBreakpoint(21);
+
+            Vertex v;
+            for(Iterator var3 = ((GraphStructure)this.mStructure).getConnectedVertices(u).iterator(); var3.hasNext(); ((GraphStructure)this.mStructure).highlightEdge(u, v, AlgorithmOperationType.DEFAULT)) {
+                v = (Vertex)var3.next();
+                this.setCounter(2, Integer.parseInt(v.getmName()));
+                ((GraphStructure)this.mStructure).highlightEdge(u, v, AlgorithmOperationType.WRITE);
+                this.checkReturnBreakpoint(22);
+                if (!this.getKnown(v.getmName())) {
+                    if (this.checkBreakpoint(30)) {
+                        this.waitAtBreakpoint(30);
+                        this.ifAlgoRunReturn(30);
+                    }
+
+                    this.infoStructure.getRow(1).set((Integer)this.vertexToIndex.get(v.getmName()), this.getDistance(u.getmName()) + (int)((GraphStructure)this.mStructure).getEdgeValue(u.getmName(), v.getmName()));
+                    this.infoStructure.reDraw();
+                    this.checkReturnBreakpoint(31);
+                    this.infoStructure.getRow(2).set((Integer)this.vertexToIndex.get(v.getmName()), u.getmName());
+                    this.infoStructure.reDraw();
+                    this.checkReturnBreakpoint(32);
+                    this.infoStructure.getRow(3).set((Integer)this.vertexToIndex.get(v.getmName()), true);
+                    this.infoStructure.reDraw();
+                    this.checkReturnBreakpoint(33);
+                    this.queue.enqueue(Integer.parseInt(v.getmName()));
+                    this.queue.reDraw();
+                    this.checkReturnBreakpoint(34);
+                    ((GraphStructure)this.mStructure).reDraw();
+                }
+            }
+        }
+
+    }
+
+    private void addPseudoCode() {
+        this.mName = "Breitensuche";
+        this.addCounters(3);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 2), new PseudoCodeCounter(1, 11), new PseudoCodeCounter(2, 12)));
+        if (this.mSource != null) {
+            this.mParameters = this.mParameters + "Startknoten " + this.mSource.getmName();
+        }
+
+        this.mPseudocode.addLine("Rückgabewert: Distanzen abstand, Weg vorgänger");
+        this.mPseudocode.addLine("for alle Konten u ∈ V \\ {" + this.mSource.getmName() + "}", 0);
+        this.mPseudocode.addLine("    istBekannt[u] ← false");
+        this.mPseudocode.addLine("    abstand[u] ← ∞");
+        this.mPseudocode.addLine("    vorgänger[u] → NULL");
+        this.mPseudocode.addLine("abstand[start] ← 0", 10);
+        this.mPseudocode.addLine("istBekannt[start] ← true");
+        this.mPseudocode.addLine("Q → ALLOKIERE Warteschlange");
+        this.mPseudocode.addLine("Q.Einfügen(start)", 12);
+        this.mPseudocode.addLine("while ¬Q.IstLeer", 20);
+        this.mPseudocode.addLine("    u → Q.Dequeue", 21);
+        this.mPseudocode.addLine("    for alle v ∈ V mit (u,v) ∈ E", 22);
+        this.mPseudocode.addLine("        if ¬istBekannt[v]", 30);
+        this.mPseudocode.addLine("            abstand[v] ← abstand[u] + gewicht(u,v)", 31);
+        this.mPseudocode.addLine("            vorgänger[v] → u", 32);
+        this.mPseudocode.addLine("            istBekannt[v] ← true", 33);
+        this.mPseudocode.addLine("            Q.Einfügen(v)", 34);
+    }
+}
