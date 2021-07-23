@@ -1,0 +1,77 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Iterator;
+
+public class StatArrayInsert extends Algorithm<ArrayStructure<Integer>> {
+    private Integer mAddValue;
+
+    public StatArrayInsert(ArrayStructure<Integer> structure, Integer addValue) {
+        super(structure);
+        this.mAddValue = addValue;
+        this.init();
+        this.addPseudoCodeNoIndex();
+    }
+
+    private void init() {
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.updatePseudocode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.arrayInsert((ArrayStructure)this.mStructure, this.mAddValue);
+        }
+    }
+
+    public void arrayInsert(ArrayStructure<Integer> structure, Integer addValue) {
+        if (structure.getBelegteFelder() >= structure.getData().size()) {
+            if (this.checkBreakpoint(0) && !this.waitAtBreakpoint(0)) {
+                return;
+            }
+
+            this.resultDialog("Das Feld ist voll!", "ERROR: Das Feld ist voll!", "#FFA5A5");
+        } else {
+            int freieStelle = 0;
+
+            for(Iterator var5 = structure.getData().iterator(); var5.hasNext(); ++freieStelle) {
+                Integer i = (Integer)var5.next();
+                if (i == null) {
+                    break;
+                }
+            }
+
+            structure.remove(freieStelle);
+            structure.add(freieStelle, addValue);
+            Structure.incWriteAccess();
+            this.updatePseudocode();
+            ((ArrayStructure)this.mStructure).highlightElement(freieStelle, AlgorithmOperationType.WRITE);
+            if (this.checkBreakpoint(2) && !this.waitAtBreakpoint(2)) {
+                return;
+            }
+
+            ((ArrayStructure)this.mStructure).highlightElement(freieStelle, AlgorithmOperationType.DEFAULT);
+            structure.reDraw();
+        }
+
+    }
+
+    private void addPseudoCodeNoIndex() {
+        this.mName = "Einfügen-StatFeld(Schlüssel neuerWert, Daten neueDaten)";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert, Daten einfügeDaten, int belegteFelder";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("if belegteFelder = A.länge");
+        this.mPseudocode.addLine("    error \"Feld ist voll\"", 0);
+        this.mPseudocode.addLine("else");
+        this.mPseudocode.addLine("    A[belegteFelder + 1].wert ← neuerWert");
+        this.mPseudocode.addLine("    A[belegteFelder + 1].daten ← neueDaten");
+        this.mPseudocode.addLine("    belegteFelder ← belegteFelder + 1");
+    }
+}
