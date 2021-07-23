@@ -1,0 +1,55 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.Stack;
+
+public class StackPush<T> extends Algorithm<Stack<T>> {
+    private T mAddValue;
+
+    public StackPush(Stack<T> structure, T AddValue) {
+        super(structure);
+        this.mAddValue = AddValue;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(1)) {
+            this.ifAlgoRunReturn(1);
+        }
+
+        if (this.checkBreakpoint(2)) {
+            this.ifAlgoRunReturn(2);
+        }
+
+        if (this.checkBreakpoint(3)) {
+            ActiveAlgorithm.stop();
+        }
+
+        ((Stack)this.mStructure).add(0, this.mAddValue);
+        ((Stack)this.mStructure).reDraw();
+        this.addSuccessfulMessage();
+    }
+
+    private void addSuccessfulMessage() {
+        String title = "Push-Ergebnis:";
+        String addMessage = "Das Element \"" + this.mAddValue + "\" wurde erfolgreich eingefügt.";
+        this.resultDialog(title, addMessage, "#dcffb8");
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Push-Stack";
+        this.mParameters = this.mParameters + "Schlüssel push(" + this.mAddValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich sonst Fehler");
+        this.mPseudocode.addLine("if (Stack.size + el ≤ STACK.MAXSIZE())", 1);
+        this.mPseudocode.addLine("    STACK.PUSH(el)", 2);
+        this.mPseudocode.addLine("else Error", 3);
+    }
+}
