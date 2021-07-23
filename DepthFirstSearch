@@ -1,0 +1,314 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.GraphStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.LegendStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.TableStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Vertex;
+import de.htwk_leipzig.imn.visualg.model.structure.VertexWeightPair;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
+
+public class DepthFirstSearch extends RecursiveAlgorithm<GraphStructure<?>, Vertex> {
+    private TableStructure fieldValues;
+    private Map<Vertex, Boolean> isKnown;
+    private Map<Vertex, Integer> discovered;
+    private Map<Vertex, Integer> finished;
+    private Map<Vertex, Vertex> predecessor;
+    private int time;
+    private Map<Vertex, Integer> vertices;
+    private Vertex startNode;
+
+    public DepthFirstSearch(GraphStructure<?> graph, Vertex startNode) {
+        super(graph);
+        this.addPseudoCode();
+        this.vertices = new HashMap();
+        this.fieldValues = new TableStructure(5, graph.getAdjList().size() + 1);
+        this.fieldValues.set(0, 0, "Knoten");
+        this.fieldValues.set(1, 0, "istBekannt");
+        this.fieldValues.set(2, 0, "entdeckt");
+        this.fieldValues.set(3, 0, "fertig");
+        this.fieldValues.set(4, 0, "vorgänger");
+        Iterator<Vertex> it = graph.getAdjList().keySet().iterator();
+
+        for(int i = 1; i < this.fieldValues.getSize().getY(); ++i) {
+            Vertex vertex = (Vertex)it.next();
+            this.fieldValues.set(0, i, vertex);
+            this.vertices.put(vertex, i);
+        }
+
+        this.mSupportStructures.add(this.fieldValues);
+        this.isKnown = new HashMap();
+        this.discovered = new HashMap();
+        this.finished = new HashMap();
+        this.predecessor = new HashMap();
+        this.startNode = startNode;
+        List<Pair<Color, String>> legendElements = new ArrayList();
+        EdgeType[] var8;
+        int var7 = (var8 = EdgeType.values()).length;
+
+        for(int var6 = 0; var6 < var7; ++var6) {
+            EdgeType t = var8[var6];
+            if (t != EdgeType.NO_EDGE) {
+                legendElements.add(new Pair(t.highlightType().getColor(), t.toString()));
+            }
+        }
+
+        LegendStructure edgeTypeLegend = new LegendStructure(legendElements);
+        this.mSupportStructures.add(edgeTypeLegend);
+    }
+
+    private void expand(Vertex vertex) {
+        this.setCounter(2, (Integer)this.vertices.get(vertex));
+        this.isKnown.put(vertex, true);
+        ++this.time;
+        this.discovered.put(vertex, this.time);
+        this.setCounter(3, this.time);
+        this.fieldValues.set(1, (Integer)this.vertices.get(vertex), "true");
+        this.fieldValues.set(2, (Integer)this.vertices.get(vertex), this.time);
+        this.fieldValues.reDraw();
+        if (this.checkBreakpoint(2) && this.checkBreakpoint(20)) {
+            ((GraphStructure)this.mStructure).highlightVertex(vertex, AlgorithmOperationType.READ);
+            this.fieldValues.highlight(0, (Integer)this.vertices.get(vertex), AlgorithmOperationType.READ);
+            this.fieldValues.highlight(1, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+            this.fieldValues.highlight(2, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+            boolean ret = this.waitAtBreakpoint(20);
+            ((GraphStructure)this.mStructure).highlightVertex(vertex, AlgorithmOperationType.DEFAULT);
+            this.fieldValues.highlight(0, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+            this.fieldValues.highlight(1, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+            this.fieldValues.highlight(2, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+            if (!ret) {
+                return;
+            }
+        }
+
+        Iterator var3 = ((GraphStructure)this.mStructure).getAdjList().keySet().iterator();
+
+        while(var3.hasNext()) {
+            Vertex v = (Vertex)var3.next();
+            if (((GraphStructure)this.mStructure).hasEdge(vertex, v)) {
+                if (!(Boolean)this.isKnown.get(v)) {
+                    ((GraphStructure)this.mStructure).highlightEdge(vertex, v, EdgeType.TREE.highlightType());
+                    this.fieldValues.set(4, (Integer)this.vertices.get(v), vertex);
+                    this.fieldValues.reDraw();
+                }
+
+                if (this.checkBreakpoint(2) && this.checkBreakpoint(21)) {
+                    this.setCounter(4, (Integer)this.vertices.get(v));
+                    ((GraphStructure)this.mStructure).highlightVertex(v, AlgorithmOperationType.READ);
+                    this.fieldValues.highlight(0, (Integer)this.vertices.get(v), AlgorithmOperationType.READ);
+                    this.fieldValues.highlight(1, (Integer)this.vertices.get(v), AlgorithmOperationType.READ);
+                    if (!(Boolean)this.isKnown.get(v)) {
+                        this.fieldValues.highlight(4, (Integer)this.vertices.get(v), AlgorithmOperationType.WRITE);
+                    }
+
+                    boolean ret = this.waitAtBreakpoint(21);
+                    ((GraphStructure)this.mStructure).highlightVertex(v, AlgorithmOperationType.DEFAULT);
+                    this.fieldValues.highlight(0, (Integer)this.vertices.get(v), AlgorithmOperationType.DEFAULT);
+                    this.fieldValues.highlight(1, (Integer)this.vertices.get(v), AlgorithmOperationType.DEFAULT);
+                    this.fieldValues.highlight(4, (Integer)this.vertices.get(v), AlgorithmOperationType.DEFAULT);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                if (!(Boolean)this.isKnown.get(v)) {
+                    this.predecessor.put(v, vertex);
+                    this.push(v, 22);
+                    this.expand(v);
+                }
+            }
+        }
+
+        ++this.time;
+        this.finished.put(vertex, this.time);
+        this.setCounter(5, this.time);
+        this.fieldValues.set(3, (Integer)this.vertices.get(vertex), this.time);
+        this.fieldValues.reDraw();
+        if (this.checkBreakpoint(2) && this.checkBreakpoint(23)) {
+            ((GraphStructure)this.mStructure).highlightVertex(vertex, AlgorithmOperationType.READ);
+            this.fieldValues.highlight(0, (Integer)this.vertices.get(vertex), AlgorithmOperationType.READ);
+            this.fieldValues.highlight(3, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+        }
+
+        this.pop(23);
+        if (this.checkBreakpoint(2) && this.checkBreakpoint(23)) {
+            ((GraphStructure)this.mStructure).highlightVertex(vertex, AlgorithmOperationType.DEFAULT);
+            this.fieldValues.highlight(0, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+            this.fieldValues.highlight(3, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+        }
+
+    }
+
+    private void depthFirstSearch(Vertex startNode) {
+        Iterator var3 = ((GraphStructure)this.mStructure).getAdjList().keySet().iterator();
+
+        while(var3.hasNext()) {
+            Vertex vertex = (Vertex)var3.next();
+            this.fieldValues.set(1, (Integer)this.vertices.get(vertex), "false");
+            this.fieldValues.set(2, (Integer)this.vertices.get(vertex), "0");
+            this.fieldValues.set(3, (Integer)this.vertices.get(vertex), "0");
+            this.fieldValues.set(4, (Integer)this.vertices.get(vertex), "NULL");
+            if (this.checkBreakpoint(0)) {
+                this.setCounter(0, (Integer)this.vertices.get(vertex));
+                this.fieldValues.reDraw();
+                ((GraphStructure)this.mStructure).highlightVertex(vertex, AlgorithmOperationType.READ);
+                this.fieldValues.highlight(0, (Integer)this.vertices.get(vertex), AlgorithmOperationType.READ);
+                this.fieldValues.highlight(1, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+                this.fieldValues.highlight(2, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+                this.fieldValues.highlight(3, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+                this.fieldValues.highlight(4, (Integer)this.vertices.get(vertex), AlgorithmOperationType.WRITE);
+                boolean ret = this.waitAtBreakpoint(0);
+                ((GraphStructure)this.mStructure).highlightVertex(vertex, AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(0, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(1, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(2, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(3, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(4, (Integer)this.vertices.get(vertex), AlgorithmOperationType.DEFAULT);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.isKnown.put(vertex, false);
+            this.discovered.put(vertex, 0);
+            this.finished.put(vertex, 0);
+            this.predecessor.put(vertex, (Object)null);
+        }
+
+        this.time = 0;
+        this.fieldValues.reDraw();
+        List<Vertex> vertexList = (List)((GraphStructure)this.mStructure).getAdjList().keySet().parallelStream().sorted((ux, v) -> {
+            return ux.equals(startNode) ? -1 : ux.compareTo(v);
+        }).collect(Collectors.toList());
+        Iterator var8 = vertexList.iterator();
+
+        while(var8.hasNext()) {
+            Vertex u = (Vertex)var8.next();
+            boolean ret;
+            if (this.checkBreakpoint(1)) {
+                this.setCounter(1, (Integer)this.vertices.get(u));
+                this.fieldValues.reDraw();
+                ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.READ);
+                this.fieldValues.highlight(0, (Integer)this.vertices.get(u), AlgorithmOperationType.READ);
+                this.fieldValues.highlight(1, (Integer)this.vertices.get(u), AlgorithmOperationType.READ);
+                ret = this.waitAtBreakpoint(1);
+                ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(0, (Integer)this.vertices.get(u), AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(1, (Integer)this.vertices.get(u), AlgorithmOperationType.DEFAULT);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.fieldValues.reDraw();
+            if (this.checkBreakpoint(2)) {
+                ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.READ);
+                this.fieldValues.highlight(0, (Integer)this.vertices.get(u), AlgorithmOperationType.READ);
+                this.fieldValues.highlight(1, (Integer)this.vertices.get(u), AlgorithmOperationType.READ);
+                ret = this.waitAtBreakpoint(2);
+                ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(0, (Integer)this.vertices.get(u), AlgorithmOperationType.DEFAULT);
+                this.fieldValues.highlight(1, (Integer)this.vertices.get(u), AlgorithmOperationType.DEFAULT);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            if (!(Boolean)this.isKnown.get(u)) {
+                if (this.checkBreakpoint(2)) {
+                    ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.READ);
+                    this.fieldValues.highlight(0, (Integer)this.vertices.get(u), AlgorithmOperationType.READ);
+                    this.fieldValues.highlight(1, (Integer)this.vertices.get(u), AlgorithmOperationType.READ);
+                }
+
+                this.push(u, 2);
+                if (this.checkBreakpoint(2)) {
+                    ((GraphStructure)this.mStructure).highlightVertex(u, AlgorithmOperationType.DEFAULT);
+                    this.fieldValues.highlight(0, (Integer)this.vertices.get(u), AlgorithmOperationType.DEFAULT);
+                    this.fieldValues.highlight(1, (Integer)this.vertices.get(u), AlgorithmOperationType.DEFAULT);
+                }
+
+                this.expand(u);
+            }
+        }
+
+        ((GraphStructure)this.mStructure).getAdjList().forEach((ux, vSet) -> {
+            Iterator var4 = vSet.iterator();
+
+            while(true) {
+                VertexWeightPair v;
+                do {
+                    if (!var4.hasNext()) {
+                        return;
+                    }
+
+                    v = (VertexWeightPair)var4.next();
+                } while(!((GraphStructure)this.mStructure).isDirected() && ux.compareTo(v.getVertex()) >= 0);
+
+                ((GraphStructure)this.mStructure).highlightEdge(ux, v.getVertex(), this.getEdgeType(ux, v.getVertex()).highlightType());
+            }
+        });
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.depthFirstSearch(this.startNode);
+        }
+    }
+
+    EdgeType getEdgeType(Vertex source, Vertex dest) {
+        if (this.isKnown.containsKey(source) && this.isKnown.containsKey(dest)) {
+            if (!((GraphStructure)this.mStructure).hasEdge(source, dest)) {
+                return EdgeType.NO_EDGE;
+            } else if ((Integer)this.discovered.get(source) < (Integer)this.discovered.get(dest) && (Integer)this.finished.get(dest) < (Integer)this.finished.get(source)) {
+                return ((Vertex)this.predecessor.get(dest)).equals(source) ? EdgeType.TREE : EdgeType.FORWARD;
+            } else {
+                return (Integer)this.finished.get(dest) < (Integer)this.discovered.get(source) ? EdgeType.ACROSS : EdgeType.BACKWARD;
+            }
+        } else {
+            return EdgeType.NO_EDGE;
+        }
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(6);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 2, "u: "), new PseudoCodeCounter(1, 8, "u: "), new PseudoCodeCounter(2, 13, "u: "), new PseudoCodeCounter(3, 16, "zeit: "), new PseudoCodeCounter(4, 17, "u: "), new PseudoCodeCounter(5, 22, "zeit: ")));
+        this.mName = "Tiefensuche";
+        this.mParameters = this.mParameters + "Knoten V, Kanten E";
+        this.mPseudocode.addLine("Rückgabewert: Zeiten entdeckt, fertig, Kanten des Tiefensuchbaums vorgänger");
+        this.mPseudocode.addLine("for alle Knoten u ∈ V", 0);
+        this.mPseudocode.addLine("    istBekannt[u] ← false");
+        this.mPseudocode.addLine("    entdeckt[u] ← 0");
+        this.mPseudocode.addLine("    fertig[u] ← 0");
+        this.mPseudocode.addLine("    vorgänger[u] → NULL");
+        this.mPseudocode.addLine("zeit ← 0");
+        this.mPseudocode.addLine("for alle Knoten u ∈ V", 1);
+        this.mPseudocode.addLine("    if ¬istBekannt[u]");
+        this.mPseudocode.addLine("        EXPANDIERE(u)", 2);
+        this.mPseudocode.addLine("return(entdeckt, fertig, vorgänger)");
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("EXPANDIERE(Knoten u):");
+        this.mPseudocode.addLine("istBekannt[u] ← true");
+        this.mPseudocode.addLine("zeit ← zeit + 1");
+        this.mPseudocode.addLine("entdeckt[u] ← zeit", 20);
+        this.mPseudocode.addLine("for alle v ∈ V mit (u, v) ∈ E", 21);
+        this.mPseudocode.addLine("    if ¬istBekannt[v]");
+        this.mPseudocode.addLine("        vorgänger[v] → u");
+        this.mPseudocode.addLine("        EXPANDIERE(v)", 22);
+        this.mPseudocode.addLine("zeit ← zeit + 1");
+        this.mPseudocode.addLine("fertig[u] ← zeit", 23);
+    }
+}
