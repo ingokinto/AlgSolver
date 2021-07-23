@@ -1,0 +1,289 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.AVLTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import java.util.Arrays;
+
+public class AVLTreeRemove<T extends Comparable> extends RecursiveAlgorithm<AVLTreeStructure<T>, Node<T>> {
+    private static boolean msJUnitTestCase;
+    private T msRemoveKeyValue;
+    private static boolean msKeyFound;
+    private T mRebalanceValue;
+    private Node mTemp;
+
+    public static boolean isKeyFound() {
+        return msKeyFound;
+    }
+
+    public AVLTreeRemove(AVLTreeStructure<T> structure, T removedKey, boolean jUnitTestCase) {
+        super(structure);
+        this.addPseudoCode(removedKey);
+        msJUnitTestCase = true;
+    }
+
+    public AVLTreeRemove(AVLTreeStructure<T> structure, T removeValue) {
+        super(structure);
+        this.addPseudoCode(removeValue);
+    }
+
+    private void addPseudoCode(T removeValue) {
+        this.mPseudocode.setShowComparisons(false);
+        this.addCounters(4);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 5), new PseudoCodeCounter(1, 7), new PseudoCodeCounter(2, 10), new PseudoCodeCounter(3, 13)));
+        this.msRemoveKeyValue = removeValue;
+        this.mName = "Löschen-AVL-R";
+        this.mParameters = this.mParameters + "Schlüssel löschWert(" + this.msRemoveKeyValue.toString() + ")";
+        this.mPseudocode.addLine("Rückgabewert: neue Wurzel, Info ob Baumhöhe gleich; Seiteneffekt");
+        this.mPseudocode.addLine("el → anker", 0);
+        this.mPseudocode.addLine("switch", 1);
+        this.mPseudocode.addLine("case el = NULL:", 2);
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"", 3);
+        this.mPseudocode.addLine("case löschWert < el.wert:", 4);
+        this.mPseudocode.addLine("    el.links → LÖSCHEN-AVL-R(löschWert)", 5);
+        this.mPseudocode.addLine("    return el", 6);
+        this.mPseudocode.addLine("case löschWert > el.wert:", 7);
+        this.mPseudocode.addLine("    el.rechts → LÖSCHEN-AVL-R(löschWert)", 8);
+        this.mPseudocode.addLine("    return el", 9);
+        this.mPseudocode.addLine("case löschWert = el.wert:", 10);
+        this.mPseudocode.addLine("    if el.links = NULL", 11);
+        this.mPseudocode.addLine("        return el.rechts", 12);
+        this.mPseudocode.addLine("    else  ersatz → Suche-Nachfolger(el)", 13);
+        this.mPseudocode.addLine("        ersatz.links → el.links", 14);
+        this.mPseudocode.addLine("        ersatz.rechts → el.rechts", 15);
+        this.mPseudocode.addLine("        return ersatz", 16);
+    }
+
+    protected void execute() {
+        while(true) {
+            Node temp = ((AVLTreeStructure)this.mStructure).getRootNode();
+            ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+            this.ifAlgoRunReturn(-1);
+            if (this.checkBreakpoint(0)) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.READ);
+                this.ifAlgoRunReturn(0);
+            }
+
+            while(temp != null && !this.msRemoveKeyValue.equals(temp.getValue())) {
+                if (this.checkBreakpoint(1)) {
+                    this.ifAlgoRunReturn(1);
+                }
+
+                if (this.msRemoveKeyValue.compareTo(temp.getValue()) < 0) {
+                    ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                    this.runLeft(temp);
+                    temp = this.mTemp;
+                } else {
+                    ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                    this.runRight(temp);
+                    temp = this.mTemp;
+                }
+            }
+
+            if (this.checkBreakpoint(1)) {
+                this.ifAlgoRunReturn(1);
+            }
+
+            if (temp == null) {
+                if (!msJUnitTestCase) {
+                    this.nodeNotIncluded();
+                    continue;
+                }
+
+                msKeyFound = false;
+                ActiveAlgorithm.stop();
+                return;
+            }
+
+            this.incrCounter(3);
+            msKeyFound = true;
+            if (this.checkBreakpoint(10)) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue), AlgorithmOperationType.WRITE);
+                this.ifAlgoRunReturn(10);
+            }
+
+            if (((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getRightChild() == null && ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getLeftChild() == null) {
+                if (this.checkBreakpoint(11)) {
+                    this.ifAlgoRunReturn(11);
+                }
+
+                this.mRebalanceValue = ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getParent().getValue();
+                ((AVLTreeStructure)this.mStructure).removeWithoutRebalance(this.msRemoveKeyValue);
+                if (this.checkBreakpoint(12)) {
+                    ((AVLTreeStructure)this.mStructure).reDraw();
+                    this.ifAlgoRunReturn(12);
+                }
+            } else {
+                if (this.checkBreakpoint(13)) {
+                    this.ifAlgoRunReturn(13);
+                }
+
+                Node successor = this.findSuccessor();
+                this.mRebalanceValue = this.findRebalanceNode(successor);
+                ((AVLTreeStructure)this.mStructure).removeConnection();
+                ((AVLTreeStructure)this.mStructure).removeWithoutRebalance(this.msRemoveKeyValue);
+                ((AVLTreeStructure)this.mStructure).reDraw();
+            }
+
+            if (!msKeyFound) {
+                ActiveAlgorithm.stop();
+                return;
+            }
+
+            if (msJUnitTestCase) {
+                return;
+            }
+
+            this.removeSuccessfulMessage();
+            ActiveAlgorithm.pause();
+
+            try {
+                ActiveAlgorithm.multiRun(new AVLTreeRebalance((AVLTreeStructure)this.mStructure, this.mRebalanceValue));
+            } catch (Exception var3) {
+                var3.printStackTrace();
+            }
+
+            return;
+        }
+    }
+
+    private Node findSuccessor() {
+        Node successor = null;
+        if (((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getRightChild() != null) {
+            successor = ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getRightChild();
+            ((AVLTreeStructure)this.mStructure).highlightNode(successor, AlgorithmOperationType.READ);
+            successor = this.minNode(successor);
+        } else if (((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getLeftChild() != null) {
+            successor = ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue).getLeftChild();
+            ((AVLTreeStructure)this.mStructure).highlightNode(successor, AlgorithmOperationType.READ);
+            successor = this.maxNode(successor);
+        }
+
+        if (this.checkBreakpoint(16)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNode(successor.getValue()), AlgorithmOperationType.INACTIVE);
+            ((AVLTreeStructure)this.mStructure).compare(((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue), ((AVLTreeStructure)this.mStructure).getNode(successor.getValue()), "");
+        }
+
+        if (successor.getRightChild() != null && successor.getParent() != ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue)) {
+            ((AVLTreeStructure)this.mStructure).compare(((AVLTreeStructure)this.mStructure).getNode(successor.getParent().getValue()), ((AVLTreeStructure)this.mStructure).getNode(successor.getRightChild().getValue()), "");
+        }
+
+        if (successor.getLeftChild() != null && successor.getParent() != ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue)) {
+            ((AVLTreeStructure)this.mStructure).compare(((AVLTreeStructure)this.mStructure).getNode(successor.getParent().getValue()), ((AVLTreeStructure)this.mStructure).getNode(successor.getLeftChild().getValue()), "");
+        }
+
+        this.ifAlgoRunReturn(16);
+        return successor;
+    }
+
+    private void nodeNotIncluded() {
+        this.incrCounter(0);
+        if (this.checkBreakpoint(2)) {
+            this.ifAlgoRunReturn(2);
+        }
+
+        if (this.checkBreakpoint(3)) {
+            this.ifAlgoRunReturn(3);
+        }
+
+        msKeyFound = false;
+        ActiveAlgorithm.stop();
+        this.removeUnsuccessfulMessage();
+    }
+
+    private void runLeft(Node temp) {
+        this.push(temp, 4);
+        this.incrCounter(1);
+        if (this.checkBreakpoint(4)) {
+            this.ifAlgoRunReturn(4);
+        }
+
+        if (this.checkBreakpoint(5)) {
+            if (temp.getLeftChild() != null) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(temp.getLeftChild(), AlgorithmOperationType.READ);
+            }
+
+            this.ifAlgoRunReturn(5);
+        }
+
+        this.mTemp = temp.getLeftChild();
+        if (this.checkBreakpoint(6)) {
+            this.ifAlgoRunReturn(6);
+        }
+
+    }
+
+    private void runRight(Node temp) {
+        this.push(temp, 7);
+        this.incrCounter(2);
+        if (this.checkBreakpoint(7)) {
+            this.ifAlgoRunReturn(7);
+        }
+
+        if (this.checkBreakpoint(8)) {
+            if (temp.getRightChild() != null) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(temp.getRightChild(), AlgorithmOperationType.READ);
+            }
+
+            this.ifAlgoRunReturn(8);
+        }
+
+        this.mTemp = temp.getRightChild();
+        if (this.checkBreakpoint(9)) {
+            this.ifAlgoRunReturn(9);
+        }
+
+    }
+
+    private T findRebalanceNode(Node successor) {
+        this.mRebalanceValue = ((AVLTreeStructure)this.mStructure).getRootNode().getValue();
+        if (successor.getRightChild() != null) {
+            return successor.getRightChild().getValue();
+        } else if (successor.getLeftChild() != null) {
+            return successor.getLeftChild().getValue();
+        } else if (successor.getRightChild() == null && successor.getLeftChild() == null) {
+            return successor.getParent() == ((AVLTreeStructure)this.mStructure).getNode(this.msRemoveKeyValue) ? successor.getValue() : successor.getParent().getValue();
+        } else {
+            return this.mRebalanceValue;
+        }
+    }
+
+    private Node maxNode(Node n) {
+        if (this.checkBreakpoint(13)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNode(n.getValue()), AlgorithmOperationType.READ);
+            this.waitAtBreakpoint(13);
+        }
+
+        return n.getRightChild() == null ? n : this.maxNode(n.getRightChild());
+    }
+
+    private Node minNode(Node n) {
+        if (this.checkBreakpoint(13)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNode(n.getValue()), AlgorithmOperationType.READ);
+            this.waitAtBreakpoint(13);
+        }
+
+        return n.getLeftChild() == null ? n : this.minNode(n.getLeftChild());
+    }
+
+    private void removeSuccessfulMessage() {
+        msKeyFound = true;
+        String title = "Löschergebnis:";
+        String foundMessage = "Der Knoten \"" + this.msRemoveKeyValue + "\" wurde entfernt.  Drücken Sie nun auf Play um die AVL-Bedingung zu prüfen.";
+        this.resultDialog(title, foundMessage, "#dcffb8");
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    private void removeUnsuccessfulMessage() {
+        msKeyFound = false;
+        String title = "Löschergebnis:";
+        String errorMessage = "Der Knoten \"" + this.msRemoveKeyValue + "\" ist im Baum nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+}
