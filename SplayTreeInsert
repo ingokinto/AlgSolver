@@ -1,0 +1,198 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import de.htwk_leipzig.imn.visualg.model.structure.SplayTreeStructure;
+
+public class SplayTreeInsert<T extends Comparable> extends Algorithm<SplayTreeStructure<?>> {
+    private T mInsertValue;
+    private boolean mRotateRun;
+    private static boolean msJUnitTestCase;
+    private static boolean msKeyIncluded;
+
+    public SplayTreeInsert(SplayTreeStructure<Integer> structure, T insertValue, boolean rotateRun) {
+        super(structure);
+        this.mInsertValue = insertValue;
+        this.mRotateRun = rotateRun;
+        msJUnitTestCase = false;
+        this.addPseudoCode();
+    }
+
+    public SplayTreeInsert(SplayTreeStructure<Integer> structure, T insertValue, boolean jUnitTestCase, boolean rotateRun) {
+        super(structure);
+        this.mInsertValue = insertValue;
+        this.mRotateRun = rotateRun;
+        msJUnitTestCase = true;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        Node root = ((SplayTreeStructure)this.mStructure).getRootNode();
+        if (!this.mRotateRun && this.checkBreakpoint(0)) {
+            ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.READ);
+            this.ifAlgoRunReturn(0);
+        }
+
+        if (root == null) {
+            if (!this.mRotateRun && this.checkBreakpoint(1)) {
+                this.ifAlgoRunReturn(1);
+                ((SplayTreeStructure)this.mStructure).insertNodeWithoutSplay(this.mInsertValue);
+                ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.WRITE);
+            }
+        } else {
+            ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.DEFAULT);
+            if (this.checkBreakpoint(2)) {
+                root = ((SplayTreeStructure)this.mStructure).getRootNode();
+                if (!this.mRotateRun) {
+                    this.ifAlgoRunReturn(2);
+                    this.ifAlgoRunReturn(2);
+                    this.startRotationMessage();
+                    this.startSplayTreeRotate();
+                    return;
+                }
+
+                root = ((SplayTreeStructure)this.mStructure).getRootNode();
+            }
+
+            if (this.checkBreakpoint(3)) {
+                ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.READ);
+                this.ifAlgoRunReturn(3);
+            }
+
+            if (this.mInsertValue.compareTo(root.getValue()) == 0) {
+                if (this.checkBreakpoint(4)) {
+                    ((SplayTreeStructure)this.mStructure).highlightNode(root, AlgorithmOperationType.FOUND);
+                    this.ifAlgoRunReturn(4);
+                }
+
+                if (this.checkBreakpoint(5)) {
+                    this.ifAlgoRunReturn(5);
+                    if (!msJUnitTestCase) {
+                        this.insertUnsuccessfulMessage();
+                    } else {
+                        msKeyIncluded = false;
+                    }
+                }
+            } else if (this.mInsertValue.compareTo(root.getValue()) < 0) {
+                this.insertRootRightChild(root);
+                msKeyIncluded = true;
+            } else {
+                this.insertRootLeftChild(root);
+                msKeyIncluded = true;
+            }
+        }
+
+        this.timerForUnhighlightAll();
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Einfügen-Splay-Baum";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert(" + this.mInsertValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("if anker = NULL", 0);
+        this.mPseudocode.addLine("    anker → EINFÜGEN-BAUM(neuerWert, neueDaten, NULL, NULL)", 1);
+        this.mPseudocode.addLine("else → SPLAY(anker, gesucht)", 2);
+        this.mPseudocode.addLine("    switch", 3);
+        this.mPseudocode.addLine("    case neuerWert = anker.wert :", 4);
+        this.mPseudocode.addLine("        error \"Element schon enthalten\"", 5);
+        this.mPseudocode.addLine("    case neuerWert < anker.wert", 6);
+        this.mPseudocode.addLine("        anker → EINFÜGEN-BAUM(neuerWert,neueDaten,anker.links,anker)", 7);
+        this.mPseudocode.addLine("    case neuerWert > anker.wert :", 8);
+        this.mPseudocode.addLine("        el.rechts → Einfügen-Baum(neuerWert,neueDaten,anker,anker.rechts)", 9);
+    }
+
+    private void insertRootLeftChild(Node temp) {
+        if (this.checkBreakpoint(8)) {
+            if (temp.getLeftChild() != null) {
+                ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.WRITE);
+            }
+
+            this.ifAlgoRunReturn(8);
+        }
+
+        if (this.checkBreakpoint(9)) {
+            this.ifAlgoRunReturn(9);
+        }
+
+        ((SplayTreeStructure)this.mStructure).insertNodeWithoutSplay(this.mInsertValue);
+        if (!msJUnitTestCase) {
+            ((SplayTreeStructure)this.mStructure).reDraw();
+        }
+
+        ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.WRITE);
+    }
+
+    private void insertRootRightChild(Node temp) {
+        if (this.checkBreakpoint(6)) {
+            if (temp.getRightChild() != null) {
+                ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.WRITE);
+                ((SplayTreeStructure)this.mStructure).compare(temp.getRightChild(), temp);
+            }
+
+            this.ifAlgoRunReturn(6);
+        }
+
+        if (this.checkBreakpoint(7)) {
+            this.ifAlgoRunReturn(7);
+        }
+
+        ((SplayTreeStructure)this.mStructure).insertNodeWithoutSplay(this.mInsertValue);
+        if (!msJUnitTestCase) {
+            ((SplayTreeStructure)this.mStructure).reDraw();
+        }
+
+        ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.WRITE);
+    }
+
+    private void insertUnsuccessfulMessage() {
+        String title = "Ergebnis:";
+        String nodeExistMessage = "Der Knoten \"" + this.mInsertValue + "\" ist im Baum bereits enthalten.";
+        this.resultDialog(title, nodeExistMessage, "#FFA5A5");
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    private void startRotationMessage() {
+        String title = "Starte Rotation:";
+        String insertMessage = "Drücken Sie nun auf Play um die Splay-Rotation zu starten.";
+        this.resultDialog(title, insertMessage, "#dcffb8");
+    }
+
+    private void startSplayTreeRotate() {
+        String startAlgo = "SplayTreeInsert";
+        ActiveAlgorithm.pause();
+
+        try {
+            this.mRotateRun = true;
+            ActiveAlgorithm.multiRun(new SplayTreeRotate((SplayTreeStructure)this.mStructure, this.mInsertValue, startAlgo));
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    private void timerForUnhighlightAll() {
+        try {
+            Thread.sleep(4000L);
+        } catch (InterruptedException var2) {
+        }
+
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    public boolean isRotateRun() {
+        return this.mRotateRun;
+    }
+
+    public static boolean isKeyIncluded() {
+        return msKeyIncluded;
+    }
+}
