@@ -1,0 +1,88 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Iterator;
+
+public class DynArrayInsert extends Algorithm<ArrayStructure<Integer>> {
+    private Integer mAddValue;
+
+    public DynArrayInsert(ArrayStructure<Integer> structure, Integer addValue) {
+        super(structure);
+        this.mAddValue = addValue;
+        this.init();
+        this.addPseudoCodeNoIndex();
+    }
+
+    private void init() {
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.updatePseudocode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.arrayInsert((ArrayStructure)this.mStructure, this.mAddValue);
+        }
+    }
+
+    public void arrayInsert(ArrayStructure<Integer> structure, Integer addValue) {
+        if (this.checkBreakpoint(0)) {
+            this.waitAtBreakpoint(0);
+            if (!this.waitAtBreakpoint(0)) {
+                return;
+            }
+        }
+
+        int freieStelle;
+        if (structure.getBelegteFelder() >= structure.getData().size()) {
+            freieStelle = structure.size() / 2;
+
+            for(int i = 0; i < freieStelle; ++i) {
+                structure.add((Object)null);
+            }
+
+            structure.reDraw();
+        }
+
+        freieStelle = 0;
+
+        for(Iterator var5 = structure.getData().iterator(); var5.hasNext(); ++freieStelle) {
+            Integer i = (Integer)var5.next();
+            if (i == null) {
+                break;
+            }
+        }
+
+        structure.remove(freieStelle);
+        structure.add(freieStelle, addValue);
+        Structure.incWriteAccess();
+        this.updatePseudocode();
+        ((ArrayStructure)this.mStructure).highlightElement(freieStelle, AlgorithmOperationType.WRITE);
+        if (this.checkBreakpoint(1)) {
+            this.waitAtBreakpoint(1);
+            if (!this.waitAtBreakpoint(1)) {
+                return;
+            }
+        }
+
+        ((ArrayStructure)this.mStructure).highlightElement(freieStelle, AlgorithmOperationType.DEFAULT);
+        structure.reDraw();
+    }
+
+    private void addPseudoCodeNoIndex() {
+        this.mName = "Einfügen-DynFeld";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert, Daten neueDaten";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("if belegteFelder = A.länge", 0);
+        this.mPseudocode.addLine("    ERWEITERE_FELD(A)");
+        this.mPseudocode.addLine("A[freiesFeld].wert ←neuerWert", 1);
+        this.mPseudocode.addLine("A[freiesFeld].daten ←neueDaten");
+        this.mPseudocode.addLine("belegteFelder ←belegteFelder + 1");
+    }
+}
