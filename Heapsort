@@ -1,0 +1,112 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.MaxHeapStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class Heapsort<T extends Comparable<T>> extends Algorithm<MaxHeapStructure<T>> {
+    public Heapsort(MaxHeapStructure<T> structure) {
+        super(structure);
+        this.mStructure = structure;
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.addPseudocode();
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+
+        for(int i = ((MaxHeapStructure)this.mStructure).getCount(); i >= 2; --i) {
+            if (this.checkBreakpoint(1)) {
+                this.ifAlgoRunReturn(1);
+            }
+
+            this.setCounter(0, i);
+            if (this.checkBreakpoint(2)) {
+                this.highlightSwap(1, i);
+                Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+                this.waitAtBreakpoint(2);
+                ((MaxHeapStructure)this.mStructure).removeConnection();
+                this.ifAlgoRunReturn(2);
+            }
+
+            ((MaxHeapStructure)this.mStructure).swap(1, i);
+            ((MaxHeapStructure)this.mStructure).reDraw();
+            int endIndex = ((MaxHeapStructure)this.mStructure).sinkHeap(1, i - 1);
+            if (this.checkBreakpoint(3)) {
+                List<Integer> path = retraceSinkPath(1, endIndex);
+                this.highlightRetrace(path);
+                this.calculateAndSetCounter(path);
+                this.waitAtBreakpoint(3);
+                ((MaxHeapStructure)this.mStructure).removeConnection();
+                this.ifAlgoRunReturn(3);
+            }
+
+            ((MaxHeapStructure)this.mStructure).reDraw();
+        }
+
+    }
+
+    private void addPseudocode() {
+        this.addCounter(((MaxHeapStructure)this.mStructure).size());
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3, "i: ")));
+        this.mName = "Heapsort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A sortiert");
+        this.mPseudocode.addLine("AUFBAU-MAX-HEAP()");
+        this.mPseudocode.addLine("for ( i ← A.länge, ..., 2 )", 1);
+        this.mPseudocode.addLine("    VERTAUSCHE(A, 1, i)", 2);
+        this.mPseudocode.addLine("    ABSINKEN-MAX-HEAP(1, i-1)", 3);
+    }
+
+    private void calculateAndSetCounter(List<Integer> path) {
+        int mWriteAccess = path.size() > 1 ? path.size() : 0;
+        int mReadAccess = path.size() > 1 ? path.size() * 2 : 0;
+        Structure.setWriteAccess(Structure.getWriteAccess() + mWriteAccess);
+        Structure.setKeyComparison(Structure.getKeyComparison() + mReadAccess);
+    }
+
+    private void highlightSwap(int i, int j) {
+        ((MaxHeapStructure)this.mStructure).compare(i, j, "Tausch nach Hinten");
+        ((MaxHeapStructure)this.mStructure).highlightElement(Arrays.asList(i, j), AlgorithmOperationType.WRITE);
+    }
+
+    private void highlightRetrace(List<Integer> trace) {
+        List<Integer> a = new ArrayList();
+        List<Integer> b = new ArrayList();
+
+        for(int i = 0; i < trace.size(); ++i) {
+            if (i + 1 < trace.size()) {
+                a.add((Integer)trace.get(i));
+                b.add((Integer)trace.get(i + 1));
+            }
+
+            ((MaxHeapStructure)this.mStructure).highlightElement((Integer)trace.get(i), AlgorithmOperationType.COMPARE);
+        }
+
+        ((MaxHeapStructure)this.mStructure).compare(a, b);
+    }
+
+    static List<Integer> retraceSinkPath(int startIndex, int endIndex) {
+        ArrayList<Integer> ret = new ArrayList();
+        ret.add(endIndex);
+        int curIndex = endIndex;
+
+        while(curIndex != startIndex && curIndex > 1) {
+            curIndex = (int)Math.floor((double)(curIndex / 2));
+            ret.add(curIndex);
+        }
+
+        Collections.reverse(ret);
+        return ret;
+    }
+}
