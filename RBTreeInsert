@@ -1,0 +1,44 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.RBNode;
+import de.htwk_leipzig.imn.visualg.model.structure.RBTreeStructure;
+
+public class RBTreeInsert<T extends Comparable<T>> extends BinTreeInsert<T> {
+    public RBTreeInsert(RBTreeStructure<T> structure, T insertValue) {
+        super(structure, insertValue);
+        this.shouldStop = false;
+    }
+
+    public RBTreeInsert(RBTreeStructure<T> structure, T insertValue, boolean junitTestcase) {
+        super(structure, insertValue, junitTestcase);
+        this.shouldStop = false;
+    }
+
+    protected void execute() {
+        super.execute();
+        this.startFixup();
+    }
+
+    private void startFixup() {
+        ActiveAlgorithm.pause();
+        RBTreeInsertFixup<T> algo = new RBTreeInsertFixup((RBTreeStructure)this.mStructure, (RBNode)this.mNode);
+        if (msJUnitTestCase) {
+            algo.resume();
+        }
+
+        ActiveAlgorithm.multiRun(algo);
+    }
+
+    protected void insertSuccessfulMessage() {
+        msKeyIncluded = true;
+        String title = "Ergebnis:";
+        String insertMessage = "Der Knoten '" + this.msInsertValue + "' es wird jetzt die Rot-Schwarz Bedingung überprüft. Es einige Sekunden dauern bis das geschieht. Danach muss der Play Button gedückt werden. Es ist empfohlen durch den Pseudocode durchzusteppen.";
+        this.resultDialog(title, insertMessage, "#dcffb8");
+    }
+}
