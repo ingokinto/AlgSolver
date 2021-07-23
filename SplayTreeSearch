@@ -1,0 +1,120 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import de.htwk_leipzig.imn.visualg.model.structure.SplayTreeStructure;
+
+public class SplayTreeSearch<T extends Comparable> extends Algorithm<SplayTreeStructure<?>> {
+    private T mSearchedValue;
+    private boolean mRotateRun;
+    private static boolean msKeyFound;
+    private static boolean msJUnitTestCase;
+
+    public SplayTreeSearch(SplayTreeStructure<T> tree, T searchValue, boolean rotateRun) {
+        super(tree);
+        this.mSearchedValue = searchValue;
+        this.mRotateRun = rotateRun;
+        this.addPseudoCode();
+    }
+
+    public SplayTreeSearch(SplayTreeStructure<T> tree, T searchValue, boolean jUnitTestCase, boolean rotateRun) {
+        super(tree);
+        this.mSearchedValue = searchValue;
+        this.mRotateRun = rotateRun;
+        msJUnitTestCase = true;
+        this.addPseudoCode();
+    }
+
+    public static boolean isKeyFound() {
+        return msKeyFound;
+    }
+
+    protected void execute() {
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        Node temp = ((SplayTreeStructure)this.mStructure).getRootNode();
+        if (!this.mRotateRun && !msJUnitTestCase && this.checkBreakpoint(0)) {
+            this.ifAlgoRunReturn(0);
+            this.startRotationMessage();
+            this.startSplayTreeRotate();
+        } else {
+            temp = ((SplayTreeStructure)this.mStructure).getRootNode();
+            ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.READ);
+            if (this.checkBreakpoint(1)) {
+                this.ifAlgoRunReturn(1);
+            }
+
+            if (temp != null && this.mSearchedValue.compareTo(temp.getValue()) == 0) {
+                ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.FOUND);
+                if (this.checkBreakpoint(3)) {
+                    this.ifAlgoRunReturn(3);
+                    if (!msJUnitTestCase) {
+                        this.searchSuccessfulMessage();
+                    } else {
+                        msKeyFound = true;
+                    }
+                }
+            } else {
+                ((SplayTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                if (this.checkBreakpoint(2)) {
+                    this.ifAlgoRunReturn(2);
+                    if (!msJUnitTestCase) {
+                        this.searchUnsuccessfulMessage();
+                    } else {
+                        msKeyFound = false;
+                    }
+                }
+            }
+
+        }
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Suchen-Splaybaum";
+        this.mParameters = this.mParameters + "Schlüssel gesucht(" + this.mSearchedValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: gesuchte Daten bzw. Fehler falls nicht enthalten");
+        this.mPseudocode.addLine("anker → SPLAY(anker, gesucht)", 0);
+        this.mPseudocode.addLine("if anker = NULL ∨ anker.wert ≠ gesucht", 1);
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"", 2);
+        this.mPseudocode.addLine("else \"Element gefunden\"", 3);
+    }
+
+    private void searchSuccessfulMessage() {
+        String title = "Suchergebnis:";
+        String foundMessage = "Der Knoten \"" + this.mSearchedValue + "\" wurde gefunden.";
+        this.resultDialog(title, foundMessage, "#dcffb8");
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    private void searchUnsuccessfulMessage() {
+        String title = "Suchergebnis:";
+        String errorMessage = "Der Knoten \"" + this.mSearchedValue + "\" ist im Baum nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+        ((SplayTreeStructure)this.mStructure).highlightNode(((SplayTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    private void startSplayTreeRotate() {
+        String startAlgo = "SplayTreeSearch";
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new SplayTreeRotate((SplayTreeStructure)this.mStructure, this.mSearchedValue, startAlgo));
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    private void startRotationMessage() {
+        String title = "Starte Rotation:";
+        String insertMessage = "Drücken Sie nun auf Play um die Splay-Rotation zu starten.";
+        this.resultDialog(title, insertMessage, "#dcffb8");
+    }
+}
