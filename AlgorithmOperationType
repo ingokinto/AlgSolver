@@ -1,0 +1,34 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.option.OptionXmlFile;
+import javafx.scene.paint.Color;
+
+public enum AlgorithmOperationType {
+    DEFAULT(Color.WHITE),
+    READ(Color.LIGHTGREEN),
+    WRITE(Color.RED),
+    COMPARE(Color.LIGHTBLUE),
+    PIVOT(Color.YELLOW),
+    INACTIVE(Color.LIGHTGREY),
+    PARTITION(Color.LIGHTPINK),
+    FOUND(Color.ORANGE);
+
+    private final Color mColor;
+
+    private AlgorithmOperationType(Color color) {
+        this.mColor = color;
+    }
+
+    public Color getColor() {
+        return OptionXmlFile.getInstance().getHighlightColor(this);
+    }
+
+    public Color getStandardColor() {
+        return this.mColor;
+    }
+}
