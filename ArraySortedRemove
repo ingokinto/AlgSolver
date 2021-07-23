@@ -1,0 +1,176 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import de.htwk_leipzig.imn.visualg.model.structure.Tuple;
+import java.util.Arrays;
+
+public class ArraySortedRemove extends RecursiveAlgorithm<ArrayStructure<Integer>, Tuple> {
+    private final int mRemoveValue;
+
+    public ArraySortedRemove(ArrayStructure<Integer> structure, int removeValue) {
+        super(structure);
+        this.mRemoveValue = removeValue;
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.addPseudoCodeNoIndex();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.sortedRemove(0, ((ArrayStructure)this.mStructure).getBelegteFelder() - 1);
+        }
+    }
+
+    private void sortedRemove(int left, int right) {
+        this.push(new Tuple(new Object[]{left + 1, right + 1}), 1);
+        boolean ret;
+        if (left <= right) {
+            ((ArrayStructure)this.mStructure).highlightElement(left, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).highlightElement(right, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).compare(left, right, "links ≤ rechts");
+            if (this.checkBreakpoint(0)) {
+                ret = this.waitAtBreakpoint(0);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            this.incrCounter(0);
+            int mid = (left + right) / 2;
+            ((ArrayStructure)this.mStructure).highlightElement(mid, AlgorithmOperationType.READ);
+            ((ArrayStructure)this.mStructure).compare(mid, mid, "mitte");
+            if (this.checkBreakpoint(1)) {
+                ret = this.waitAtBreakpoint(1);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if ((Integer)((ArrayStructure)this.mStructure).getData().get(mid) == this.mRemoveValue) {
+                this.incrCounter(1);
+                ((ArrayStructure)this.mStructure).highlightElement(mid, AlgorithmOperationType.FOUND);
+                if (this.checkBreakpoint(2)) {
+                    ret = this.waitAtBreakpoint(2);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.emptyStack(2);
+
+                for(int index = mid + 1; index < ((ArrayStructure)this.mStructure).getBelegteFelder(); ++index) {
+                    this.incrCounter(2);
+                    Structure.incWriteAccess();
+                    this.updatePseudocode();
+                    ((ArrayStructure)this.mStructure).highlightElement(index - 1, AlgorithmOperationType.WRITE);
+                    ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.READ);
+                    ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(index, index - 1, "A[" + (index - 1) + "] " + '←' + " A[" + index + "]");
+                    ((ArrayStructure)this.mStructure).set(index - 1, (Integer)((ArrayStructure)this.mStructure).getData().get(index));
+                    if (this.checkBreakpoint(3)) {
+                        ret = this.waitAtBreakpoint(3);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).reDraw();
+                }
+
+                this.incrCounter(2);
+                ((ArrayStructure)this.mStructure).set(((ArrayStructure)this.mStructure).getBelegteFelder() - 1, (Object)null);
+                ((ArrayStructure)this.mStructure).reDraw();
+                ActiveAlgorithm.stop();
+                return;
+            }
+
+            if ((Integer)((ArrayStructure)this.mStructure).getData().get(mid) > this.mRemoveValue) {
+                this.incrCounter(3);
+                ((ArrayStructure)this.mStructure).highlightElement(mid, AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(mid, mid, "A[mitte].wert > " + this.mRemoveValue);
+                if (this.checkBreakpoint(4)) {
+                    ret = this.waitAtBreakpoint(4);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.sortedRemove(left, mid - 1);
+            }
+
+            if ((Integer)((ArrayStructure)this.mStructure).getData().get(mid) < this.mRemoveValue) {
+                this.incrCounter(4);
+                ((ArrayStructure)this.mStructure).highlightElement(mid, AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(mid, mid, "A[mitte].wert < " + this.mRemoveValue);
+                if (this.checkBreakpoint(5)) {
+                    ret = this.waitAtBreakpoint(5);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.sortedRemove(mid + 1, right);
+            }
+        } else {
+            this.incrCounter(0);
+            if (this.checkBreakpoint(6)) {
+                ret = this.waitAtBreakpoint(6);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            ActiveAlgorithm.stop();
+            this.unsuccessfulMessage();
+        }
+
+    }
+
+    private void addPseudoCodeNoIndex() {
+        this.addCounters(5);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 6), new PseudoCodeCounter(1, 9), new PseudoCodeCounter(2, 10), new PseudoCodeCounter(3, 14), new PseudoCodeCounter(4, 16)));
+        this.mName = "Löschen-Sortfeld";
+        this.mParameters = this.mParameters + "Schlüssel löschWert(" + this.mRemoveValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst)");
+        this.mPseudocode.addLine("LÖSCHEN-SORTFELD-R(löschWert, 1, belegteFelder)");
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("LÖSCHEN-SORTFELD-R(löschWert, Index links, Index rechts)");
+        this.mPseudocode.addLine("if links ≤ rechts", 0);
+        this.mPseudocode.addLine("    mitte ← ⌊(links + rechts)/2⌋", 1);
+        this.mPseudocode.addLine("    switch");
+        this.mPseudocode.addLine("    case A[mitte].wert = löschWert:", 2);
+        this.mPseudocode.addLine("        for index ← mitte + 1, ..., belegteFelder", 3);
+        this.mPseudocode.addLine("            A[index - 1].wert ← A[index].wert");
+        this.mPseudocode.addLine("            A[index - 1].daten ← A[index].daten");
+        this.mPseudocode.addLine("            belegteFelder ←belegteFelder - 1");
+        this.mPseudocode.addLine("    case A[mitte].wert > löschWert:", 4);
+        this.mPseudocode.addLine("        return LÖSCHEN-SORTFELD-R(löschWert, links, mitte - 1)");
+        this.mPseudocode.addLine("    case A[mitte].wert < löschWert:", 5);
+        this.mPseudocode.addLine("        return LÖSCHEN-SORTFELD-R(löschWert, mitte + 1, rechts)");
+        this.mPseudocode.addLine("else");
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"", 6);
+    }
+
+    private void unsuccessfulMessage() {
+        String errorMessage = "Das Element \"" + this.mRemoveValue + "\" ist nicht im Array enthalten.";
+        this.resultDialog("Error", errorMessage, "#FFA5A5");
+    }
+}
