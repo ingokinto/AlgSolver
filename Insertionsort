@@ -1,0 +1,131 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class Insertionsort extends Algorithm<ArrayStructure<Integer>> {
+    private final ArrayStructure<Integer> SUPPORT_ARRAY = new ArrayStructure();
+
+    public Insertionsort(ArrayStructure<Integer> structure) {
+        super(structure);
+        this.SUPPORT_ARRAY.add(0, (Object)null);
+        this.SUPPORT_ARRAY.reDraw();
+        this.addPseudoCode();
+        this.mSupportStructures.add(this.SUPPORT_ARRAY);
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.insertionsort((ArrayStructure)this.mStructure);
+        }
+    }
+
+    public void insertionsort(ArrayStructure<Integer> structure) {
+        for(int i = 1; i < structure.getBelegteFelder(); ++i) {
+            this.incrCounter(0);
+            if (this.checkBreakpoint(0) && !this.waitAtBreakpoint(0)) {
+                return;
+            }
+
+            Integer newValue = (Integer)structure.get(i);
+            if (this.checkBreakpoint(1)) {
+                structure.highlightElement(i, AlgorithmOperationType.READ);
+                this.SUPPORT_ARRAY.highlightElement(0, AlgorithmOperationType.WRITE);
+                boolean interruptAtBreakpoint1 = this.waitAtBreakpoint(1);
+                if (!interruptAtBreakpoint1) {
+                    return;
+                }
+            }
+
+            this.SUPPORT_ARRAY.set(0, newValue);
+            structure.reDraw();
+            this.SUPPORT_ARRAY.reDraw();
+            int k = i;
+
+            while(true) {
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+                this.incrCounter(1);
+                boolean interruptAtBreakpoint3;
+                if (this.checkBreakpoint(2) && k > 0) {
+                    structure.highlightElement(Arrays.asList(k - 1), AlgorithmOperationType.COMPARE);
+                    this.SUPPORT_ARRAY.highlightElement(0, AlgorithmOperationType.COMPARE);
+                    interruptAtBreakpoint3 = this.waitAtBreakpoint(2);
+                    if (structure.getBelegteFelder() <= 20) {
+                        structure.highlightElement(k - 1, AlgorithmOperationType.DEFAULT);
+                    } else {
+                        ((ArrayStructure)this.mStructure).getBelegteFelder();
+                    }
+
+                    this.SUPPORT_ARRAY.highlightElement(0, AlgorithmOperationType.DEFAULT);
+                    structure.removeConnection();
+                    if (!interruptAtBreakpoint3) {
+                        return;
+                    }
+                }
+
+                if (k <= 0 || (Integer)structure.get(k - 1) <= newValue) {
+                    structure.set(k, newValue);
+                    Structure.incWriteAccess();
+                    this.updatePseudocode();
+                    if (this.checkBreakpoint(4)) {
+                        structure.highlightElement(k, AlgorithmOperationType.WRITE);
+                        this.SUPPORT_ARRAY.highlightElement(0, AlgorithmOperationType.READ);
+                        interruptAtBreakpoint3 = this.waitAtBreakpoint(4);
+                        structure.highlightElement(k, AlgorithmOperationType.DEFAULT);
+                        this.SUPPORT_ARRAY.highlightElement(0, AlgorithmOperationType.DEFAULT);
+                        structure.reDraw();
+                        this.SUPPORT_ARRAY.reDraw();
+                        if (!interruptAtBreakpoint3) {
+                            return;
+                        }
+                    }
+                    break;
+                }
+
+                structure.set(k, (Integer)structure.get(k - 1));
+                Structure.incWriteAccess();
+                this.updatePseudocode();
+                if (this.checkBreakpoint(3)) {
+                    structure.highlightElement(k, AlgorithmOperationType.WRITE);
+                    structure.highlightElement(k - 1, AlgorithmOperationType.READ);
+                    interruptAtBreakpoint3 = this.waitAtBreakpoint(3);
+                    structure.removeConnection();
+                    structure.highlightElement(k, AlgorithmOperationType.DEFAULT);
+                    structure.highlightElement(k - 1, AlgorithmOperationType.DEFAULT);
+                    this.SUPPORT_ARRAY.highlightElement(0, AlgorithmOperationType.DEFAULT);
+                    structure.reDraw();
+                    this.SUPPORT_ARRAY.reDraw();
+                    if (!interruptAtBreakpoint3) {
+                        return;
+                    }
+                }
+
+                --k;
+            }
+        }
+
+        structure.reDraw();
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(2);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 2), new PseudoCodeCounter(1, 5)));
+        this.mName = "Insertionsort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A sortiert");
+        this.mPseudocode.addLine("for i ← 2, ..., belegteFelder");
+        this.mPseudocode.addLine("    neu ← A[i]", 1);
+        this.mPseudocode.addLine("    k ← i");
+        this.mPseudocode.addLine("    while k > 1 ∧ A[k-1].wert > neu.wert", 2);
+        this.mPseudocode.addLine("        A[k] ←A[k-1]", 3);
+        this.mPseudocode.addLine("        k ← k - 1");
+        this.mPseudocode.addLine("    A[k] ← neu", 4);
+    }
+}
