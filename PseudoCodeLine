@@ -1,0 +1,45 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+public class PseudocodeLine {
+    private int mBreakId;
+    private String mLine;
+    private boolean mHighlight;
+
+    public PseudocodeLine(int breakId, String line) {
+        this.mBreakId = breakId;
+        this.mLine = line;
+    }
+
+    public int getBreakId() {
+        return this.mBreakId;
+    }
+
+    public void setBreakId(int mBreakId) {
+        this.mBreakId = mBreakId;
+    }
+
+    public String getLine() {
+        return this.mLine;
+    }
+
+    public void setLine(String mLine) {
+        this.mLine = mLine;
+    }
+
+    public void highlight() {
+        this.mHighlight = true;
+    }
+
+    public void unhighlight() {
+        this.mHighlight = false;
+    }
+
+    public boolean isHighlighted() {
+        return this.mHighlight;
+    }
+}
