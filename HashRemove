@@ -1,0 +1,48 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.HashTable;
+
+public class HashRemove<T extends Comparable<T>> extends Algorithm<HashTable<T>> {
+    Integer mRemoveValue;
+    int mTableMethod;
+
+    public HashRemove(HashTable<T> structure, int removeValue) {
+        super(structure);
+        this.mRemoveValue = removeValue;
+        this.mTableMethod = structure.getTableMethod();
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            int position = ((HashTable)this.mStructure).search(this.mRemoveValue);
+            if (position == -1) {
+                this.resultDialog("Nicht gefunden", "ERROR: Das zu löschende Element konnte nicht gefunden werden.", "#FFA5A5");
+            } else {
+                ((HashTable)this.mStructure).setElement(position, (Integer)null, 0);
+                ((HashTable)this.mStructure).reDraw();
+            }
+
+        }
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mName = "Löschen-Hashtabelle";
+        this.mParameters = this.mParameters + "Schlüssel löschWert (" + this.mRemoveValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("j ← 0");
+        this.mPseudocode.addLine("repeat");
+        this.mPseudocode.addLine("    i ← h(löschWert,j)");
+        this.mPseudocode.addLine("    j ← j + 1");
+        this.mPseudocode.addLine("until (ht[i].wert = löschWert) ∨ (ht[i].status = FREI)");
+        this.mPseudocode.addLine("if ht[i].status = BELEGT");
+        this.mPseudocode.addLine("    ht[i].status ← entfernt");
+        this.mPseudocode.addLine("else error \"Schlüssel nicht vorhanden\"");
+    }
+}
