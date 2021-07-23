@@ -1,0 +1,58 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.drawable.StackDrawable;
+import de.htwk_leipzig.imn.visualg.model.structure.Stack;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+
+public abstract class RecursiveAlgorithm<T extends Structure<?>, V> extends Algorithm<T> {
+    protected Stack<V> stack = new Stack();
+
+    public RecursiveAlgorithm(T structure) {
+        super(structure);
+        this.mSupportStructures.add(this.stack);
+    }
+
+    public void push(V newElement, int breakpointID) {
+        this.stack.push(newElement);
+        this.stack.reDraw();
+        if (this.checkBreakpoint(breakpointID)) {
+            this.stack.highlightTop(AlgorithmOperationType.WRITE);
+            this.waitAtBreakpoint(breakpointID);
+            this.stack.highlightTop(AlgorithmOperationType.DEFAULT);
+        }
+
+    }
+
+    public V pop(int breakpointID) {
+        if (this.checkBreakpoint(breakpointID)) {
+            this.stack.reDraw();
+            this.stack.highlightTop(AlgorithmOperationType.WRITE);
+            this.waitAtBreakpoint(breakpointID);
+            this.stack.highlightTop(AlgorithmOperationType.DEFAULT);
+        }
+
+        V top = this.stack.pop();
+        this.stack.reDraw();
+        return top;
+    }
+
+    public void emptyStack(int breakpointID) {
+        while(!this.stack.isEmpty()) {
+            this.pop(breakpointID);
+        }
+
+    }
+
+    public void setStackByDrawable(StackDrawable<?> stackDrawable) {
+        this.stack = (Stack)stackDrawable.getStructure();
+    }
+
+    public boolean isEmpty() {
+        return this.stack.isEmpty();
+    }
+}
