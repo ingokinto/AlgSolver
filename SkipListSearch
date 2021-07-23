@@ -1,0 +1,180 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.SkipListNode;
+import de.htwk_leipzig.imn.visualg.model.structure.SkipListStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class SkiplistSearch extends Algorithm<SkipListStructure<Integer>> {
+    private final int searchedItem;
+    protected Integer found = null;
+    private final List<Integer> indexChecked = new ArrayList();
+
+    public SkiplistSearch(SkipListStructure<Integer> skipList, int searchedItem) {
+        super(skipList);
+        this.searchedItem = searchedItem;
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.addPseudoCode();
+    }
+
+    Integer foundElement() {
+        return this.found;
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        List<SkipListNode> elementList = ((SkipListStructure)this.mStructure).getElementList();
+        SkipListNode el = ((SkipListStructure)this.mStructure).getHead();
+
+        int layer;
+        for(layer = ((SkipListStructure)this.mStructure).getMaxHeight(); layer >= 0; --layer) {
+            this.incrCounter(0);
+            int pos = elementList.indexOf(el) + 1;
+            ((SkipListStructure)this.mStructure).highlightNode(pos, layer, AlgorithmOperationType.READ);
+            boolean ret = this.waitAtBreakpoint(1);
+            if (!ret) {
+                return;
+            }
+
+            ((SkipListStructure)this.mStructure).reDraw();
+            this.highlightVisited();
+            int posNext;
+            if (el.getNext()[layer] != null && el.getNext()[layer].getKey() >= this.searchedItem) {
+                this.incrCounter(1);
+                Structure.incKeyComparison();
+                pos = elementList.indexOf(el) + 1;
+                posNext = elementList.indexOf(el.getNext()[layer]);
+                if (posNext != -1) {
+                    ++posNext;
+                    if (pos != posNext) {
+                        this.indexChecked.add(posNext);
+                    }
+
+                    ((SkipListStructure)this.mStructure).highlightNode(pos, layer, AlgorithmOperationType.COMPARE);
+                    ((SkipListStructure)this.mStructure).highlightNode(posNext, layer, AlgorithmOperationType.COMPARE);
+                    ((SkipListStructure)this.mStructure).compare(pos, posNext, "el.nächstes[ebene].wert < gesucht");
+                    ret = this.waitAtBreakpoint(2);
+                    if (!ret) {
+                        return;
+                    }
+
+                    ((SkipListStructure)this.mStructure).reDraw();
+                    this.highlightVisited();
+                }
+            } else {
+                while(el.getNext()[layer] != null && el.getNext()[layer].getKey() < this.searchedItem) {
+                    this.incrCounter(1);
+                    Structure.incKeyComparison();
+                    pos = elementList.indexOf(el) + 1;
+                    posNext = elementList.indexOf(el.getNext()[layer]) + 1;
+                    this.indexChecked.add(pos);
+                    ((SkipListStructure)this.mStructure).highlightNode(pos, layer, AlgorithmOperationType.COMPARE);
+                    ((SkipListStructure)this.mStructure).highlightNode(posNext, layer, AlgorithmOperationType.COMPARE);
+                    ((SkipListStructure)this.mStructure).compare(pos, posNext, "el.nächstes[ebene].wert < gesucht");
+                    ret = this.waitAtBreakpoint(2);
+                    if (!ret) {
+                        return;
+                    }
+
+                    ((SkipListStructure)this.mStructure).reDraw();
+                    this.highlightVisited();
+                    el = el.getNext()[layer];
+                    ((SkipListStructure)this.mStructure).highlightNode(posNext, layer, AlgorithmOperationType.READ);
+                    ret = this.waitAtBreakpoint(3);
+                    if (!ret) {
+                        return;
+                    }
+
+                    ((SkipListStructure)this.mStructure).reDraw();
+                    this.highlightVisited();
+                }
+
+                Structure.incKeyComparison();
+                if (el.getNext()[layer] != null) {
+                    pos = elementList.indexOf(el) + 1;
+                    posNext = elementList.indexOf(el.getNext()[layer]);
+                    if (posNext != -1) {
+                        ++posNext;
+                        if (pos != posNext) {
+                            this.indexChecked.add(posNext);
+                        }
+
+                        ((SkipListStructure)this.mStructure).highlightNode(pos, layer, AlgorithmOperationType.COMPARE);
+                        ((SkipListStructure)this.mStructure).highlightNode(posNext, layer, AlgorithmOperationType.COMPARE);
+                        ((SkipListStructure)this.mStructure).compare(pos, posNext, "el.nächstes[ebene].wert < gesucht");
+                        ret = this.waitAtBreakpoint(2);
+                        if (!ret) {
+                            return;
+                        }
+
+                        ((SkipListStructure)this.mStructure).reDraw();
+                        this.highlightVisited();
+                    }
+                }
+            }
+        }
+
+        layer = elementList.indexOf(el.getNext()[0]);
+        if (el.getNext()[0] != null && el.getNext()[0].getKey() == this.searchedItem) {
+            this.found = el.getNext()[0].getKey();
+            if (layer != -1) {
+                this.indexChecked.add(layer);
+                this.highlightVisited();
+                ((SkipListStructure)this.mStructure).highlightNode(layer + 1, 0, AlgorithmOperationType.FOUND);
+            }
+
+            this.positiveFoundMessage();
+        } else {
+            if (layer != -1) {
+                this.indexChecked.add(layer);
+                this.highlightVisited();
+                ((SkipListStructure)this.mStructure).highlightNode(layer + 1, 0, AlgorithmOperationType.WRITE);
+            }
+
+            this.negativeFoundMessage();
+        }
+
+        if (this.waitAtBreakpoint(4)) {
+            ((SkipListStructure)this.mStructure).reDraw();
+        }
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(2);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3), new PseudoCodeCounter(1, 4)));
+        this.mName = "Suchen-Skipliste";
+        this.mParameters = this.mParameters + "Schlüssel gesucht(" + this.searchedItem + ")";
+        this.mPseudocode.addLine("Rückgabewert: gesuchte Daten bzw. Fehler falls nicht enthalten");
+        this.mPseudocode.addLine("el → anker");
+        this.mPseudocode.addLine("for ebene← anzEbenen, ..., 1", 1);
+        this.mPseudocode.addLine("    while el.nächstes[ebene] ≠ NULL ∧ el.nächstes[ebene].wert < gesucht", 2);
+        this.mPseudocode.addLine("        el → el.nächstes[ebene]", 3);
+        this.mPseudocode.addLine("if el.nächstes[1] = NULL ∨ el.nächstes[1].wert ≠ gesucht", 4);
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"");
+        this.mPseudocode.addLine("else return el.nächstes[1]");
+    }
+
+    private void positiveFoundMessage() {
+        String title = "Suchergebnis:";
+        String foundMessage = "Das Element \"" + this.searchedItem + "\" ist in der Skipliste enthalten.";
+        this.resultDialog(title, foundMessage, "#dcffb8");
+    }
+
+    private void negativeFoundMessage() {
+        String title = "Suchergebnis:";
+        String errorMessage = "Das Element \"" + this.searchedItem + "\" ist in der Skipliste nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+    }
+
+    private void highlightVisited() {
+        ((SkipListStructure)this.mStructure).highlightNode(this.indexChecked, 0, AlgorithmOperationType.INACTIVE);
+    }
+}
