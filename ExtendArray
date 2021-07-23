@@ -1,0 +1,121 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+import java.util.Objects;
+
+public class ExtendArray extends Algorithm<ArrayStructure<Integer>> {
+    private final ArrayStructure<Integer> SUPPORT_ARRAY;
+    private int mSupportArraySize;
+
+    public ExtendArray(ArrayStructure<Integer> structure) {
+        super(structure);
+        this.addPseudocode();
+        this.SUPPORT_ARRAY = new ArrayStructure();
+        this.mSupportStructures.add(this.SUPPORT_ARRAY);
+    }
+
+    private void addPseudocode() {
+        this.addCounters(1);
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3)));
+        this.mName = "Feld erweitern";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rueckgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("B → allokiere Feld der Laenge ⌈(3/2 · A.Laenge)⌉", 1);
+        this.mPseudocode.addLine("    for (index ← 1, ..., belegteFelder)");
+        this.mPseudocode.addLine("        B[index].wert ← A[index].wert", 2);
+        this.mPseudocode.addLine("        B[index].daten ← A[index].daten");
+        this.mPseudocode.addLine("    A → B", 3);
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.calcSupportArraySize();
+            if (this.mSupportArraySize > 20) {
+                this.resultDialog("Feld wird zu groß", "Auf Felder mit mehr als 20 Elementen können keine Algorithmen angewendet werden. Das Hilfsfeld hätte mehr als 20 Elemente.", "#FFA5A5");
+            } else {
+                this.extendArray();
+            }
+
+        }
+    }
+
+    private void extendArray() {
+        this.createSupportArray();
+        if (!this.checkBreakpoint(1) || this.waitAtBreakpoint(1)) {
+            for(int i = 0; i < ((ArrayStructure)this.mStructure).size(); ++i) {
+                this.incrCounter(0);
+                this.updatePseudocode();
+                this.copyFieldToSupportArray(i);
+                this.SUPPORT_ARRAY.reDraw();
+                if (this.checkBreakpoint(2)) {
+                    ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.READ);
+                    this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.WRITE);
+                    if (!this.waitAtBreakpoint(2)) {
+                        return;
+                    }
+                }
+
+                Structure.incWriteAccess();
+                ((ArrayStructure)this.mStructure).highlightElement(i, AlgorithmOperationType.DEFAULT);
+                this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.DEFAULT);
+            }
+
+            this.copySupportArrayToStructure();
+            if (!this.checkBreakpoint(3) || this.waitAtBreakpoint(3)) {
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.SUPPORT_ARRAY.getData().clear();
+                this.SUPPORT_ARRAY.reDraw();
+            }
+        }
+    }
+
+    private void createSupportArray() {
+        for(int i = 0; i < this.mSupportArraySize; ++i) {
+            this.SUPPORT_ARRAY.add((Object)null);
+        }
+
+        this.SUPPORT_ARRAY.reDraw();
+    }
+
+    private void calcSupportArraySize() {
+        this.mSupportArraySize = ((ArrayStructure)this.mStructure).size() * 3 / 2;
+        if (((ArrayStructure)this.mStructure).size() % 2 == 1) {
+            ++this.mSupportArraySize;
+        }
+
+    }
+
+    private void copyFieldToSupportArray(int i) {
+        if (Objects.equals(((ArrayStructure)this.mStructure).getData().get(i), (Object)null)) {
+            this.SUPPORT_ARRAY.set(i, (Object)null);
+        } else {
+            this.SUPPORT_ARRAY.set(i, (Integer)((ArrayStructure)this.mStructure).getData().get(i));
+        }
+
+    }
+
+    private void copySupportArrayToStructure() {
+        for(int k = 0; k < this.SUPPORT_ARRAY.size(); ++k) {
+            if (k < ((ArrayStructure)this.mStructure).size()) {
+                ((ArrayStructure)this.mStructure).set(k, (Integer)this.SUPPORT_ARRAY.getData().get(k));
+            } else {
+                ((ArrayStructure)this.mStructure).add(k, (Integer)this.SUPPORT_ARRAY.getData().get(k));
+            }
+        }
+
+    }
+
+    public ArrayStructure<Integer> runAndReturnArrayStructure(ArrayStructure<Integer> structure) {
+        this.execute();
+        return (ArrayStructure)this.mStructure;
+    }
+}
