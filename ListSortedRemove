@@ -1,0 +1,152 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class ListSortedRemove extends Algorithm<ArrayStructure<Integer>> {
+    private final int mRemoveValue;
+    private boolean mKeyFound;
+
+    public ListSortedRemove(ArrayStructure<Integer> structure, int removeValue) {
+        super(structure);
+        this.mRemoveValue = removeValue;
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        int index = 0;
+        if (this.mRemoveValue < (Integer)((ArrayStructure)this.mStructure).getData().get(index)) {
+            this.mKeyFound = false;
+            this.checkBreakpoint(6);
+            this.ifAlgoRunReturn(6);
+            this.unsuccessfulMessage();
+            ActiveAlgorithm.stop();
+        } else {
+            if (this.checkBreakpoint(1)) {
+                ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(0, 0, "= " + this.mRemoveValue + " ?");
+                this.ifAlgoRunReturn(1);
+            }
+
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            if ((Integer)((ArrayStructure)this.mStructure).getData().get(index) == this.mRemoveValue) {
+                this.mKeyFound = true;
+                Structure.incWriteAccess();
+                this.updatePseudocode();
+                if (this.checkBreakpoint(5)) {
+                    ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.WRITE);
+                    ((ArrayStructure)this.mStructure).highlightElement(index + 1, AlgorithmOperationType.READ);
+                    ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(1, 1, "neuer Anker");
+                    this.ifAlgoRunReturn(5);
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).remove(((ArrayStructure)this.mStructure).getData().indexOf(this.mRemoveValue));
+                ((ArrayStructure)this.mStructure).reDraw();
+                ActiveAlgorithm.stop();
+            } else {
+                while(index + 1 < ((ArrayStructure)this.mStructure).getData().size() && (Integer)((ArrayStructure)this.mStructure).getData().get(index + 1) < this.mRemoveValue) {
+                    this.incrCounter(0);
+                    Structure.incKeyComparison();
+                    this.updatePseudocode();
+                    if (this.checkBreakpoint(2)) {
+                        ((ArrayStructure)this.mStructure).highlightElement(index + 1, AlgorithmOperationType.COMPARE);
+                        ((ArrayStructure)this.mStructure).compare(index + 1, index + 1, "el.nächstes < " + this.mRemoveValue + " ?");
+                        this.ifAlgoRunReturn(2);
+                    }
+
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    ++index;
+                    this.incrCounter(1);
+                    if (this.checkBreakpoint(3)) {
+                        ((ArrayStructure)this.mStructure).highlightElement(index - 1, AlgorithmOperationType.INACTIVE);
+                        ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.READ);
+                        ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(index - 1, index, "el → el.nächstes");
+                        this.ifAlgoRunReturn(3);
+                    }
+
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).reDraw();
+                }
+
+                if (this.checkBreakpoint(2)) {
+                    int indexLastElement = ((ArrayStructure)this.mStructure).getData().size() - 1;
+                    if (this.mRemoveValue > (Integer)((ArrayStructure)this.mStructure).getData().get(indexLastElement)) {
+                        ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.INACTIVE);
+                        ((ArrayStructure)this.mStructure).compare(index, index, "el.nächstes == NULL");
+                    } else {
+                        ((ArrayStructure)this.mStructure).highlightElement(index + 1, AlgorithmOperationType.COMPARE);
+                        ((ArrayStructure)this.mStructure).compare(index + 1, index + 1, "el.nächstes ≥ " + this.mRemoveValue + " !");
+                    }
+
+                    this.ifAlgoRunReturn(2);
+                }
+
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                this.incrCounter(0);
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+                this.incrCounter(2);
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+                if (index + 1 < ((ArrayStructure)this.mStructure).getData().size() && (Integer)((ArrayStructure)this.mStructure).getData().get(index + 1) == this.mRemoveValue) {
+                    this.mKeyFound = true;
+                    Structure.incWriteAccess();
+                    this.updatePseudocode();
+                    if (this.checkBreakpoint(5)) {
+                        ((ArrayStructure)this.mStructure).highlightElement(((ArrayStructure)this.mStructure).getData().indexOf(this.mRemoveValue), AlgorithmOperationType.WRITE);
+                        ((ArrayStructure)this.mStructure).compare(index + 1, index + 1, "el.nächstes = " + this.mRemoveValue + " !");
+                        this.ifAlgoRunReturn(5);
+                    }
+
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).remove(((ArrayStructure)this.mStructure).getData().indexOf(this.mRemoveValue));
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    ActiveAlgorithm.stop();
+                } else {
+                    this.checkBreakpoint(6);
+                    this.ifAlgoRunReturn(6);
+                    this.unsuccessfulMessage();
+                    this.mKeyFound = false;
+                    ActiveAlgorithm.stop();
+                }
+            }
+        }
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(3);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3), new PseudoCodeCounter(1, 4), new PseudoCodeCounter(2, 5)));
+        this.mName = "Sortiertes Löschen";
+        this.mParameters = this.mParameters + "Schlüssel " + this.mRemoveValue + " (löschWert)";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("el → anker", 1);
+        this.mPseudocode.addLine("while el.nächstes ≠ NULL ∧ el.nächstes.wert < " + this.mRemoveValue + " (löschWert)", 2);
+        this.mPseudocode.addLine("    el → el.nächstes", 3);
+        this.mPseudocode.addLine("if el.nächstes ≠ NULL ∧ el.nächstes.wert = " + this.mRemoveValue + " (löschWert)", 4);
+        this.mPseudocode.addLine("    el.nächstes → el.nächstes.nächstes", 5);
+        this.mPseudocode.addLine("else error \"Element nicht enthalten\"", 6);
+    }
+
+    private void unsuccessfulMessage() {
+        String errorMessage = "Das Element \"" + this.mRemoveValue + "\" ist in der Liste nicht enthalten.";
+        this.resultDialog("Löschergebnis", errorMessage, "#FFA5A5");
+    }
+
+    protected boolean getKeyFound() {
+        return this.mKeyFound;
+    }
+}
