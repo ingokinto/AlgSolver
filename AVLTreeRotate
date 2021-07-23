@@ -1,0 +1,140 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.AVLTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+
+public class AVLTreeRotate<T extends Comparable> extends RecursiveAlgorithm<AVLTreeStructure<T>, Node<T>> {
+    private T msRotateValue;
+
+    public AVLTreeRotate(AVLTreeStructure<T> structure, T rotateValue) {
+        super(structure);
+        this.msRotateValue = rotateValue;
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "Rotiere-AVL";
+        this.mParameters = this.mParameters + "Element el(" + this.msRotateValue + ")";
+        this.mPseudocode.addLine("switch", 0);
+        this.mPseudocode.addLine("case el.balance = 2 ∧ el.rechts.balance ≥ 0:", 1);
+        this.mPseudocode.addLine("    LINKS-ROTATION(el)", 2);
+        this.mPseudocode.addLine("case el.balance = 2 ∧ el.rechts.balance = -1:", 3);
+        this.mPseudocode.addLine("    RECHTS-LINKS-ROTATION(el)", 4);
+        this.mPseudocode.addLine("case el.balance = -2 ∧ el.links.balance ≤ 0:", 5);
+        this.mPseudocode.addLine("    RECHTS-ROTATION(el)", 6);
+        this.mPseudocode.addLine("case el.balance = -2 ∧ el.links.balance = 1:", 7);
+        this.mPseudocode.addLine("    LINKS-RECHTS-ROTATION(el)", 8);
+    }
+
+    protected void execute() {
+        ((AVLTreeStructure)this.mStructure).reDraw();
+        Node parent = ((AVLTreeStructure)this.mStructure).getNode(this.msRotateValue);
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(0)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.READ);
+            this.ifAlgoRunReturn(0);
+        }
+
+        if (parent.getBalance() == 2 && parent.getRightChild().getBalance() >= 0) {
+            this.runLeft(parent);
+        } else if (parent.getBalance() == 2 && parent.getRightChild().getBalance() == -1) {
+            this.runRightLeft(parent);
+        } else if (parent.getBalance() == -2 && parent.getLeftChild().getBalance() <= 0) {
+            this.runRight(parent);
+        } else if (parent.getBalance() == -2 && parent.getLeftChild().getBalance() == 1) {
+            this.runLeftRight(parent);
+        }
+    }
+
+    private void runLeftRight(Node parent) {
+        if (this.checkBreakpoint(7)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(7);
+        }
+
+        if (this.checkBreakpoint(8)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(8);
+        }
+
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new AVLTreeRotateLeftRight((AVLTreeStructure)this.mStructure, parent.getValue()));
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    private void runRight(Node parent) {
+        if (this.checkBreakpoint(5)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(5);
+        }
+
+        if (this.checkBreakpoint(6)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(6);
+        }
+
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new AVLTreeRotateRight((AVLTreeStructure)this.mStructure, parent.getValue()));
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    private void runRightLeft(Node parent) {
+        if (this.checkBreakpoint(3)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(3);
+        }
+
+        if (this.checkBreakpoint(4)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(4);
+        }
+
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new AVLTreeRotateRightLeft((AVLTreeStructure)this.mStructure, parent.getValue()));
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    private void runLeft(Node parent) {
+        if (this.checkBreakpoint(1)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(1);
+        }
+
+        if (this.checkBreakpoint(2)) {
+            ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.COMPARE);
+            this.ifAlgoRunReturn(2);
+        }
+
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new AVLTreeRotateLeft((AVLTreeStructure)this.mStructure, parent.getValue()));
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+}
