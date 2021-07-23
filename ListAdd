@@ -1,0 +1,66 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+
+public class ListAdd extends Algorithm<ArrayStructure<Integer>> {
+    private int mAddValue;
+
+    public ListAdd(ArrayStructure<Integer> structure, int AddValue, Boolean JunitTestCase) {
+        super(structure);
+        this.mAddValue = AddValue;
+        this.addPseudoCode(AddValue);
+    }
+
+    public ListAdd(ArrayStructure<Integer> structure, int AddValue) {
+        super(structure);
+        this.mAddValue = AddValue;
+        this.addPseudoCode(this.mAddValue);
+    }
+
+    protected void execute() {
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(1)) {
+            ((ArrayStructure)this.mStructure).highlightElement(0, AlgorithmOperationType.WRITE);
+            this.ifAlgoRunReturn(1);
+        }
+
+        if ((Integer)((ArrayStructure)this.mStructure).getData().get(0) == this.mAddValue) {
+            if (this.checkBreakpoint(2)) {
+                int index = ((ArrayStructure)this.mStructure).getData().indexOf(this.mAddValue);
+                ((ArrayStructure)this.mStructure).highlightElement(index, AlgorithmOperationType.WRITE);
+                this.ifAlgoRunReturn(2);
+            }
+
+            if (this.checkBreakpoint(2)) {
+                ((ArrayStructure)this.mStructure).connectInOneDirectionDesc(0, 0, "anker");
+                this.ifAlgoRunReturn(2);
+            }
+        }
+
+        ((ArrayStructure)this.mStructure).add(0, this.mAddValue);
+        ((ArrayStructure)this.mStructure).reDraw();
+        this.successfulMessage();
+        ActiveAlgorithm.stop();
+    }
+
+    private void addPseudoCode(int AddValue) {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mName = "Einfügen-Liste";
+        this.mParameters = this.mParameters + "Schlüssel einfügeWert(" + AddValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("el → ALLOKIERE Element(neuer Wert, neue Daten, anker)", 1);
+        this.mPseudocode.addLine("anker → el", 2);
+    }
+
+    private void successfulMessage() {
+        String title = "Einfügeergebnis:";
+        String addMessage = "Das Element \"" + this.mAddValue + "\" wurde erfolgreich eingefügt.";
+        this.resultDialog(title, addMessage, "#dcffb8");
+    }
+}
