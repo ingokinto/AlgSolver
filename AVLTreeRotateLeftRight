@@ -1,0 +1,59 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.AVLTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+
+public class AVLTreeRotateLeftRight<T extends Comparable> extends RecursiveAlgorithm<AVLTreeStructure<T>, Node<T>> {
+    private T msNodeValue;
+
+    public AVLTreeRotateLeftRight(AVLTreeStructure<T> structure, T nodeValue) {
+        super(structure);
+        this.mPseudocode.setShowComparisons(false);
+        this.msNodeValue = nodeValue;
+        this.mName = "Rotiere-Links-Rechts";
+        this.mParameters = this.mParameters + "Element el(" + this.msNodeValue + ")";
+        this.mPseudocode.addLine("el.links → LINKS-ROTATION()", 0);
+        this.mPseudocode.addLine("el → RECHTS-ROTATION()", 1);
+    }
+
+    protected void execute() {
+        ((AVLTreeStructure)this.mStructure).reDraw();
+        Node parent = ((AVLTreeStructure)this.mStructure).getNode(this.msNodeValue);
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(0)) {
+            this.runLeft(parent);
+        }
+
+        if (this.checkBreakpoint(1)) {
+            this.runRight(parent);
+        }
+
+        ((AVLTreeStructure)this.mStructure).leftRightRotation(parent);
+        ((AVLTreeStructure)this.mStructure).reDraw();
+        this.startRebalanceAlgo((AVLTreeStructure)this.mStructure, parent.getParent().getValue());
+    }
+
+    private void runRight(Node parent) {
+        ((AVLTreeStructure)this.mStructure).highlightNode(parent, AlgorithmOperationType.READ);
+        ((AVLTreeStructure)this.mStructure).compare(parent, parent, "Rechts-Rot.");
+        this.ifAlgoRunReturn(1);
+    }
+
+    private void runLeft(Node parent) {
+        ((AVLTreeStructure)this.mStructure).highlightNode(parent.getLeftChild(), AlgorithmOperationType.READ);
+        ((AVLTreeStructure)this.mStructure).compare(parent.getLeftChild(), parent.getLeftChild(), "Links-Rot.");
+        this.ifAlgoRunReturn(0);
+    }
+
+    private void startRebalanceAlgo(AVLTreeStructure<T> mStructure, T rebalance) {
+        ActiveAlgorithm.pause();
+        ActiveAlgorithm.multiRun(new AVLTreeRebalance(mStructure, rebalance));
+    }
+}
