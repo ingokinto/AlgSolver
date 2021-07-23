@@ -1,0 +1,115 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.HashTable;
+
+public class HashInsert<T extends Comparable<T>> extends Algorithm<HashTable<T>> {
+    Integer mInsertValue;
+    int mTableMethod;
+
+    public HashInsert(HashTable<T> structure, int insertValue) {
+        super(structure);
+        this.mInsertValue = insertValue;
+        this.mTableMethod = structure.getTableMethod();
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            int position = ((HashTable)this.mStructure).calculateHashValue(this.mInsertValue);
+            if (((HashTable)this.mStructure).getValue(position) == this.mInsertValue) {
+                this.resultDialog("Bereits enthalten", "ERROR: Das Element ist bereits in der Hash-Tabelle enthalten.", "#FFA5A5");
+            } else if (((HashTable)this.mStructure).getFillcount() < ((HashTable)this.mStructure).size()) {
+                int insertCounter = 0;
+                label30:
+                switch(this.mTableMethod) {
+                case 1:
+                    while(true) {
+                        if (((HashTable)this.mStructure).getStatus(position) != 1) {
+                            break label30;
+                        }
+
+                        ++insertCounter;
+                        position = this.linearProbe(insertCounter, this.mInsertValue, ((HashTable)this.mStructure).getSize());
+                    }
+                case 2:
+                    while(true) {
+                        if (((HashTable)this.mStructure).getStatus(position) != 1) {
+                            break label30;
+                        }
+
+                        ++insertCounter;
+                        position = this.quadraticProbe(insertCounter, this.mInsertValue, ((HashTable)this.mStructure).getSize());
+                    }
+                default:
+                    System.out.println("Falsche Methode... (1 - linear, 2 - quadratisch)");
+                }
+
+                ((HashTable)this.mStructure).setElement(position, this.mInsertValue, 1);
+                ((HashTable)this.mStructure).updateFillcount();
+                this.insertSuccessfulMessage(this.mInsertValue, position);
+                ((HashTable)this.mStructure).reDraw();
+                ActiveAlgorithm.stop();
+            } else {
+                this.resultDialog("Hash-Tabelle voll", "ERROR: Rehash notwendig!", "#FFA5A5");
+            }
+
+        }
+    }
+
+    private int linearProbe(int collisionCounter, Integer value, int tablesize) {
+        int newPosition = value + collisionCounter;
+        if (newPosition >= tablesize) {
+            newPosition = ((HashTable)this.mStructure).calculateHashValue(newPosition);
+        }
+
+        return newPosition;
+    }
+
+    private int quadraticProbe(int collisionCounter, Integer value, int tablesize) {
+        int newPosition = (int)((double)value + Math.pow(2.0D, (double)collisionCounter) - 1.0D);
+        if (newPosition >= tablesize) {
+            newPosition = ((HashTable)this.mStructure).calculateHashValue(newPosition);
+        }
+
+        return newPosition;
+    }
+
+    private void insertSuccessfulMessage(int value, int pos) {
+        String title = "Einfüge-Ergebnis:";
+        String addMessage = "Das Element \"" + value + "\" wurde an der Stelle " + pos + " eingefügt.";
+        this.resultDialog(title, addMessage, "#dcffb8");
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mName = "Einfügen-Hashtabelle";
+        this.mParameters = this.mParameters + "Schlüssel neuerWert (" + this.mInsertValue + "), Daten neueDaten";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekte");
+        this.mPseudocode.addLine("j ← 0");
+        this.mPseudocode.addLine("i ← h(neuerWert,j)");
+        this.mPseudocode.addLine("index ← i");
+        this.mPseudocode.addLine("while ht[i].wert ≠ neuerWert ∧ ht[i].status ≠ FREI", 4);
+        this.mPseudocode.addLine("    j ← j + 1");
+        this.mPseudocode.addLine("    i ← h(neuerWert,j)");
+        this.mPseudocode.addLine("    if ht[i].status ≠ BELEGT ∧ ht[index].status = BELEGT");
+        this.mPseudocode.addLine("        index ← i", 9);
+        this.mPseudocode.addLine("if ht[i].status = BELEGT", 10);
+        this.mPseudocode.addLine("    error \"Element bereits enthalten\"");
+        this.mPseudocode.addLine("else");
+        this.mPseudocode.addLine("    if ht[index].status = FREI ∧ anzahl > 0.9 · p", 12);
+        this.mPseudocode.addLine("        ht ← VERGRÖSSERN-UND-REHASH(ht)", 13);
+        this.mPseudocode.addLine("        EINFÜGEN-HASHTABELLE(neuerWert,neueDaten", 14);
+        this.mPseudocode.addLine("    else");
+        this.mPseudocode.addLine("        if ht[index].status = FREI", 15);
+        this.mPseudocode.addLine("            anzahl ← anzahl+1");
+        this.mPseudocode.addLine("            ht[index].wert ← neuerWert", 17);
+        this.mPseudocode.addLine("            ht[index].daten ← neueDaten");
+        this.mPseudocode.addLine("            ht[index].status ← BELEGT", 18);
+    }
+}
