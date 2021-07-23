@@ -1,0 +1,136 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.AVLTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+
+public class AVLTreeRebalance<T extends Comparable> extends RecursiveAlgorithm<AVLTreeStructure<T>, Node<T>> {
+    private T msRebalanceValue;
+    private Node mParent;
+
+    public AVLTreeRebalance(AVLTreeStructure<T> structure, T rebalanceValue) {
+        super(structure);
+        this.mPseudocode.setShowComparisons(false);
+        this.msRebalanceValue = rebalanceValue;
+        this.mName = "Rebalance-AVL-R";
+        this.mParameters = this.mParameters + "Element el(" + this.msRebalanceValue + ")";
+        this.mPseudocode.addLine("if el = root", 0);
+        this.mPseudocode.addLine("    el ← setBalance()", 1);
+        this.mPseudocode.addLine("    if math.abs(el.balance) ≥ 2 ", 2);
+        this.mPseudocode.addLine("        ROTIERE-AVL", 3);
+        this.mPseudocode.addLine("    return", 4);
+        this.mPseudocode.addLine("el ← setBalance()", 5);
+        this.mPseudocode.addLine("    if math.abs(el.balance)≥ 2 ", 6);
+        this.mPseudocode.addLine("        ROTIERE-AVL", 7);
+        this.mPseudocode.addLine("REBALANCE-AVL(el.parent)", 8);
+    }
+
+    protected void execute() {
+        ((AVLTreeStructure)this.mStructure).reDraw();
+        this.mParent = ((AVLTreeStructure)this.mStructure).getNode(this.msRebalanceValue);
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        Boolean rotate = false;
+
+        while(true) {
+            if (this.mParent == ((AVLTreeStructure)this.mStructure).getRootNode()) {
+                if (this.checkBreakpoint(0)) {
+                    ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.READ);
+                    this.ifAlgoRunReturn(0);
+                }
+
+                this.mParent.setBalance(((AVLTreeStructure)this.mStructure).heightTree(this.mParent.getRightChild()) - ((AVLTreeStructure)this.mStructure).heightTree(this.mParent.getLeftChild()));
+                if (this.checkBreakpoint(1)) {
+                    ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.READ);
+                    this.ifAlgoRunReturn(1);
+                }
+
+                if (Math.abs(this.mParent.getBalance()) >= 2) {
+                    if (this.checkBreakpoint(2)) {
+                        ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.FOUND);
+                        this.ifAlgoRunReturn(2);
+                    }
+
+                    if (this.checkBreakpoint(3)) {
+                        ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.FOUND);
+                        this.ifAlgoRunReturn(3);
+                    }
+
+                    rotate = true;
+                } else {
+                    if (this.checkBreakpoint(4)) {
+                        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+                        this.ifAlgoRunReturn(4);
+                    }
+
+                    if (!this.stack.isEmpty()) {
+                        this.pop(8);
+                    }
+                }
+                break;
+            }
+
+            if (this.checkBreakpoint(5)) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.READ);
+                this.mParent.setBalance(((AVLTreeStructure)this.mStructure).heightTree(this.mParent.getRightChild()) - ((AVLTreeStructure)this.mStructure).heightTree(this.mParent.getLeftChild()));
+                this.ifAlgoRunReturn(5);
+            }
+
+            if (Math.abs(this.mParent.getBalance()) >= 2) {
+                if (this.checkBreakpoint(6)) {
+                    ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.READ);
+                    this.mParent.setBalance(((AVLTreeStructure)this.mStructure).heightTree(this.mParent.getRightChild()) - ((AVLTreeStructure)this.mStructure).heightTree(this.mParent.getLeftChild()));
+                    this.ifAlgoRunReturn(6);
+                }
+
+                if (this.checkBreakpoint(7)) {
+                    this.ifAlgoRunReturn(7);
+                }
+
+                rotate = true;
+                break;
+            }
+
+            if (this.checkBreakpoint(8)) {
+                this.ifAlgoRunReturn(8);
+            }
+
+            ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.READ);
+            if (this.mParent.getParent() == null) {
+                if (!this.stack.isEmpty()) {
+                    this.pop(8);
+                }
+                break;
+            }
+
+            ((AVLTreeStructure)this.mStructure).highlightNode(this.mParent, AlgorithmOperationType.INACTIVE);
+            this.mParent = this.mParent.getParent();
+            if (!this.stack.isEmpty()) {
+                this.pop(8);
+            }
+        }
+
+        if (!rotate) {
+            ActiveAlgorithm.stop();
+        } else {
+            ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+            this.startRotate();
+        }
+    }
+
+    private void startRotate() {
+        ActiveAlgorithm.pause();
+
+        try {
+            ActiveAlgorithm.multiRun(new AVLTreeRotate((AVLTreeStructure)this.mStructure, this.mParent.getValue()));
+        } catch (Exception var2) {
+            var2.printStackTrace();
+        }
+
+    }
+}
