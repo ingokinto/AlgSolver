@@ -1,0 +1,139 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.AVLTreeStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import java.util.Arrays;
+
+public class AVLTreeSearch<T extends Comparable> extends Algorithm<AVLTreeStructure<?>> {
+    private static boolean msKeyFound;
+    private T msSearchedKey;
+    private static boolean msJUnitTestCase;
+
+    public AVLTreeSearch(AVLTreeStructure<T> structure, T searchedKey, boolean jUnitTestCase) {
+        super(structure);
+        this.msSearchedKey = searchedKey;
+        msJUnitTestCase = true;
+        this.addPseudoCode();
+    }
+
+    public AVLTreeSearch(AVLTreeStructure<T> structure, T searchValue) {
+        super(structure);
+        this.msSearchedKey = searchValue;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        Node temp = ((AVLTreeStructure)this.mStructure).getRootNode();
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+        this.ifAlgoRunReturn(-1);
+        if (this.checkBreakpoint(0)) {
+            this.ifAlgoRunReturn(0);
+        }
+
+        while(temp != null && !this.msSearchedKey.equals(temp.getValue())) {
+            this.incrCounter(0);
+            ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.READ);
+            if (this.checkBreakpoint(1)) {
+                this.ifAlgoRunReturn(1);
+            }
+
+            if (this.msSearchedKey.compareTo(temp.getValue()) < 0) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                temp = this.runLeft(temp);
+            } else {
+                ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.INACTIVE);
+                temp = this.runRight(temp);
+            }
+        }
+
+        if (this.checkBreakpoint(4)) {
+            this.ifAlgoRunReturn(4);
+        }
+
+        if (temp == null) {
+            this.incrCounter(3);
+            if (this.checkBreakpoint(5)) {
+                this.ifAlgoRunReturn(5);
+            }
+
+            if (!msJUnitTestCase) {
+                this.negativeFoundMessage();
+            } else {
+                msKeyFound = false;
+            }
+        } else {
+            this.incrCounter(4);
+            if (this.checkBreakpoint(6)) {
+                ((AVLTreeStructure)this.mStructure).highlightNode(temp, AlgorithmOperationType.FOUND);
+                this.ifAlgoRunReturn(6);
+            }
+
+            if (!msJUnitTestCase) {
+                this.positiveFoundMessage();
+            } else {
+                msKeyFound = true;
+            }
+        }
+
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowComparisons(false);
+        this.addCounters(5);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3), new PseudoCodeCounter(1, 5), new PseudoCodeCounter(2, 6), new PseudoCodeCounter(3, 7), new PseudoCodeCounter(4, 9)));
+        this.mName = "Suchen-Baum";
+        this.mParameters = this.mParameters + "Schlüssel gesucht(" + this.msSearchedKey + ")";
+        this.mPseudocode.addLine("Rückgabewert: gesuchte Daten bzw. Fehler falls nicht enthalten");
+        this.mPseudocode.addLine("el → anker");
+        this.mPseudocode.addLine("while el ≠ NULL ∧ gesucht ≠ el.wert", 0);
+        this.mPseudocode.addLine("    if gesucht < el.wert", 1);
+        this.mPseudocode.addLine("        el → el.links", 2);
+        this.mPseudocode.addLine("    else el → el.rechts", 3);
+        this.mPseudocode.addLine("if  el = NULL", 4);
+        this.mPseudocode.addLine("    error \"Element nicht gefunden\"", 5);
+        this.mPseudocode.addLine("else return el.daten", 6);
+    }
+
+    private Node runRight(Node temp) {
+        this.incrCounter(2);
+        if (this.checkBreakpoint(3)) {
+            this.ifAlgoRunReturn(3);
+        }
+
+        return temp.getRightChild();
+    }
+
+    private Node runLeft(Node temp) {
+        this.incrCounter(1);
+        if (this.checkBreakpoint(2)) {
+            this.ifAlgoRunReturn(2);
+        }
+
+        return temp.getLeftChild();
+    }
+
+    private void positiveFoundMessage() {
+        msKeyFound = true;
+        String title = "Suchergebnis:";
+        String foundMessage = "Der Knoten \"" + this.msSearchedKey + "\" ist im Baum enthalten.";
+        this.resultDialog(title, foundMessage, "#dcffb8");
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    private void negativeFoundMessage() {
+        msKeyFound = false;
+        String title = "Suchergebnis:";
+        String errorMessage = "Der Knoten \"" + this.msSearchedKey + "\" ist im Baum nicht enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+        ((AVLTreeStructure)this.mStructure).highlightNode(((AVLTreeStructure)this.mStructure).getNodesList(), AlgorithmOperationType.DEFAULT);
+    }
+
+    public boolean getKeyFound() {
+        return msKeyFound;
+    }
+}
