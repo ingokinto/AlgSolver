@@ -1,0 +1,135 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.HashTable;
+import java.util.Objects;
+
+public class HashFind<T extends Comparable<T>> extends Algorithm<HashTable<T>> {
+    Integer mSearchValue;
+    int mTableMethod;
+
+    public HashFind(HashTable<T> structure, int searchValue) {
+        super(structure);
+        this.mSearchValue = searchValue;
+        this.mTableMethod = structure.getTableMethod();
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            int position;
+            position = ((HashTable)this.mStructure).calculateHashValue(this.mSearchValue);
+            int searchCounter = 0;
+            label65:
+            switch(this.mTableMethod) {
+            case 1:
+                if (this.checkBreakpoint(5)) {
+                    ((HashTable)this.mStructure).highlightElement(position, AlgorithmOperationType.READ);
+                    if (!this.waitAtBreakpoint(5)) {
+                        return;
+                    }
+                }
+
+                while(true) {
+                    if (Objects.equals(this.mSearchValue, ((HashTable)this.mStructure).getValue(position)) || ((HashTable)this.mStructure).getStatus(position) == -1) {
+                        break label65;
+                    }
+
+                    ++searchCounter;
+                    position = this.linearProbe(searchCounter, this.mSearchValue, ((HashTable)this.mStructure).getSize());
+                    if (this.checkBreakpoint(searchCounter)) {
+                        ((HashTable)this.mStructure).highlightElement(position, AlgorithmOperationType.READ);
+                        if (!this.waitAtBreakpoint(5)) {
+                            return;
+                        }
+
+                        ((HashTable)this.mStructure).reDraw();
+                    }
+                }
+            case 2:
+                if (this.checkBreakpoint(5)) {
+                    ((HashTable)this.mStructure).highlightElement(position, AlgorithmOperationType.READ);
+                    if (!this.waitAtBreakpoint(5)) {
+                        return;
+                    }
+                }
+
+                while(true) {
+                    if (Objects.equals(this.mSearchValue, ((HashTable)this.mStructure).getValue(position)) || ((HashTable)this.mStructure).getStatus(position) == -1) {
+                        break label65;
+                    }
+
+                    ++searchCounter;
+                    position = this.quadraticProbe(searchCounter, this.mSearchValue, ((HashTable)this.mStructure).getSize());
+                    if (this.checkBreakpoint(searchCounter)) {
+                        ((HashTable)this.mStructure).highlightElement(position, AlgorithmOperationType.READ);
+                        if (!this.waitAtBreakpoint(5)) {
+                            return;
+                        }
+
+                        ((HashTable)this.mStructure).reDraw();
+                    }
+                }
+            default:
+                System.out.println("Falsche Methode... (1 - linear, 2 - quadratisch)");
+            }
+
+            if (((HashTable)this.mStructure).getStatus(position) == -1) {
+                this.resultDialog("Nicht gefunden", "ERROR: Das Element konnte nicht gefunden werden.", "#FFA5A5");
+            } else {
+                if (this.checkBreakpoint(8)) {
+                    ((HashTable)this.mStructure).highlightElement(position, AlgorithmOperationType.FOUND);
+                    if (!this.waitAtBreakpoint(8)) {
+                        return;
+                    }
+                }
+
+                this.searchSuccessfulMessage(this.mSearchValue, position);
+            }
+
+        }
+    }
+
+    private int linearProbe(int collisionCounter, Integer value, int tablesize) {
+        int newPosition = value + collisionCounter;
+        if (newPosition >= tablesize) {
+            newPosition = ((HashTable)this.mStructure).calculateHashValue(newPosition);
+        }
+
+        return newPosition;
+    }
+
+    private int quadraticProbe(int collisionCounter, Integer value, int tablesize) {
+        int newPosition = (int)((double)value + Math.pow(2.0D, (double)collisionCounter) - 1.0D);
+        if (newPosition >= tablesize) {
+            newPosition = ((HashTable)this.mStructure).calculateHashValue(newPosition);
+        }
+
+        return newPosition;
+    }
+
+    private void searchSuccessfulMessage(int value, int pos) {
+        String title = "Suche-Ergebnis:";
+        String addMessage = "Das Element \"" + value + "\" wurde an der Stelle " + pos + " gefunden.";
+        this.resultDialog(title, addMessage, "#dcffb8");
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowRepeatSymbol(false);
+        this.mName = "Suchen-Hashtabelle";
+        this.mParameters = this.mParameters + "Schlüssel gesucht(" + this.mSearchValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: gesuchte Daten bzw. Fehler falls nicht enthalten");
+        this.mPseudocode.addLine("j ← 0");
+        this.mPseudocode.addLine("repeat");
+        this.mPseudocode.addLine("    i ← h(gesucht,j)", 3);
+        this.mPseudocode.addLine("    j ← j + 1");
+        this.mPseudocode.addLine("until (ht[i].wert = gesucht) ∨ (ht[i].status = FREI)", 5);
+        this.mPseudocode.addLine("if ht[i].status = BELEGT", 6);
+        this.mPseudocode.addLine("    return ht[i].daten", 8);
+        this.mPseudocode.addLine("else error \"Schlüssel nicht vorhanden\"", 7);
+    }
+}
