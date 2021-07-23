@@ -1,0 +1,83 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import de.htwk_leipzig.imn.visualg.model.structure.UnionFindStructure;
+
+public class UnionFindFindS<T extends Comparable> extends Algorithm<UnionFindStructure<T>> {
+    private final T mFindValue;
+    private final UnionFindStructure<T> mUnionFindStructure;
+
+    public UnionFindFindS(UnionFindStructure<T> structure, T findValue) {
+        super(structure);
+        this.mFindValue = findValue;
+        this.mUnionFindStructure = structure;
+        this.addPseudoCode();
+    }
+
+    private void addPseudoCode() {
+        this.mPseudocode.setShowComparisons(false);
+        this.mName = "FindS";
+        this.mParameters = this.mParameters + "Gesuchtes Element(" + this.mFindValue + ")";
+        this.mPseudocode.addLine("Rückgabewert: gesuchte Daten bzw. Fehler falls nicht enthalten");
+        this.mPseudocode.addLine("if knoten.elter ≠ knoten", 0);
+        this.mPseudocode.addLine("    knoten.elter ← Finde-Vertreter-S", 1);
+        this.mPseudocode.addLine("return knoten.elter", 2);
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            Node node;
+            try {
+                node = this.mUnionFindStructure.getNode(this.mFindValue);
+            } catch (NullPointerException var3) {
+                this.findSUnSuccessfulMessage(this.mFindValue);
+                return;
+            }
+
+            if (node.getParent() != node) {
+                for(; !node.getParent().equals(node); node = node.getParent()) {
+                    if (this.checkBreakpoint(0)) {
+                        this.mUnionFindStructure.highlightNode(node, AlgorithmOperationType.READ);
+                        if (!this.waitAtBreakpoint(0)) {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (this.checkBreakpoint(1)) {
+                this.mUnionFindStructure.highlightNode(node, AlgorithmOperationType.READ);
+                if (!this.waitAtBreakpoint(1)) {
+                    return;
+                }
+            }
+
+            if (this.checkBreakpoint(2)) {
+                this.mUnionFindStructure.highlightNode(node, AlgorithmOperationType.FOUND);
+                if (!this.waitAtBreakpoint(2)) {
+                    return;
+                }
+            }
+
+            this.mUnionFindStructure.reDraw();
+            this.findSSuccessfulMessage(node);
+        }
+    }
+
+    private void findSSuccessfulMessage(Node solution) {
+        String title = "Find-Ergebnis:";
+        String addMessage = "Der Repräsentant von \"" + this.mFindValue + "\" ist: " + solution.getValue().toString();
+        this.resultDialog(title, addMessage, "#dcffb8");
+    }
+
+    private void findSUnSuccessfulMessage(T solution) {
+        String title = "Find-Ergebnis:";
+        String errorMessage = "Der Knoten \"" + this.mFindValue + "\" ist  nicht in der Datenstruktur enthalten.";
+        this.resultDialog(title, errorMessage, "#FFA5A5");
+    }
+}
