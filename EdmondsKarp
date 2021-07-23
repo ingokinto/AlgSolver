@@ -1,0 +1,173 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.dialog.DialogFactory;
+import de.htwk_leipzig.imn.visualg.model.dialog.exception.DialogCancelException;
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.DijkstraTableStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.DirectedWeightedGraph;
+import de.htwk_leipzig.imn.visualg.model.structure.GraphStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.PriorityQueue;
+import de.htwk_leipzig.imn.visualg.model.structure.PriorityQueueFieldbased;
+import de.htwk_leipzig.imn.visualg.model.structure.PriorityQueueInterface;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import de.htwk_leipzig.imn.visualg.model.structure.UndirectedWeightedGraph;
+import de.htwk_leipzig.imn.visualg.model.structure.Vertex;
+import de.htwk_leipzig.imn.visualg.model.structure.VertexWeightPair;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.TreeSet;
+import java.util.Map.Entry;
+
+public class EdmondsKarp extends Algorithm<GraphStructure<?>> {
+    private final PriorityQueueInterface<Vertex, Double> mQ;
+    private List<String[]> mPaths = new ArrayList();
+    private List<Vertex> mQueue = new ArrayList();
+    private List<Vertex> mQueueUsed = new ArrayList();
+    private DecimalFormat mDecimalFormat;
+    protected final LinkedHashMap<Vertex, Integer> mVertices;
+    private final ArrayStructure mPath;
+    private final DijkstraTableStructure mTableStruct;
+    private int mFlow;
+    private Vertex mSource;
+    private Vertex mSink;
+
+    public EdmondsKarp(DirectedWeightedGraph structure, boolean isHeap) {
+        super(structure);
+        this.mDecimalFormat = new DecimalFormat("0.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        this.mVertices = new LinkedHashMap();
+        this.mPath = new ArrayStructure();
+        this.mTableStruct = new DijkstraTableStructure();
+        if (isHeap) {
+            this.mQ = new PriorityQueue();
+            this.mName = "Dijkstra mit Heap";
+        } else {
+            this.mQ = new PriorityQueueFieldbased();
+            this.mName = "Dijkstra mit statischem Feld";
+        }
+
+        this.mSource = this.getWDijkstraSource(structure);
+        if (this.mSource != null & this.mSink != null) {
+            this.mParameters = this.mParameters + "Knoten quelle (" + this.mSource.getmName() + "), Knoten senke (" + this.mSink.getmName() + ")";
+            this.init();
+        }
+
+    }
+
+    private void init() {
+        this.mPseudocode.addLine("fluss ← 0, Gf ← 0", 0);
+        this.mPseudocode.addLine("solange true", 1);
+        this.mPseudocode.addLine("    q ← neue Prioritäts-Warteschlange");
+        this.mPseudocode.addLine("    q.push(Quelle)", 2);
+        this.mPseudocode.addLine("    pfad ← neues Feld(G.länge)", 3);
+        this.mPseudocode.addLine("    solange q ≠ leer", 4);
+        this.mPseudocode.addLine("        Knoten n ← q.pop()", 5);
+        this.mPseudocode.addLine("        für jeden Knoten e in G[n]", 6);
+        this.mPseudocode.addLine("            wenn pfad[e.Ziel] = NULL und e.Ziel ≠ Quelle und e.Kapazität > e.Fluss", 7);
+        this.mPseudocode.addLine("                pfad[e.Ziel] ← e", 8);
+        this.mPseudocode.addLine("                q.push(e.Ziel)", 9);
+        this.mPseudocode.addLine("    wenn pfad[Senke] = NULL", 10);
+        this.mPseudocode.addLine("        terminieren");
+        this.mPseudocode.addLine("    Δf ← ∞", 11);
+        this.mPseudocode.addLine("    für e ← pfad[Senke]; e ≠ NULL; e ← pfad[e.Quelle]", 12);
+        this.mPseudocode.addLine("        Δf ← min ( Δf , e.Kapazität - e.Fluss )", 13);
+        this.mPseudocode.addLine("    für e ← pfad[Senke]; e ≠ NULL; e ← pfad[e.Quelle]", 14);
+        this.mPseudocode.addLine("        e.Fluss ← e.Fluss + Δf", 15);
+        this.mPseudocode.addLine("        e.rück.Fluss ← e.rück.Fluss - Δf", 16);
+        this.mPseudocode.addLine("    fluss ← fluss + Δf", 17);
+        this.mSupportStructures.add((Structure)this.mQ);
+        ArrayList<Object> row = new ArrayList();
+        row.add("Node");
+        row.add("Dist");
+        row.add("Prev");
+        this.mTableStruct.addRow(row);
+        this.mSupportStructures.add(this.mTableStruct);
+    }
+
+    private Double saveAdd(Double a, Double b) {
+        Double r = a + b;
+        if (a > 0.0D && b > 0.0D && r <= 0.0D) {
+            return 1.0D / 0.0;
+        } else {
+            return a < 0.0D && b < 0.0D && r >= 0.0D ? -1.0D / 0.0 : r;
+        }
+    }
+
+    private Vertex getWDijkstraSource(DirectedWeightedGraph structure) {
+        Vertex start = null;
+        String[] choosenName = new String[2];
+        ArrayList<String> choicesList = new ArrayList();
+        Iterator var6 = structure.getAdjList().entrySet().iterator();
+
+        while(var6.hasNext()) {
+            Entry<Vertex, TreeSet<VertexWeightPair>> pair = (Entry)var6.next();
+            choicesList.add(((Vertex)pair.getKey()).getmName());
+        }
+
+        String[] choices = new String[choicesList.size()];
+
+        for(int i = 0; i < choicesList.size(); ++i) {
+            choices[i] = (String)choicesList.get(i);
+        }
+
+        try {
+            String[] descriptions = new String[]{"Wählen Sie die Quelle", "Wählen Sie die Senke"};
+            choosenName = DialogFactory.generateExclDualChoiceDialog("Quelle und Senke wählen", descriptions, choices);
+        } catch (DialogCancelException var8) {
+            String[] temp = new String[]{choices[0], choices[1]};
+            choosenName = temp;
+        }
+
+        if (choosenName[0] != null) {
+            start = structure.getVertex(choosenName[0]);
+        }
+
+        if (choosenName[1] != null) {
+            this.mSink = structure.getVertex(choosenName[1]);
+        }
+
+        return start;
+    }
+
+    private Vertex getUDijkstraSource(UndirectedWeightedGraph structure) {
+        Vertex start = null;
+        ArrayList<String> choicesList = new ArrayList();
+        Iterator var6 = structure.getAdjList().entrySet().iterator();
+
+        while(var6.hasNext()) {
+            Entry<Vertex, TreeSet<VertexWeightPair>> pair = (Entry)var6.next();
+            choicesList.add(((Vertex)pair.getKey()).getmName());
+        }
+
+        String[] choices = new String[choicesList.size()];
+
+        for(int i = 0; i < choicesList.size(); ++i) {
+            choices[i] = (String)choicesList.get(i);
+        }
+
+        String choosenName;
+        try {
+            choosenName = DialogFactory.generateChoiceDialog("Startknoten wählen", "Wählen Sie den Startknoten", choices);
+        } catch (DialogCancelException var7) {
+            choosenName = choices[0];
+        }
+
+        if (choosenName != null) {
+            start = structure.getVertex(choosenName);
+        }
+
+        return start;
+    }
+
+    protected void execute() {
+    }
+}
