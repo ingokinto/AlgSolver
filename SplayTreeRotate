@@ -1,0 +1,455 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.application.ActiveAlgorithm;
+import de.htwk_leipzig.imn.visualg.model.structure.Node;
+import de.htwk_leipzig.imn.visualg.model.structure.SplayTreeStructure;
+import java.util.Arrays;
+
+public class SplayTreeRotate<T extends Comparable> extends RecursiveAlgorithm<SplayTreeStructure<?>, Node<T>> {
+    private T mSearched;
+    private String mStartAlgo;
+    private T mRotateValue;
+    private T mRemoveValue;
+
+    public SplayTreeRotate(SplayTreeStructure<?> structure, T rotateValue, String startAlgo) {
+        super(structure);
+        this.mSearched = rotateValue;
+        this.mStartAlgo = startAlgo;
+        this.mRotateValue = rotateValue;
+        this.addPseudoCode();
+    }
+
+    public SplayTreeRotate(SplayTreeStructure<?> structure, T rotateValue, T removeValue, String startAlgo) {
+        super(structure);
+        this.mSearched = rotateValue;
+        this.mStartAlgo = startAlgo;
+        this.mRotateValue = rotateValue;
+        this.mRemoveValue = removeValue;
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        ((SplayTreeStructure)this.mStructure).reDraw();
+        if (this.waitAtBreakpoint(-1)) {
+            Node root = ((SplayTreeStructure)this.mStructure).getRootNode();
+            if (root != null) {
+                if (this.checkBreakpoint(111)) {
+                    this.waitAtBreakpoint(111);
+                }
+
+                T temp = this.mSearched;
+                Node n = this.search(root);
+                if (temp.compareTo(this.mSearched) != 0 && this.checkBreakpoint(112)) {
+                    ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+                    this.waitAtBreakpoint(112);
+                }
+
+                if (this.checkBreakpoint(113)) {
+                    this.waitAtBreakpoint(113);
+                }
+
+                this.incrCounter(0);
+                if (this.checkBreakpoint(1)) {
+                    ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+                    if (!this.waitAtBreakpoint(1)) {
+                        return;
+                    }
+                }
+
+                if (this.mSearched.compareTo(root.getValue()) != 0) {
+                    this.splay(n);
+                }
+
+                if (this.mStartAlgo != null) {
+                    this.callAlgorithm();
+                }
+            } else {
+                System.out.println("Leerer Wurzelknoten");
+            }
+
+        }
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(12);
+        this.mPseudocode.setShowComparisons(false);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 8), new PseudoCodeCounter(1, 10), new PseudoCodeCounter(2, 11), new PseudoCodeCounter(3, 12), new PseudoCodeCounter(4, 14), new PseudoCodeCounter(5, 16), new PseudoCodeCounter(6, 17), new PseudoCodeCounter(7, 18), new PseudoCodeCounter(8, 21), new PseudoCodeCounter(9, 24), new PseudoCodeCounter(10, 25), new PseudoCodeCounter(11, 28)));
+        this.mName = "Splay-Operation";
+        this.mParameters = this.mParameters + "Knoten k (Wert: " + this.mSearched + ")";
+        this.mPseudocode.addLine("Rückgabewert: nichts falls erfolgreich bzw. Fehler sonst");
+        this.mPseudocode.addLine("(enthalten, zuletztGefunden) = Binärsuche(" + this.mSearched + ")");
+        this.mPseudocode.addLine("if (¬enthalten(" + this.mSearched + "))", 111);
+        this.mPseudocode.addLine("        k = zuletztGefunden", 112);
+        this.mPseudocode.addLine("SPLAY(zuletztGefunden)", 113);
+        this.mPseudocode.addLine("");
+        this.mPseudocode.addLine("SPLAY");
+        this.mPseudocode.addLine("if (k.eltern = NULL):", 1);
+        this.mPseudocode.addLine("    return");
+        this.mPseudocode.addLine("else", 2);
+        this.mPseudocode.addLine("    if (k.eltern.eltern = NULL)", 3);
+        this.mPseudocode.addLine("        if (k = k.eltern.links)", 4);
+        this.mPseudocode.addLine("            zig(k.eltern)", 5);
+        this.mPseudocode.addLine("        else", 6);
+        this.mPseudocode.addLine("            zag(k.eltern)", 7);
+        this.mPseudocode.addLine("    else", 8);
+        this.mPseudocode.addLine("        if (k.eltern.links = k)", 9);
+        this.mPseudocode.addLine("            if (k.eltern.eltern.links = k.eltern)", 10);
+        this.mPseudocode.addLine("                zig(k.eltern)", 11);
+        this.mPseudocode.addLine("                zig(k)", 12);
+        this.mPseudocode.addLine("            else", 13);
+        this.mPseudocode.addLine("                zig(k)", 14);
+        this.mPseudocode.addLine("                zag(k)", 15);
+        this.mPseudocode.addLine("        else", 16);
+        this.mPseudocode.addLine("            if (k.eltern.eltern.rechts = k.eltern)", 17);
+        this.mPseudocode.addLine("                zag(k.eltern)", 18);
+        this.mPseudocode.addLine("                zag(k)", 19);
+        this.mPseudocode.addLine("            else", 20);
+        this.mPseudocode.addLine("                zag(k)", 21);
+        this.mPseudocode.addLine("                zig (k)", 22);
+        this.mPseudocode.addLine("SPLAY(k)", 23);
+    }
+
+    private Node search(Node currentNode) {
+        Node returnNode = null;
+        int compareSearchedToNodeValue = this.mSearched.compareTo(currentNode.getValue());
+        switch(compareSearchedToNodeValue) {
+        case -1:
+            if (currentNode.getLeftChild() == null) {
+                this.mSearched = currentNode.getValue();
+                returnNode = currentNode;
+            } else {
+                returnNode = this.search(currentNode.getLeftChild());
+            }
+            break;
+        case 0:
+            returnNode = currentNode;
+            break;
+        case 1:
+            if (currentNode.getRightChild() == null) {
+                this.mSearched = currentNode.getValue();
+                returnNode = currentNode;
+            } else {
+                returnNode = this.search(currentNode.getRightChild());
+            }
+        }
+
+        return returnNode;
+    }
+
+    public void splay(Node n) {
+        this.incrCounter(1);
+        if (this.checkBreakpoint(2)) {
+            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+            if (!this.waitAtBreakpoint(2)) {
+                return;
+            }
+        }
+
+        this.rotate(n);
+        ((SplayTreeStructure)this.mStructure).reDraw();
+        if (this.checkBreakpoint(23)) {
+            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+            if (!this.waitAtBreakpoint(23)) {
+                return;
+            }
+        }
+
+        this.incrCounter(0);
+        if (this.checkBreakpoint(1)) {
+            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+            if (!this.waitAtBreakpoint(1)) {
+                return;
+            }
+        }
+
+        if (n.getParent() != null) {
+            this.splay(n);
+        }
+
+    }
+
+    private void rotate(Node n) {
+        this.incrCounter(2);
+        if (!this.checkBreakpoint(3) || this.waitAtBreakpoint(3)) {
+            if (n.getParent().getParent() == null) {
+                this.incrCounter(3);
+                if (this.checkBreakpoint(4)) {
+                    ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                    if (!this.waitAtBreakpoint(4)) {
+                        return;
+                    }
+                }
+
+                if (n.getParent().getLeftChild() != null && n.getValue() == n.getParent().getLeftChild().getValue()) {
+                    if (this.checkBreakpoint(5)) {
+                        ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                        if (!this.waitAtBreakpoint(5)) {
+                            return;
+                        }
+                    }
+
+                    this.rightZig(n);
+                    ((SplayTreeStructure)this.mStructure).reDraw();
+                } else {
+                    this.incrCounter(4);
+                    if (this.checkBreakpoint(6) && !this.waitAtBreakpoint(6)) {
+                        return;
+                    }
+
+                    if (this.checkBreakpoint(7)) {
+                        ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                        if (!this.waitAtBreakpoint(7)) {
+                            return;
+                        }
+                    }
+
+                    this.leftZag(n);
+                    ((SplayTreeStructure)this.mStructure).reDraw();
+                }
+            } else {
+                this.incrCounter(5);
+                if (this.checkBreakpoint(8) && !this.waitAtBreakpoint(8)) {
+                    return;
+                }
+
+                this.incrCounter(6);
+                if (this.checkBreakpoint(9)) {
+                    ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                    if (!this.waitAtBreakpoint(9)) {
+                        return;
+                    }
+                }
+
+                if (n.getParent().getLeftChild() != null && n.getParent().getLeftChild().getValue() == n.getValue()) {
+                    this.incrCounter(7);
+                    if (this.checkBreakpoint(10)) {
+                        ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent().getParent(), AlgorithmOperationType.READ);
+                        if (!this.waitAtBreakpoint(10)) {
+                            return;
+                        }
+                    }
+
+                    if (n.getParent().getParent().getLeftChild() != null && n.getParent().getParent().getLeftChild().getValue() == n.getParent().getValue()) {
+                        if (this.checkBreakpoint(11)) {
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent().getParent(), n.getParent());
+                            if (!this.waitAtBreakpoint(11)) {
+                                return;
+                            }
+                        }
+
+                        this.rightZig(n.getParent());
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                        if (this.checkBreakpoint(12)) {
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                            if (!this.waitAtBreakpoint(12)) {
+                                return;
+                            }
+                        }
+
+                        this.rightZig(n);
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                    } else {
+                        this.incrCounter(8);
+                        if (this.checkBreakpoint(13) && !this.waitAtBreakpoint(13)) {
+                            return;
+                        }
+
+                        if (this.checkBreakpoint(14)) {
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                            if (!this.waitAtBreakpoint(14)) {
+                                return;
+                            }
+                        }
+
+                        this.rightZig(n);
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                        if (this.checkBreakpoint(15)) {
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                            if (!this.waitAtBreakpoint(15)) {
+                                return;
+                            }
+                        }
+
+                        this.leftZag(n);
+                    }
+                } else {
+                    this.incrCounter(9);
+                    if (this.checkBreakpoint(16) && !this.waitAtBreakpoint(16)) {
+                        return;
+                    }
+
+                    this.incrCounter(10);
+                    if (this.checkBreakpoint(17)) {
+                        ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent().getParent(), AlgorithmOperationType.READ);
+                        if (!this.waitAtBreakpoint(17)) {
+                            return;
+                        }
+                    }
+
+                    if (n.getParent().getParent().getRightChild() != null && n.getParent().getParent().getRightChild().getValue() == n.getParent().getValue()) {
+                        if (this.checkBreakpoint(18)) {
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent().getParent(), n.getParent());
+                            if (!this.waitAtBreakpoint(18)) {
+                                return;
+                            }
+                        }
+
+                        this.leftZag(n.getParent());
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                        if (this.checkBreakpoint(19)) {
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                            if (!this.waitAtBreakpoint(19)) {
+                                return;
+                            }
+                        }
+
+                        this.leftZag(n);
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                    } else {
+                        this.incrCounter(11);
+                        if (this.checkBreakpoint(20)) {
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                            if (!this.waitAtBreakpoint(20)) {
+                                return;
+                            }
+                        }
+
+                        if (this.checkBreakpoint(21)) {
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                            if (!this.waitAtBreakpoint(21)) {
+                                return;
+                            }
+                        }
+
+                        this.leftZag(n);
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                        if (this.checkBreakpoint(22)) {
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n, AlgorithmOperationType.FOUND);
+                            ((SplayTreeStructure)this.mStructure).highlightNode(n.getParent(), AlgorithmOperationType.READ);
+                            ((SplayTreeStructure)this.mStructure).compare(n.getParent(), n);
+                            if (!this.waitAtBreakpoint(22)) {
+                                return;
+                            }
+                        }
+
+                        this.rightZig(n);
+                        ((SplayTreeStructure)this.mStructure).reDraw();
+                    }
+                }
+            }
+
+        }
+    }
+
+    private void rightZig(Node node) {
+        boolean right = false;
+        if (node.getParent().getParent() != null && node.getParent().getParent().getRightChild() != null && node.getParent().getParent().getRightChild().getValue() == node.getParent().getValue()) {
+            right = true;
+        }
+
+        node.getParent().setLeftChild(node.getRightChild());
+        if (node.getRightChild() != null) {
+            node.getRightChild().setParent(node.getParent());
+        }
+
+        node.setRightChild(node.getParent());
+        node.setParent(node.getParent().getParent());
+        node.getRightChild().setParent(node);
+        if (node.getParent() != null) {
+            if (right) {
+                node.getParent().setRightChild(node);
+            } else {
+                node.getParent().setLeftChild(node);
+            }
+        }
+
+        if (node.getParent() == null) {
+            ((SplayTreeStructure)this.mStructure).setRootNode(node);
+        }
+
+    }
+
+    private void leftZag(Node node) {
+        boolean left = false;
+        if (node.getParent().getParent() != null && node.getParent().getParent().getLeftChild() != null && node.getParent().getParent().getLeftChild().getValue() == node.getParent().getValue()) {
+            left = true;
+        }
+
+        node.getParent().setRightChild(node.getLeftChild());
+        if (node.getLeftChild() != null) {
+            node.getLeftChild().setParent(node.getParent());
+        }
+
+        node.setLeftChild(node.getParent());
+        node.setParent(node.getParent().getParent());
+        node.getLeftChild().setParent(node);
+        if (node.getParent() != null) {
+            if (left) {
+                node.getParent().setLeftChild(node);
+            } else {
+                node.getParent().setRightChild(node);
+            }
+        }
+
+        if (node.getParent() == null) {
+            ((SplayTreeStructure)this.mStructure).setRootNode(node);
+        }
+
+    }
+
+    private void callAlgorithm() {
+        String var1;
+        switch((var1 = this.mStartAlgo).hashCode()) {
+        case 1760484702:
+            if (var1.equals("SplayTreeInsert")) {
+                try {
+                    ActiveAlgorithm.multiRun(new SplayTreeInsert((SplayTreeStructure)this.mStructure, this.mRotateValue, true));
+                } catch (Exception var5) {
+                    var5.printStackTrace();
+                }
+
+                return;
+            }
+            break;
+        case 2009666345:
+            if (var1.equals("SplayTreeRemove")) {
+                try {
+                    if (this.mRemoveValue == null) {
+                        ActiveAlgorithm.multiRun(new SplayTreeRemove((SplayTreeStructure)this.mStructure, this.mRotateValue, true));
+                    } else {
+                        ActiveAlgorithm.multiRun(new SplayTreeRemove((SplayTreeStructure)this.mStructure, this.mRemoveValue, true));
+                    }
+
+                    return;
+                } catch (Exception var4) {
+                    var4.printStackTrace();
+                    return;
+                }
+            }
+            break;
+        case 2037940301:
+            if (var1.equals("SplayTreeSearch")) {
+                try {
+                    ActiveAlgorithm.multiRun(new SplayTreeSearch((SplayTreeStructure)this.mStructure, this.mRotateValue, true));
+                } catch (Exception var3) {
+                    var3.printStackTrace();
+                }
+
+                return;
+            }
+        }
+
+        System.out.println("Aufruf eines unbekannter Algorithmus aus SplayTreeRotate");
+    }
+}
