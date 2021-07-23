@@ -1,0 +1,257 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class StraightMergesort extends Algorithm<ArrayStructure<Integer>> {
+    private final ArrayStructure<Integer> SUPPORT_ARRAY = new ArrayStructure();
+
+    public StraightMergesort(ArrayStructure<Integer> structure) {
+        super(structure);
+        this.addPseudoCode();
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        this.mSupportStructures.add(this.SUPPORT_ARRAY);
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.straightMergeSort((ArrayStructure)this.mStructure);
+        }
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(5);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 14), new PseudoCodeCounter(1, 16), new PseudoCodeCounter(2, 21), new PseudoCodeCounter(3, 24), new PseudoCodeCounter(4, 28)));
+        this.mName = "Straight Mergesort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A ist sortiert");
+        this.mPseudocode.addLine("sortlänge ← 1");
+        this.mPseudocode.addLine("n ← A.länge");
+        this.mPseudocode.addLine("while sortlänge < n");
+        this.mPseudocode.addLine("    rechts ← 0");
+        this.mPseudocode.addLine("    while rechts + sortlänge < n");
+        this.mPseudocode.addLine("        links ← rechts + 1");
+        this.mPseudocode.addLine("        mitte ← links + sortlänge - 1");
+        this.mPseudocode.addLine("        if (mitte + sortlänge ≤ n)");
+        this.mPseudocode.addLine("            rechts ← mitte + sortlänge");
+        this.mPseudocode.addLine("        else");
+        this.mPseudocode.addLine("            rechts ← n");
+        this.mPseudocode.addLine("        for (k ← links, ..., mitte)");
+        this.mPseudocode.addLine("            B[k] ← A[k]", 1);
+        this.mPseudocode.addLine("        for (k ← mitte + 1, ..., rechts)");
+        this.mPseudocode.addLine("            B[rechts + mitte + 1 - k] ← A[k]", 2);
+        this.mPseudocode.addLine("        i ← links");
+        this.mPseudocode.addLine("        j ← rechts");
+        this.mPseudocode.addLine("        k ← links");
+        this.mPseudocode.addLine("        while (i < j)");
+        this.mPseudocode.addLine("            if (B[i] ≤ B[j])", 3);
+        this.mPseudocode.addLine("                A[k] ← B[i]");
+        this.mPseudocode.addLine("                i ← i + 1");
+        this.mPseudocode.addLine("            else", 4);
+        this.mPseudocode.addLine("                A[k] ← B[j]");
+        this.mPseudocode.addLine("                j ← j - 1");
+        this.mPseudocode.addLine("                k ← k + 1");
+        this.mPseudocode.addLine("        A[rechts] ← B[i]", 5);
+        this.mPseudocode.addLine("    sortlänge ← 2 · sortlänge");
+    }
+
+    public void straightMergeSort(ArrayStructure<Integer> A) {
+        int sortlength = 1;
+
+        for(int n = A.size() - 1; sortlength <= n; sortlength *= 2) {
+            for(int right = 0; right + sortlength <= n; ++right) {
+                int left = right;
+                int mid = right + sortlength - 1;
+                if (mid + sortlength <= n) {
+                    right = mid + sortlength;
+                } else {
+                    right = n;
+                }
+
+                this.merge(A, left, mid, right, sortlength);
+            }
+        }
+
+    }
+
+    private void merge(ArrayStructure<Integer> mStructure, int left, int mid, int right, int sortlength) {
+        int leftSupport = 0;
+        int rightSupport = right - left;
+        int midSupport = leftSupport + sortlength - 1;
+        this.initSupportArray(left, right);
+
+        int k;
+        for(k = left; k <= mid; ++k) {
+            this.incrCounter(0);
+        }
+
+        for(k = leftSupport; k <= midSupport; ++k) {
+            this.SUPPORT_ARRAY.set(k, (Integer)mStructure.get(left + k));
+            this.SUPPORT_ARRAY.reDraw();
+        }
+
+        if (this.checkBreakpoint(1)) {
+            for(k = left; k <= mid; ++k) {
+                mStructure.highlightElement(k, AlgorithmOperationType.READ);
+            }
+
+            for(k = leftSupport; k <= midSupport; ++k) {
+                this.SUPPORT_ARRAY.highlightElement(k, AlgorithmOperationType.WRITE);
+            }
+
+            boolean ret = this.waitAtBreakpoint(1);
+
+            for(k = left; k <= mid; ++k) {
+                mStructure.highlightElement(k, AlgorithmOperationType.DEFAULT);
+            }
+
+            for(k = leftSupport; k <= midSupport; ++k) {
+                this.SUPPORT_ARRAY.highlightElement(k, AlgorithmOperationType.DEFAULT);
+            }
+
+            if (!ret) {
+                return;
+            }
+        }
+
+        int i;
+        for(i = mid + 1; i <= right; ++i) {
+            this.incrCounter(1);
+        }
+
+        int rechts = right;
+
+        while(rechts > mid) {
+            for(i = midSupport + 1; i <= rightSupport; ++i) {
+                this.SUPPORT_ARRAY.set(i, (Integer)mStructure.get(rechts));
+                --rechts;
+                this.SUPPORT_ARRAY.reDraw();
+            }
+        }
+
+        boolean ret;
+        if (this.checkBreakpoint(2)) {
+            for(i = mid + 1; i <= right; ++i) {
+                mStructure.highlightElement(i, AlgorithmOperationType.READ);
+            }
+
+            for(i = midSupport + 1; i <= rightSupport; ++i) {
+                this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.WRITE);
+            }
+
+            ret = this.waitAtBreakpoint(2);
+
+            for(i = mid + 1; i <= right; ++i) {
+                mStructure.highlightElement(i, AlgorithmOperationType.DEFAULT);
+            }
+
+            for(i = midSupport + 1; i <= rightSupport; ++i) {
+                this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.DEFAULT);
+            }
+
+            if (!ret) {
+                return;
+            }
+        }
+
+        i = leftSupport;
+        int j = rightSupport;
+
+        for(k = left; i < j; ++k) {
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if ((Integer)this.SUPPORT_ARRAY.get(i) <= (Integer)this.SUPPORT_ARRAY.get(j)) {
+                mStructure.set(k, (Integer)this.SUPPORT_ARRAY.get(i));
+                mStructure.reDraw();
+                if (this.checkBreakpoint(3)) {
+                    this.SUPPORT_ARRAY.compare(i, j, "B[i] ≤ B[j]");
+                    this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.COMPARE);
+                    this.SUPPORT_ARRAY.highlightElement(j, AlgorithmOperationType.COMPARE);
+                    mStructure.highlightElement(k, AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(3);
+                    this.SUPPORT_ARRAY.removeConnection();
+                    mStructure.highlightElement(k, AlgorithmOperationType.DEFAULT);
+                    this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.DEFAULT);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                this.incrCounter(2);
+                Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+                this.updatePseudocode();
+                ++i;
+            } else {
+                mStructure.set(k, (Integer)this.SUPPORT_ARRAY.get(j));
+                mStructure.reDraw();
+                if (this.checkBreakpoint(4)) {
+                    this.SUPPORT_ARRAY.compare(i, j, "B[i] > B[j]");
+                    this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.COMPARE);
+                    this.SUPPORT_ARRAY.highlightElement(j, AlgorithmOperationType.COMPARE);
+                    mStructure.highlightElement(k, AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(4);
+                    this.SUPPORT_ARRAY.removeConnection();
+                    mStructure.highlightElement(k, AlgorithmOperationType.DEFAULT);
+                    this.SUPPORT_ARRAY.highlightElement(j, AlgorithmOperationType.DEFAULT);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                this.incrCounter(3);
+                Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+                this.updatePseudocode();
+                --j;
+            }
+        }
+
+        Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+        this.updatePseudocode();
+        mStructure.set(right, (Integer)this.SUPPORT_ARRAY.get(i));
+        mStructure.reDraw();
+        if (this.checkBreakpoint(5)) {
+            this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.READ);
+            mStructure.highlightElement(right, AlgorithmOperationType.WRITE);
+            ret = this.waitAtBreakpoint(5);
+            mStructure.highlightElement(right, AlgorithmOperationType.DEFAULT);
+            this.SUPPORT_ARRAY.highlightElement(i, AlgorithmOperationType.DEFAULT);
+            if (!ret) {
+                return;
+            }
+        }
+
+        this.incrCounter(4);
+        Structure.incWriteAccess();
+        this.updatePseudocode();
+        this.SUPPORT_ARRAY.set(0, 0);
+
+        for(int a = this.SUPPORT_ARRAY.size() - 1; a > 0; --a) {
+            this.SUPPORT_ARRAY.remove(a);
+            this.SUPPORT_ARRAY.reDraw();
+        }
+
+    }
+
+    private void initSupportArray(int left, int right) {
+        int z;
+        if (!this.SUPPORT_ARRAY.isEmpty()) {
+            for(z = 1; z <= right - left; ++z) {
+                this.SUPPORT_ARRAY.add(z, 0);
+                this.SUPPORT_ARRAY.reDraw();
+            }
+        } else {
+            for(z = left; z <= right; ++z) {
+                this.SUPPORT_ARRAY.add(z, 0);
+                this.SUPPORT_ARRAY.reDraw();
+            }
+        }
+
+    }
+}
