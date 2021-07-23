@@ -1,0 +1,49 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+public enum EdgeType {
+    TREE,
+    BACKWARD,
+    FORWARD,
+    ACROSS,
+    NO_EDGE;
+
+    private EdgeType() {
+    }
+
+    public String toString() {
+        switch($SWITCH_TABLE$de$htwk_leipzig$imn$visualg$model$algorithm$EdgeType()[this.ordinal()]) {
+        case 1:
+            return "Baumkante";
+        case 2:
+            return "Rückwärtskante";
+        case 3:
+            return "Vorwärtskante";
+        case 4:
+            return "Querkante";
+        case 5:
+            return "Keine Kante";
+        default:
+            return null;
+        }
+    }
+
+    public AlgorithmOperationType highlightType() {
+        switch($SWITCH_TABLE$de$htwk_leipzig$imn$visualg$model$algorithm$EdgeType()[this.ordinal()]) {
+        case 1:
+            return AlgorithmOperationType.WRITE;
+        case 2:
+            return AlgorithmOperationType.READ;
+        case 3:
+            return AlgorithmOperationType.COMPARE;
+        case 4:
+            return AlgorithmOperationType.FOUND;
+        default:
+            return AlgorithmOperationType.DEFAULT;
+        }
+    }
+}
