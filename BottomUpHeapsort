@@ -1,0 +1,318 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class BottomUpHeapsort extends Algorithm<ArrayStructure<Integer>> {
+    public BottomUpHeapsort(ArrayStructure<Integer> structure) {
+        super(structure);
+        this.addPseudoCode();
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+    }
+
+    protected void execute() {
+        if (this.waitAtBreakpoint(-1)) {
+            this.bottomUpHeapsort();
+            ((ArrayStructure)this.mStructure).reDraw();
+        }
+    }
+
+    private void bottomUpHeapsort() {
+        this.aufbauMaxHeap();
+
+        for(int i = ((ArrayStructure)this.mStructure).size(); i >= 2; --i) {
+            this.vertausche(1, i);
+            this.bottomUpAbsinken(i - 1);
+        }
+
+    }
+
+    private void bottomUpAbsinken(int r) {
+        int value = (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(1));
+        int index = 1;
+
+        int next;
+        boolean ret;
+        for(next = 2; next < r; next = 2 * index) {
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if (this.checkBreakpoint(3)) {
+                ret = this.waitAtBreakpoint(3);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.incrCounter(3);
+            if (this.checkBreakpoint(4)) {
+                ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(next), AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(next + 1), AlgorithmOperationType.COMPARE);
+                ((ArrayStructure)this.mStructure).compare(this.indexGetter(next), this.indexGetter(next + 1), "next < next + 1 ?");
+                ret = this.waitAtBreakpoint(4);
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.incrCounter(4);
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if ((Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(next)) < (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(next + 1))) {
+                ((ArrayStructure)this.mStructure).set(this.indexGetter(index), (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(next + 1)));
+                if (this.checkBreakpoint(5)) {
+                    ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(index), AlgorithmOperationType.WRITE);
+                    ((ArrayStructure)this.mStructure).compare(this.indexGetter(index), this.indexGetter(index), "next+1 schreiben");
+                    ret = this.waitAtBreakpoint(5);
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                this.incrCounter(5);
+                index = next + 1;
+            } else {
+                ((ArrayStructure)this.mStructure).set(this.indexGetter(index), (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(next)));
+                if (this.checkBreakpoint(6)) {
+                    ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(index), AlgorithmOperationType.WRITE);
+                    ((ArrayStructure)this.mStructure).compare(this.indexGetter(index), this.indexGetter(index), "next schreiben");
+                    ret = this.waitAtBreakpoint(6);
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                Structure.incWriteAccess();
+                this.updatePseudocode();
+                this.incrCounter(6);
+                index = next;
+            }
+        }
+
+        Structure.incKeyComparison();
+        this.updatePseudocode();
+        if (this.checkBreakpoint(7)) {
+            ret = this.waitAtBreakpoint(7);
+            if (!ret) {
+                return;
+            }
+        }
+
+        Structure.incKeyComparison();
+        this.updatePseudocode();
+        this.incrCounter(7);
+        if (next == r) {
+            ((ArrayStructure)this.mStructure).set(this.indexGetter(index), (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(r)));
+            if (this.checkBreakpoint(8)) {
+                ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(r), AlgorithmOperationType.WRITE);
+                ((ArrayStructure)this.mStructure).compare(this.indexGetter(r), this.indexGetter(r), "letzter Knoten");
+                ret = this.waitAtBreakpoint(8);
+                ((ArrayStructure)this.mStructure).removeConnection();
+                ((ArrayStructure)this.mStructure).reDraw();
+                if (!ret) {
+                    return;
+                }
+            }
+
+            Structure.incWriteAccess();
+            this.updatePseudocode();
+            this.incrCounter(8);
+            index = r;
+        }
+
+        while(index > 1 && (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(index / 2)) < value) {
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if (this.checkBreakpoint(9)) {
+                ret = this.waitAtBreakpoint(9);
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.incrCounter(9);
+            ((ArrayStructure)this.mStructure).set(this.indexGetter(index), (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(index / 2)));
+            if (this.checkBreakpoint(10)) {
+                ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(index), AlgorithmOperationType.WRITE);
+                ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(index / 2), AlgorithmOperationType.WRITE);
+                ((ArrayStructure)this.mStructure).compare(this.indexGetter(index), this.indexGetter(index / 2), "Einsinken");
+                ret = this.waitAtBreakpoint(10);
+                ((ArrayStructure)this.mStructure).reDraw();
+                ((ArrayStructure)this.mStructure).removeConnection();
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.incrCounter(10);
+            Structure.incWriteAccess();
+            this.updatePseudocode();
+            index /= 2;
+        }
+
+        ((ArrayStructure)this.mStructure).set(this.indexGetter(index), value);
+        if (this.checkBreakpoint(11)) {
+            ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(index), AlgorithmOperationType.WRITE);
+            ((ArrayStructure)this.mStructure).compare(this.indexGetter(index), this.indexGetter(index), "Wert speichern");
+            ret = this.waitAtBreakpoint(11);
+            ((ArrayStructure)this.mStructure).reDraw();
+            ((ArrayStructure)this.mStructure).removeConnection();
+            if (!ret) {
+                return;
+            }
+        }
+
+        this.incrCounter(11);
+        Structure.incWriteAccess();
+        this.updatePseudocode();
+    }
+
+    private void vertausche(int indexPos1, int indexPos2) {
+        indexPos2 = this.indexGetter(indexPos2);
+        indexPos1 = this.indexGetter(indexPos1);
+        int remember = (Integer)((ArrayStructure)this.mStructure).get(indexPos1);
+        ((ArrayStructure)this.mStructure).set(indexPos1, (Integer)((ArrayStructure)this.mStructure).get(indexPos2));
+        Structure.incWriteAccess();
+        this.updatePseudocode();
+        ((ArrayStructure)this.mStructure).set(indexPos2, remember);
+        Structure.incWriteAccess();
+        this.updatePseudocode();
+        if (this.checkBreakpoint(0)) {
+            ((ArrayStructure)this.mStructure).highlightElement(indexPos1, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).highlightElement(indexPos2, AlgorithmOperationType.COMPARE);
+            ((ArrayStructure)this.mStructure).compare(indexPos1, indexPos2, "Vertausche");
+            boolean ret = this.waitAtBreakpoint(0);
+            ((ArrayStructure)this.mStructure).highlightElement(indexPos1, AlgorithmOperationType.DEFAULT);
+            ((ArrayStructure)this.mStructure).highlightElement(indexPos2, AlgorithmOperationType.DEFAULT);
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            if (!ret) {
+                return;
+            }
+        }
+
+        this.incrCounter(0);
+    }
+
+    private void aufbauMaxHeap() {
+        for(int i = ((ArrayStructure)this.mStructure).size() / 2; i >= 1; --i) {
+            if (this.checkBreakpoint(1)) {
+                ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(i), AlgorithmOperationType.PIVOT);
+                ((ArrayStructure)this.mStructure).compare(this.indexGetter(i), this.indexGetter(i), "i");
+                boolean ret = this.waitAtBreakpoint(1);
+                ((ArrayStructure)this.mStructure).removeConnection();
+                if (!ret) {
+                    return;
+                }
+            }
+
+            this.incrCounter(1);
+            this.absinkenMaxHeap(i, ((ArrayStructure)this.mStructure).size());
+            ((ArrayStructure)this.mStructure).reDraw();
+        }
+
+    }
+
+    private void absinkenMaxHeap(int index, int size) {
+        int value = (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(index));
+
+        int max;
+        do {
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            int maxValue;
+            if (2 * index <= size && (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(2 * index)) > value) {
+                max = 2 * index;
+                maxValue = (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(2 * index));
+            } else {
+                max = index;
+                maxValue = value;
+            }
+
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if (2 * index + 1 <= size && (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(2 * index + 1)) > maxValue) {
+                max = 2 * index + 1;
+                maxValue = (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(2 * index + 1));
+            }
+
+            Structure.incKeyComparison();
+            this.updatePseudocode();
+            if (max != index) {
+                ((ArrayStructure)this.mStructure).set(this.indexGetter(index), (Integer)((ArrayStructure)this.mStructure).get(this.indexGetter(max)));
+                Structure.incWriteAccess();
+                this.updatePseudocode();
+                index = max;
+            }
+        } while(index != max);
+
+        if (this.checkBreakpoint(2)) {
+            ((ArrayStructure)this.mStructure).highlightElement(this.indexGetter(max), AlgorithmOperationType.WRITE);
+            ((ArrayStructure)this.mStructure).compare(this.indexGetter(max), this.indexGetter(max), "hierhin absinken lassen");
+            boolean ret = this.waitAtBreakpoint(2);
+            ((ArrayStructure)this.mStructure).removeConnection();
+            ((ArrayStructure)this.mStructure).reDraw();
+            if (!ret) {
+                return;
+            }
+        }
+
+        this.incrCounter(2);
+        Structure.incWriteAccess();
+        this.updatePseudocode();
+        ((ArrayStructure)this.mStructure).set(this.indexGetter(max), value);
+    }
+
+    private int indexGetter(int index) {
+        return index - 1;
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(12);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 5), new PseudoCodeCounter(1, 9), new PseudoCodeCounter(2, 10), new PseudoCodeCounter(3, 16), new PseudoCodeCounter(4, 17), new PseudoCodeCounter(5, 18), new PseudoCodeCounter(6, 21), new PseudoCodeCounter(7, 24), new PseudoCodeCounter(8, 25), new PseudoCodeCounter(9, 27), new PseudoCodeCounter(10, 28), new PseudoCodeCounter(11, 30)));
+        this.mName = "Bottom-Up-Heapsort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A sortiert");
+        this.mPseudocode.addLine(" ");
+        this.mPseudocode.addLine("AUFBAU-MAX-HEAP()");
+        this.mPseudocode.addLine("for (i ← A.länge, ..., 2)");
+        this.mPseudocode.addLine("    VERTAUSCHE( A, 1, i )", 0);
+        this.mPseudocode.addLine("    BOTTOM-UP-ABSINKEN( i - 1 )");
+        this.mPseudocode.addLine(" ");
+        this.mPseudocode.addLine("AUFBAU-MAX-HEAP()");
+        this.mPseudocode.addLine("for (i ← ⌊A.länge/2⌋, ..., 1)", 1);
+        this.mPseudocode.addLine("    Absinken von A(i)", 2);
+        this.mPseudocode.addLine(" ");
+        this.mPseudocode.addLine("BOTTOM-UP-ABSINKEN(obere Grenze r)");
+        this.mPseudocode.addLine("wert ← A[1]");
+        this.mPseudocode.addLine("index ← 1");
+        this.mPseudocode.addLine("nächster ← 2");
+        this.mPseudocode.addLine("while (nächster < r)", 3);
+        this.mPseudocode.addLine("    if (A[nächster] < A[nächster + 1])", 4);
+        this.mPseudocode.addLine("        A[index] ← A[nächster + 1]", 5);
+        this.mPseudocode.addLine("        index ← nächster + 1");
+        this.mPseudocode.addLine("    else");
+        this.mPseudocode.addLine("        A[index] ← A[nächster]", 6);
+        this.mPseudocode.addLine("        index ← nächster");
+        this.mPseudocode.addLine("    nächster ← 2 · index");
+        this.mPseudocode.addLine("if (nächster = r)", 7);
+        this.mPseudocode.addLine("    A[index] ← A[r]", 8);
+        this.mPseudocode.addLine("    index ← r");
+        this.mPseudocode.addLine("while (index > 1 ∧ A[⌊index/2⌋] < wert)", 9);
+        this.mPseudocode.addLine("    A[index] ← A[⌊index/2 ⌋]", 10);
+        this.mPseudocode.addLine("     index ← ⌊index/2⌋");
+        this.mPseudocode.addLine("A[index] ← wert", 11);
+    }
+}
