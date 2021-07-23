@@ -1,0 +1,117 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.structure.ArrayStructure;
+import de.htwk_leipzig.imn.visualg.model.structure.Structure;
+import java.util.Arrays;
+
+public class Bubblesort extends Algorithm<ArrayStructure<Integer>> {
+    private static boolean mStandardComparisonTyp;
+
+    public Bubblesort(ArrayStructure<Integer> structure, String comparisonTyp) {
+        super(structure);
+        this.addPseudoCode();
+        Structure.setKeyComparison(0);
+        Structure.setWriteAccess(0);
+        mStandardComparisonTyp = this.whichComparisonTyp(comparisonTyp);
+    }
+
+    protected void execute() {
+        int fieldReducer = 0;
+        this.ifAlgoRunReturn(-1);
+
+        for(int i = 1; i < ((ArrayStructure)this.mStructure).size(); ++i) {
+            this.incrCounter(0);
+            if (!mStandardComparisonTyp) {
+                ++fieldReducer;
+            } else {
+                fieldReducer = 1;
+            }
+
+            boolean isSorted = true;
+            if (this.checkBreakpoint(0)) {
+                this.ifAlgoRunReturn(0);
+            }
+
+            for(int j = 0; j < ((ArrayStructure)this.mStructure).size() - fieldReducer; ++j) {
+                this.incrCounter(1);
+                if (this.checkBreakpoint(1)) {
+                    ((ArrayStructure)this.mStructure).reDraw();
+                    this.ifAlgoRunReturn(1);
+                }
+
+                Structure.incKeyComparison();
+                this.updatePseudocode();
+                if (((ArrayStructure)this.mStructure).get(j + 1) == null) {
+                    break;
+                }
+
+                boolean ret;
+                if (this.checkBreakpoint(2)) {
+                    ((ArrayStructure)this.mStructure).compare(j, j + 1, "Größer?");
+                    ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(j, j + 1), AlgorithmOperationType.COMPARE);
+                    ret = this.waitAtBreakpoint(2);
+                    ((ArrayStructure)this.mStructure).removeConnection();
+                    ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(j, j + 1), AlgorithmOperationType.DEFAULT);
+                    if (!ret) {
+                        return;
+                    }
+                }
+
+                if ((Integer)((ArrayStructure)this.mStructure).get(j) > (Integer)((ArrayStructure)this.mStructure).get(j + 1)) {
+                    this.incrCounter(2);
+                    Structure.setWriteAccess(Structure.getWriteAccess() + 2);
+                    this.updatePseudocode();
+                    if (this.checkBreakpoint(3)) {
+                        ((ArrayStructure)this.mStructure).compare(j, j + 1, "Tausch");
+                        this.updatePseudocode();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(j, j + 1), AlgorithmOperationType.WRITE);
+                        ret = this.waitAtBreakpoint(3);
+                        ((ArrayStructure)this.mStructure).removeConnection();
+                        ((ArrayStructure)this.mStructure).highlightElement(Arrays.asList(j, j + 1), AlgorithmOperationType.DEFAULT);
+                        if (!ret) {
+                            return;
+                        }
+                    }
+
+                    int temp = (Integer)((ArrayStructure)this.mStructure).getData().get(j);
+                    ((ArrayStructure)this.mStructure).getData().set(j, (Integer)((ArrayStructure)this.mStructure).getData().get(j + 1));
+                    ((ArrayStructure)this.mStructure).getData().set(j + 1, temp);
+                    isSorted = false;
+                    ((ArrayStructure)this.mStructure).reDraw();
+                }
+            }
+
+            if (isSorted) {
+                break;
+            }
+        }
+
+        ((ArrayStructure)this.mStructure).reDraw();
+    }
+
+    private void addPseudoCode() {
+        this.addCounters(3);
+        this.mPseudocode.addCounters(Arrays.asList(new PseudoCodeCounter(0, 3), new PseudoCodeCounter(1, 5), new PseudoCodeCounter(2, 8)));
+        this.mName = "Bubblesort";
+        this.mParameters = this.mParameters + "Feld A";
+        this.mPseudocode.addLine("Rückgabewert: nichts; Seiteneffekt: A ist sortiert");
+        this.mPseudocode.addLine("k ← 1");
+        this.mPseudocode.addLine("Wiederhole", 0);
+        this.mPseudocode.addLine("    warSortiert ← true");
+        this.mPseudocode.addLine("    for (i ← 1, ..., Feldlänge - k)", 1);
+        this.mPseudocode.addLine("        if (element[i] > element[i+1])", 2);
+        this.mPseudocode.addLine("            warSortiert ← false");
+        this.mPseudocode.addLine("            Vertausche i-tes mit (i+1)-tem Element", 3);
+        this.mPseudocode.addLine("    k++");
+        this.mPseudocode.addLine("Solange (¬warSortiert)");
+    }
+
+    private boolean whichComparisonTyp(String comparisonTyp) {
+        return comparisonTyp.equals("n - 1");
+    }
+}
