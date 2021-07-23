@@ -1,0 +1,44 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+public class PseudoCodeCounter {
+    private final String prefix;
+    private final int line;
+    private final int tableOffset;
+    private final int counterNr;
+
+    public PseudoCodeCounter(int counterNr, int line, String prefix, int tableOffset) {
+        this.prefix = prefix;
+        this.line = line;
+        this.tableOffset = tableOffset;
+        this.counterNr = counterNr;
+    }
+
+    public PseudoCodeCounter(int counterNr, int line, String prefix) {
+        this(counterNr, line, prefix, 0);
+    }
+
+    public PseudoCodeCounter(int counterNr, int line) {
+        this(counterNr, line, "");
+    }
+
+    public int getLine() {
+        return this.line;
+    }
+
+    public int getTableOffset() {
+        return this.tableOffset;
+    }
+
+    public int getCounterNr() {
+        return this.counterNr;
+    }
+
+    public String getPrefix() {
+        return this.prefix;
+    }
+}
