@@ -1,0 +1,117 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package de.htwk_leipzig.imn.visualg.model.algorithm;
+
+import de.htwk_leipzig.imn.visualg.model.drawable.Point;
+import de.htwk_leipzig.imn.visualg.model.structure.TableStructure;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class GameOfLifeAlgorithm extends Algorithm<TableStructure> {
+    public GameOfLifeAlgorithm(TableStructure structure) {
+        super(structure);
+        this.addPseudoCode();
+    }
+
+    protected void execute() {
+        do {
+            this.update();
+        } while(this.waitAtBreakpoint(0));
+
+    }
+
+    private void addPseudoCode() {
+        this.mName = "Game of Life";
+        this.mPseudocode.addLine("Wiederhole", 0);
+        this.mPseudocode.addLine("    Wenn weniger als zwei lebende Nachbarn");
+        this.mPseudocode.addLine("        Sterbe an Vereinsamung");
+        this.mPseudocode.addLine("    Wenn genau drei Nachbarn");
+        this.mPseudocode.addLine("        Bleibe eine Iteration am Leben");
+        this.mPseudocode.addLine("    Wenn mehr als drei lebende Nachbarn");
+        this.mPseudocode.addLine("        Sterbe an Überbevölkerung");
+    }
+
+    private int countNeighbours(int x, int y) {
+        int neighbours = 0;
+        ArrayList<Point> points = new ArrayList();
+        points.add(new Point(x - 1, y - 1));
+        points.add(new Point(x, y - 1));
+        points.add(new Point(x + 1, y - 1));
+        points.add(new Point(x - 1, y));
+        points.add(new Point(x + 1, y));
+        points.add(new Point(x - 1, y + 1));
+        points.add(new Point(x, y + 1));
+        points.add(new Point(x + 1, y + 1));
+        Iterator var6 = points.iterator();
+
+        while(var6.hasNext()) {
+            Point point = (Point)var6.next();
+            Point neighbour = this.getNeighbour(point.getX(), point.getY());
+            if (!((TableStructure)this.mStructure).get(neighbour.getX(), neighbour.getY()).toString().equals("")) {
+                ++neighbours;
+            }
+        }
+
+        return neighbours;
+    }
+
+    private Point getNeighbour(int x, int y) {
+        Point point = new Point(x, y);
+        Point size = ((TableStructure)this.mStructure).getSize();
+        if (x >= size.getX()) {
+            point.setX(0);
+        }
+
+        if (y >= size.getY()) {
+            point.setY(0);
+        }
+
+        return point;
+    }
+
+    private void update() {
+        Point size = ((TableStructure)this.mStructure).getSize();
+        ArrayList<ArrayList<Object>> tmp = new ArrayList();
+
+        int y;
+        int x;
+        for(y = 0; y < size.getY(); ++y) {
+            ArrayList<Object> row = new ArrayList();
+
+            for(x = 0; x < size.getX(); ++x) {
+                row.add(((TableStructure)this.mStructure).get(x, y));
+            }
+
+            tmp.add(row);
+        }
+
+        for(y = 0; y < size.getY(); ++y) {
+            for(x = 0; x < size.getX(); ++x) {
+                int neighbours = this.countNeighbours(x, y);
+                if (neighbours < 2) {
+                    ((ArrayList)tmp.get(y)).set(x, "");
+                } else if (neighbours == 3) {
+                    ((ArrayList)tmp.get(y)).set(x, " ");
+                } else if (neighbours > 3) {
+                    ((ArrayList)tmp.get(y)).set(x, "");
+                }
+            }
+        }
+
+        for(y = 0; y < size.getY(); ++y) {
+            for(x = 0; x < size.getX(); ++x) {
+                ((TableStructure)this.mStructure).set(x, y, ((ArrayList)tmp.get(y)).get(x));
+                int indexHighlight = y * ((TableStructure)this.mStructure).getSize().getX() + x;
+                if (!((ArrayList)tmp.get(y)).get(x).toString().equals("")) {
+                    ((TableStructure)this.mStructure).highlight(indexHighlight, AlgorithmOperationType.READ);
+                } else {
+                    ((TableStructure)this.mStructure).highlight(indexHighlight, AlgorithmOperationType.DEFAULT);
+                }
+            }
+        }
+
+    }
+}
